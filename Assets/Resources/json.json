@@ -1,0 +1,64 @@
+{
+  "requirements": [
+    [
+      {
+        "itemId": "1",
+        "amount": 50
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 90
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 162
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 292
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 525
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 945
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 1701
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 3061
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 5510
+      }
+    ],
+    [
+      {
+        "itemId": "1",
+        "amount": 9918
+      }
+    ]
+  ]
+}
