@@ -11,15 +11,15 @@ namespace _root.Script.Network
 {
     public class Networking : MonoBehaviour
     {
-        private static string _baseUrl;
+        private const string BaseUrl = "https://konopuro.dsm-dongpo.com/";
         private static int _timeOut;
         private static Networking _networking;
-        [SerializeField] private string baseUrl;
+        // [SerializeField] private string baseUrl;
         [SerializeField] private int timeOut = 30;
 
         private void Awake()
         {
-            _baseUrl = baseUrl;
+            // _baseUrl = baseUrl;
             _timeOut = timeOut;
             if (_networking != null)
                 Destroy(_networking);
@@ -105,7 +105,7 @@ namespace _root.Script.Network
             public void Build()
             {
                 string parameters = _params.Count > 0 ? $"?{string.Join("&", _params)}" : "";
-                _networking.StartCoroutine(_Request(_baseUrl + _path + parameters));
+                _networking.StartCoroutine(_Request(BaseUrl + _path + parameters));
             }
         }
 
