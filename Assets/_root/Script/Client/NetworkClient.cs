@@ -46,7 +46,7 @@ namespace _root.Script.Client
             if (Input.GetKeyDown(KeyCode.Q))
             {
                 Debug.Log("Q Key");
-                var rawChat = new RawChat
+                var rawChat = new RawData
                 {
                     protocol = 1,
                     data = "룰루랄라!"
@@ -61,7 +61,7 @@ namespace _root.Script.Client
             if (Input.GetKeyDown(KeyCode.W))
             {
                 Debug.Log("W Key");
-                _client.EmitAsync("chat", new RawChat
+                _client.EmitAsync("chat", new RawData
                 {
                     protocol = 5,
                     data = "korean"
@@ -111,7 +111,7 @@ namespace _root.Script.Client
             // });
             _client.OnAny((eventName, response) =>
             {
-                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(response.GetValue<RawChat>())}");
+                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(response.GetValue<RawData>())}");
             });
             Debug.Log("Connecting..");
             await _client.ConnectAsync();
