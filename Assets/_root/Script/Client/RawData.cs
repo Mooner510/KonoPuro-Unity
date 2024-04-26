@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 namespace _root.Script.Client
 {
     [Serializable]
-    public class RawChat
+    public class RawData
     {
         [JsonPropertyName("protocol")] public int protocol;
 
