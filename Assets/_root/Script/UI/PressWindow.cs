@@ -1,16 +1,17 @@
 using UnityEngine;
 
-public class PressBtn : MonoBehaviour
+public class PressWindow : MonoBehaviour
 { 
     private string input = "";
     private new Animation animation;
     private TimelineManager timelineManager;
+    private bool OnPress = false;
     private void Awake()
     {
         timelineManager = FindObjectOfType<TimelineManager>();
     }
 
-    private void OnGUI()
+    private void Update()
     {
         input = Input.inputString;
         if (input == "")
@@ -18,11 +19,11 @@ public class PressBtn : MonoBehaviour
             input = Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2) ? "mouse" : "";
         }
 
-        if (input == "")
+        if (input == "" || OnPress)
         {
             return;
         }
         
-        timelineManager.Change("Lobby");
+        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.Lobby);
     }
 }
