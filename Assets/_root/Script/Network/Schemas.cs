@@ -25,7 +25,7 @@ namespace _root.Script.Network
     }
 
     [Serializable]
-    public class Schemas
+    public class PasswordChangeRequest
     {
         public string id;
         public string password;

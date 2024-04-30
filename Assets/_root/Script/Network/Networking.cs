@@ -9,11 +9,16 @@ using UnityEngine.Networking;
 
 namespace _root.Script.Network
 {
+    public class Void
+    {
+    }
+    
     public class Networking : MonoBehaviour
     {
-        private const string BaseUrl = "https://konopuro.dsm-dongpo.com/";
-        private static int _timeOut;
+        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com/";
+        private static int        _timeOut;
         private static Networking _networking;
+        [CanBeNull] public static string     AccessToken;
         // [SerializeField] private string baseUrl;
         [SerializeField] private int timeOut = 30;
 
@@ -34,7 +39,7 @@ namespace _root.Script.Network
             private readonly string _path;
 
             [CanBeNull] private Action _errorAction;
-
+            [CanBeNull] private Action _successAction;
             [CanBeNull] private Action<T> _responseAction;
 
             protected Request(string path)
@@ -62,6 +67,12 @@ namespace _root.Script.Network
                 return this;
             }
 
+            public Request<T> OnSuccess(Action action)
+            {
+                _successAction = action;
+                return this;
+            }
+
             public Request<T> OnResponse(Action<T> action)
             {
                 _responseAction = action;
@@ -77,6 +88,10 @@ namespace _root.Script.Network
                 webRequest.timeout = _timeOut;
                 foreach ((string key, string value) in _headers)
                     webRequest.SetRequestHeader(key, value);
+                if (AccessToken != null)
+                {
+                    webRequest.SetRequestHeader("Authorization", AccessToken);
+                }
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
@@ -86,7 +101,11 @@ namespace _root.Script.Network
                     if (webRequest.responseCode is >= 200 and <= 299)
                     {
                         Debugger.Log($"Response for {url}: {webRequest.responseCode}");
-                        if (typeof(T) == typeof(string))
+                        if (typeof(T) == typeof(void))
+                        {
+                            _responseAction?.Invoke(null);
+                        }
+                        else if (typeof(T) == typeof(string))
                         {
                             _responseAction?.Invoke(bodyText as T);
                         }
@@ -94,6 +113,7 @@ namespace _root.Script.Network
                         {
                             _responseAction?.Invoke(JsonUtility.FromJson<T>(bodyText));
                         }
+                        _successAction?.Invoke();
 
                         yield break;
                     }
