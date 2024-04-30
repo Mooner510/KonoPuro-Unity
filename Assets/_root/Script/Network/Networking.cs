@@ -16,16 +16,26 @@ namespace _root.Script.Network
     public class Networking : MonoBehaviour
     {
         private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com/";
-        private static int        _timeOut;
         private static Networking _networking;
         [CanBeNull] public static string     AccessToken;
-        // [SerializeField] private string baseUrl;
-        [SerializeField] private int timeOut = 30;
+
+        private string _password;
+
+        public string ID
+        {
+            get => EncryptedPlayerPrefs.GetString("id");
+            set => EncryptedPlayerPrefs.SetString("id", value);
+        }
+
+        public string Password
+        {
+            get => EncryptedPlayerPrefs.GetString("password");
+            set => EncryptedPlayerPrefs.SetString("password", value);
+        }
 
         private void Awake()
         {
             // _baseUrl = baseUrl;
-            _timeOut = timeOut;
             if (_networking != null)
                 Destroy(_networking);
             _networking = this;
@@ -85,7 +95,7 @@ namespace _root.Script.Network
             {
                 Debugger.Log($"Sending Request to {url}");
                 using var webRequest = WebRequest(url);
-                webRequest.timeout = _timeOut;
+                webRequest.timeout = 15;
                 foreach ((string key, string value) in _headers)
                     webRequest.SetRequestHeader(key, value);
                 if (AccessToken != null)
