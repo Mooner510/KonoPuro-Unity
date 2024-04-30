@@ -32,7 +32,7 @@ public class GachaUI : MonoBehaviour {
         meshRenderer = box.GetComponent<MeshRenderer>();
         
         singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
-        multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s>\u21b4</color>\n{gachaPrice*10-1:N0}");
+        multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
         ChangeGoldTxt(gold);
     }
 
