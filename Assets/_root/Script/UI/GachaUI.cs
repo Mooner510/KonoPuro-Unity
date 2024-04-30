@@ -6,6 +6,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GachaUI : MonoBehaviour {
+    [SerializeField] private GameObject camera;
+    [SerializeField] private GameObject ui;
+    [SerializeField] private float speed;
+    [SerializeField] private GameObject light;
+    
     [Header("# Gold")]
     [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private int gold;
@@ -34,6 +39,21 @@ public class GachaUI : MonoBehaviour {
         singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
         multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
         ChangeGoldTxt(gold);
+        
+        camera.GetComponent<Animator>().SetFloat("speed", speed);
+        ui.SetActive(false);
+        GachaToggle();
+    }
+
+    public void GachaToggle() {
+        camera.GetComponent<Animator>().SetBool("toggle", !camera.GetComponent<Animator>().GetBool("toggle"));
+        StartCoroutine(UIToggle());
+    }
+
+    IEnumerator UIToggle() {
+        yield return new WaitForSeconds(speed);
+        ui.SetActive(!ui.activeSelf);
+        light.SetActive(!light.activeSelf);
     }
 
     public void LeftBtn() {
@@ -61,6 +81,7 @@ public class GachaUI : MonoBehaviour {
 
     public void BackBtn() {
         // 이전화면
+        GachaToggle();
     }
 
     public void ToggleInfo() {
