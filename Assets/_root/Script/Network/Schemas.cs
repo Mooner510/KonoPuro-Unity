@@ -164,15 +164,10 @@ namespace _root.Script.Network
     }
     
     [Serializable]
-    public class DeckCardRequest
+    public class ApplyDeckRequest
     {
-        public string deckId;
-        public string cardId;
-    }
-        
-    [Serializable]
-    public class DeckCardRequests
-    {
-        public List<DeckCardRequest> data;
+        public string       activeDeckId;
+        public List<string> addition;
+        public List<string> deletion;
     }
 }
