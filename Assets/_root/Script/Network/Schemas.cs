@@ -78,12 +78,13 @@ namespace _root.Script.Network
         public string id;
         public string title;
         public string description;
-        public int time;
+        public int    time;
     }
 
     [Serializable]
     public class PlayerCardResponse
     {
+        public string                id;
         public string                title;
         public string                description;
         public List<MajorType>       cardGroups;
@@ -92,13 +93,13 @@ namespace _root.Script.Network
         public List<PassiveResponse> passives;
         public List<TierResponse>    tiers;
     }
-    
+
     [Serializable]
     public class PlayerCardResponses
     {
         public List<PlayerCardResponse> cards;
     }
-        
+
     [Serializable]
     public class GatchaLogResponse
     {
@@ -107,48 +108,58 @@ namespace _root.Script.Network
         public int    stack;
         public string dateTime;
     }
-        
+
     [Serializable]
     public class GatchaLogDataResponse
     {
-        public long total;
-        public int filtered;
-        public int stack3;
-        public int stack4;
-        public bool full3;
-        public bool full4;
+        public long                    total;
+        public int                     filtered;
+        public int                     stack3;
+        public int                     stack4;
+        public bool                    full3;
+        public bool                    full4;
         public List<GatchaLogResponse> data;
     }
-            
+
     [Serializable]
     public class GatchaResponse
     {
-        public string                  id;
-        public string                  name;
-        public MajorType                  major;
-        public string startAt;
-        public string endAt;
+        public string    id;
+        public string    name;
+        public MajorType major;
+        public string    startAt;
+        public string    endAt;
     }
-            
+
     [Serializable]
     public class GatchaResponses
     {
         public List<GatchaLogResponse> data;
     }
-    
+
     [Serializable]
     public class CardDataResponse
     {
-        public string    title;
-        public string    description;
-        public List<MajorType> cardGroups;
-        public string    startAt;
-        public string    endAt;
+        public string                title;
+        public string                description;
+        public List<MajorType>       cardGroups;
+        public CardType              type;
+        public List<PassiveResponse> defaultPassives;
+        public List<TierResponse>    tier2;
+        public List<PassiveResponse> additionPassives;
+        public List<TierResponse>    tier3;
     }
-    
+
     [Serializable]
     public class CardDataResponses
     {
         public List<CardDataResponse> data;
+    }
+
+    [Serializable]
+    public class DeckResponse
+    {
+        public string       deckId;
+        public List<string> deck;
     }
 }
