@@ -48,7 +48,7 @@ namespace _root.Script.Network
         public static Networking.Post<Void> Match()
             => new("/api/game/match", null);
 
-        public static Networking.Get<Void> GetInventoryCardAll()
+        public static Networking.Get<PlayerCardResponses> GetInventoryCardAll()
         =>new ("/api/inventory");
         
         public static Networking.Get<DeckResponse> GetActiveDeck()
