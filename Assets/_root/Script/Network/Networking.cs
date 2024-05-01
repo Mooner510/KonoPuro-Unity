@@ -9,18 +9,33 @@ using UnityEngine.Networking;
 
 namespace _root.Script.Network
 {
+    public class Void
+    {
+    }
+    
     public class Networking : MonoBehaviour
     {
-        private const string BaseUrl = "https://konopuro.dsm-dongpo.com/";
-        private static int _timeOut;
+        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com/";
         private static Networking _networking;
-        // [SerializeField] private string baseUrl;
-        [SerializeField] private int timeOut = 30;
+        [CanBeNull] public static string     AccessToken;
+
+        private string _password;
+
+        public string ID
+        {
+            get => EncryptedPlayerPrefs.GetString("id");
+            set => EncryptedPlayerPrefs.SetString("id", value);
+        }
+
+        public string Password
+        {
+            get => EncryptedPlayerPrefs.GetString("password");
+            set => EncryptedPlayerPrefs.SetString("password", value);
+        }
 
         private void Awake()
         {
             // _baseUrl = baseUrl;
-            _timeOut = timeOut;
             if (_networking != null)
                 Destroy(_networking);
             _networking = this;
@@ -34,7 +49,7 @@ namespace _root.Script.Network
             private readonly string _path;
 
             [CanBeNull] private Action _errorAction;
-
+            [CanBeNull] private Action _successAction;
             [CanBeNull] private Action<T> _responseAction;
 
             protected Request(string path)
@@ -62,6 +77,12 @@ namespace _root.Script.Network
                 return this;
             }
 
+            public Request<T> OnSuccess(Action action)
+            {
+                _successAction = action;
+                return this;
+            }
+
             public Request<T> OnResponse(Action<T> action)
             {
                 _responseAction = action;
@@ -74,9 +95,13 @@ namespace _root.Script.Network
             {
                 Debugger.Log($"Sending Request to {url}");
                 using var webRequest = WebRequest(url);
-                webRequest.timeout = _timeOut;
+                webRequest.timeout = 15;
                 foreach ((string key, string value) in _headers)
                     webRequest.SetRequestHeader(key, value);
+                if (AccessToken != null)
+                {
+                    webRequest.SetRequestHeader("Authorization", AccessToken);
+                }
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
@@ -86,7 +111,11 @@ namespace _root.Script.Network
                     if (webRequest.responseCode is >= 200 and <= 299)
                     {
                         Debugger.Log($"Response for {url}: {webRequest.responseCode}");
-                        if (typeof(T) == typeof(string))
+                        if (typeof(T) == typeof(void))
+                        {
+                            _responseAction?.Invoke(null);
+                        }
+                        else if (typeof(T) == typeof(string))
                         {
                             _responseAction?.Invoke(bodyText as T);
                         }
@@ -94,6 +123,7 @@ namespace _root.Script.Network
                         {
                             _responseAction?.Invoke(JsonUtility.FromJson<T>(bodyText));
                         }
+                        _successAction?.Invoke();
 
                         yield break;
                     }
