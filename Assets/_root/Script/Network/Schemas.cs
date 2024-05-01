@@ -162,4 +162,17 @@ namespace _root.Script.Network
         public string       deckId;
         public List<string> deck;
     }
+    
+    [Serializable]
+    public class DeckCardRequest
+    {
+        public string deckId;
+        public string cardId;
+    }
+        
+    [Serializable]
+    public class DeckCardRequests
+    {
+        public List<DeckCardRequest> data;
+    }
 }

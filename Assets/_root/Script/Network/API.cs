@@ -49,24 +49,26 @@ namespace _root.Script.Network
             => new("/api/game/match", null);
 
         public static Networking.Get<PlayerCardResponses> GetInventoryCardAll()
-        =>new ("/api/inventory");
-        
+            => new("/api/inventory");
+
         public static Networking.Get<DeckResponse> GetActiveDeck()
-        =>new ("/api/active");
-        
-        public static Networking.Get<Void> RemoveDeckCard(string deckId, string cardId)
+            => new("/api/inventory/active");
+
+        public static Networking.Post<Void> AddDeckCard(DeckCardRequest req)
+           => new("/api/inventory/add", req);
+
+        public static Networking.Post<Void> AddDeckCardMulti(DeckCardRequests req)
+            => new ("/api/inventory/add-multi", req);
+
+        public static Networking.Delete<Void> RemoveDeckCard(DeckCardRequest req)
         {
-            var get = new Networking.Get<Void>("/api/inventory/add");
-            get.AddParam("deckId", deckId);
-            get.AddParam("cardId", cardId);
+            var get = new Networking.Delete<Void>("/api/inventory/remove");
             return get;
         }
         
-        public static Networking.Get<Void> AddDeckCard(string deckId, string cardId)
+        public static Networking.Delete<Void> RemoveDeckCard(DeckCardRequests req)
         {
-            var get = new Networking.Get<Void>("/api/inventory/inventory");
-            get.AddParam("deckId", deckId);
-            get.AddParam("cardId", cardId);
+            var get = new Networking.Delete<Void>("/api/inventory/remove");
             return get;
         }
     }
