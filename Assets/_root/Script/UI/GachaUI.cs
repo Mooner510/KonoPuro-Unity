@@ -6,10 +6,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GachaUI : MonoBehaviour {
+    
+    [Header("# CutScene")]
     [SerializeField] private GameObject camera;
+    [SerializeField] private Transform startPos;
+    [SerializeField] private Transform endPos;
     [SerializeField] private GameObject ui;
-    [SerializeField] private float speed;
+    [SerializeField] private float time;
     [SerializeField] private GameObject light;
+    private Vector3 vel = Vector3.zero;
     
     [Header("# Gold")]
     [SerializeField] private TextMeshProUGUI goldText;
@@ -39,19 +44,30 @@ public class GachaUI : MonoBehaviour {
         singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
         multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
         ChangeGoldTxt(gold);
-        
-        camera.GetComponent<Animator>().SetFloat("speed", speed);
         ui.SetActive(false);
-        GachaToggle();
+        GachaToggle(startPos, endPos, time);
     }
 
-    public void GachaToggle() {
-        camera.GetComponent<Animator>().SetBool("toggle", !camera.GetComponent<Animator>().GetBool("toggle"));
-        StartCoroutine(UIToggle());
+    public void GachaToggle(Transform start, Transform end, float t) {
+        StartCoroutine(CamMove(start, end));
+        StartCoroutine(UiDisable(t));
     }
 
-    IEnumerator UIToggle() {
-        yield return new WaitForSeconds(speed);
+    IEnumerator CamMove(Transform start, Transform end) {
+        float t=0;
+        
+        while (t < time) {
+            t += Time.deltaTime;
+            
+            camera.transform.position = Vector3.Lerp(start.position, end.position, t/time);
+            camera.transform.rotation = Quaternion.Lerp(start.rotation, end.rotation, t/time);
+            
+            yield return null;
+        }
+    }
+
+    IEnumerator UiDisable(float s) {
+        yield return new WaitForSeconds(s);
         ui.SetActive(!ui.activeSelf);
         light.SetActive(!light.activeSelf);
     }
@@ -81,7 +97,7 @@ public class GachaUI : MonoBehaviour {
 
     public void BackBtn() {
         // 이전화면
-        GachaToggle();
+        GachaToggle(endPos, startPos, 0);
     }
 
     public void ToggleInfo() {
