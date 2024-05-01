@@ -930,185 +930,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3b66a4b0e2a2694ebe8d0a52f2cd742, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deckList:
-  - equipLimit: 5
-    equipCards: []
-    inventoryCards:
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card1
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card2
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-  - equipLimit: 15
-    equipCards: []
-    inventoryCards:
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card1
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card2
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
-    - sprite: {fileID: 0}
-      cardStats:
-        cardName: card3
-      isEquipped: 0
 --- !u!4 &686665496
 Transform:
   m_ObjectHideFlags: 0
@@ -3114,6 +2935,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!1 &1968051636
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1968051638}
+  - component: {fileID: 1968051637}
+  m_Layer: 0
+  m_Name: Networking
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1968051637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968051636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6fb499faef14ee49e19b02250135f3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1968051638
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1968051636}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12.023196, y: -7.9945526, z: 8.539539}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1976457360
 GameObject:
   m_ObjectHideFlags: 0
@@ -3928,3 +3793,4 @@ SceneRoots:
   - {fileID: 2029769303}
   - {fileID: 1952580870}
   - {fileID: 686665496}
+  - {fileID: 1968051638}

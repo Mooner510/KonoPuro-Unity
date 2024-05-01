@@ -2,17 +2,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _root.Script.Card;
+using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 
 public class DeckCardUi : MonoBehaviour
 {
     [HideInInspector]
     public bool isEquippedDeckUi;
 
-    public DeckCard cardInfo;
+    [FormerlySerializedAs("cardInfo")] public PlayerCardResponse card;
 
-    public void SetUi(DeckCard card)
+    public void SetUi(PlayerCardResponse card, bool equipped, bool selected)
     {
         if (card == null)
         {
@@ -20,13 +22,15 @@ public class DeckCardUi : MonoBehaviour
             return;
         }
 
+        SetFocus(selected);
+        
         gameObject.SetActive(true);
 
-        cardInfo = card;
-        if (cardInfo.sprite)
-            GetComponent<Card>().frontSide.sprite = cardInfo.sprite;
+        this.card = card;
+        // if (this.card.)
+        //     GetComponent<Card>().frontSide.sprite = this.card.sprite;
 
-        transform.Find("EquipMark").gameObject.SetActive(cardInfo.isEquipped && !isEquippedDeckUi);
+        transform.Find("EquipMark").gameObject.SetActive(equipped && !isEquippedDeckUi);
     }
 
     public void ResetUi()

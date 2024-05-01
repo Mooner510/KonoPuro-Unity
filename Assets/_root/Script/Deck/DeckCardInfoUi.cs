@@ -1,13 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Deck;
+using _root.Script.Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class DeckCardInfoUi : MonoBehaviour
 {
-    public void SetUi(DeckCard card)
+    public void SetUi(PlayerCardResponse card, bool equipped)
     {
         if (card == null)
         {
@@ -16,7 +18,7 @@ public class DeckCardInfoUi : MonoBehaviour
         }
         
         var cardNameUi = transform.GetChild(0).Find("CardName").GetComponent<TextMeshProUGUI>();
-        cardNameUi.text = card.cardStats.cardName;
+        cardNameUi.text = card.title;
 
         var deckEditMenu = GetComponentInParent<DeckEditMenu>();
         var equipButton  = transform.GetChild(0).Find("EquipButton").GetComponent<Button>();
@@ -24,7 +26,7 @@ public class DeckCardInfoUi : MonoBehaviour
 
         equipButton.onClick.RemoveAllListeners();
         equipButton.onClick.AddListener(() => { deckEditMenu.Equip(card); });
-        equipText.text = card.isEquipped ? "Un Equip" : "Equip";
+        equipText.text = equipped ? "Un Equip" : "Equip";
         
         gameObject.SetActive(true);
     }
