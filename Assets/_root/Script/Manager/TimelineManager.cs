@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Playables;
 
 public enum Scenestate
@@ -18,6 +19,10 @@ public class TimelineManager : MonoBehaviour
     private PlayableDirector director;
     private BackButton backBtn;
     private CamManager camManager;
+    [SerializeField] private GameObject login;
+    
+    private UnityEvent SceneChange = new();
+    
     
     public readonly Stack<Scenestate> stateStack = new();
     private void Awake()
@@ -25,7 +30,7 @@ public class TimelineManager : MonoBehaviour
         director = GetComponent<PlayableDirector>();
         backBtn = FindObjectOfType<BackButton>();
         camManager = FindObjectOfType<CamManager>();
-
+        
         PlayTimeline(Scenestate.Start, Scenestate.Title);
     }
     
@@ -43,16 +48,28 @@ public class TimelineManager : MonoBehaviour
     private IEnumerator PlayTimelineCoroutine(Scenestate state1, Scenestate state2)
     {
         backBtn.OnOff(false);
+        
         director.Stop();
         director.playableAsset = Resources.Load("Timeline/At" + state1 + "Timeline") as PlayableAsset;
         director.Play();
         yield return null;
         yield return new WaitUntil(() => director.time >= director.duration);
+        
+        if (state1 == Scenestate.Title)
+        {
+            login.SetActive(true);
+            var loginScript = login.GetComponent<Login>();
+            yield return new WaitUntil(() => loginScript.isLogin);
+            login.SetActive(false);
+        }
+        
         director.Stop();
         director.playableAsset = Resources.Load("Timeline/To" + state2 + "Timeline") as PlayableAsset;
         director.Play();
+        
         stateStack.Push(state2);
         camManager.SetCam(state2);
+        
         if (state2 == Scenestate.Title)
         {
             backBtn.OnOff(false);
@@ -63,8 +80,8 @@ public class TimelineManager : MonoBehaviour
             yield return new WaitUntil(() => director.time >= director.duration);
             backBtn.OnOff(true);
         }
-        // yield return null;
-        // yield return new WaitUntil(() => director.time >= director.duration);
+        
+        SceneChange.Invoke();
     }
 
     public void Back()
