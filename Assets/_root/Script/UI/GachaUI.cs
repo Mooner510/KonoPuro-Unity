@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using _root.Script.Network;
 
 public class GachaUI : MonoBehaviour {
     
@@ -14,7 +15,6 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private GameObject ui;
     [SerializeField] private float time;
     [SerializeField] private GameObject light;
-    private Vector3 vel = Vector3.zero;
     
     [Header("# Gold")]
     [SerializeField] private TextMeshProUGUI goldText;
@@ -36,10 +36,26 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI singlePriceTxt;
     [SerializeField] private TextMeshProUGUI multiPriceTxt;
     [SerializeField] int gachaPrice;
+    [SerializeField] private List<GatchaResponse> data;
+    [SerializeField] private List<string> gachaList;
+    [SerializeField] private string currentBanner;
+    [SerializeField] private List<PlayerCardResponse> gachaResult;
 
     private void Start() {
         meshFilter = box.GetComponent<MeshFilter>();
         meshRenderer = box.GetComponent<MeshRenderer>();
+        
+        API.GatchaList()
+            .OnResponse(res => {
+                data = res.data;
+                Debug.Log("gachaList load success");
+            })
+            .OnError((() => Debug.Log("gachaList load fail")))
+            .Build();
+        foreach (var d in data) {
+            gachaList.Add(d.id);
+        }
+        
         
         singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
         multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
@@ -87,12 +103,34 @@ public class GachaUI : MonoBehaviour {
     void ChangeBox() {
         meshFilter.mesh = boxMeshes[boxIndex];
         meshRenderer.material = boxMaterials[boxIndex];
+        currentBanner = gachaList[boxIndex];
     }
 
     public void DoGacha(int gachaNum) {
         gold -= gachaNum * gachaPrice;
         ChangeGoldTxt(gold);
         // 가챠
+        switch (gachaNum) {
+            case 1:
+                API.GatchaOnce(currentBanner)
+                    .OnResponse(res => {
+                        PlayerCardResponse once = res;
+                        gachaResult.Add(once);
+                        Debug.Log("gacha success");
+                    })
+                    .OnError((() => Debug.Log("gacha fail")))
+                    .Build();
+                break;
+            case 10:
+                API.GatchaMulti(currentBanner)
+                    .OnResponse(res => {
+                        gachaResult = res.cards;
+                        Debug.Log("gacha success");
+                    })
+                    .OnError((() => Debug.Log("gacha fail")))
+                    .Build();
+                break;
+        }
     }
 
     public void BackBtn() {
