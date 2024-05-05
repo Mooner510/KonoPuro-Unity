@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using _root.Script.Network;
+using Random = UnityEngine.Random;
 
 public class GachaUI : MonoBehaviour {
     
@@ -41,10 +42,29 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private string currentBanner;
     [SerializeField] private List<PlayerCardResponse> gachaResult;
 
+    [Header("CardOpen")]
+    [SerializeField] private GameObject posObj;
+    [SerializeField] private GameObject cardGroup;
+    [SerializeField] private List<Transform> cardPos;
+    [SerializeField] private GameObject card;
+    [SerializeField] private Transform gachaRoomPos;
+    [SerializeField] private GameObject particleCanvas;
+    [SerializeField] private float spawnDistance;
+
     private void Start() {
         meshFilter = box.GetComponent<MeshFilter>();
         meshRenderer = box.GetComponent<MeshRenderer>();
         
+        GetBanner();
+        
+        singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
+        multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
+        ChangeGoldTxt(gold);
+        ui.SetActive(false);
+        GachaToggle(startPos, endPos, time);
+    }
+
+    private void GetBanner() {
         API.GatchaList()
             .OnResponse(res => {
                 data = res.data;
@@ -55,13 +75,6 @@ public class GachaUI : MonoBehaviour {
         foreach (var d in data) {
             gachaList.Add(d.id);
         }
-        
-        
-        singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
-        multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
-        ChangeGoldTxt(gold);
-        ui.SetActive(false);
-        GachaToggle(startPos, endPos, time);
     }
 
     public void GachaToggle(Transform start, Transform end, float t) {
@@ -107,8 +120,7 @@ public class GachaUI : MonoBehaviour {
     }
 
     public void DoGacha(int gachaNum) {
-        gold -= gachaNum * gachaPrice;
-        ChangeGoldTxt(gold);
+        bool isFailed = false;
         // 가챠
         switch (gachaNum) {
             case 1:
@@ -118,7 +130,10 @@ public class GachaUI : MonoBehaviour {
                         gachaResult.Add(once);
                         Debug.Log("gacha success");
                     })
-                    .OnError((() => Debug.Log("gacha fail")))
+                    .OnError((() => {
+                        Debug.Log("gacha fail");
+                        isFailed = true;
+                    }))
                     .Build();
                 break;
             case 10:
@@ -127,9 +142,33 @@ public class GachaUI : MonoBehaviour {
                         gachaResult = res.cards;
                         Debug.Log("gacha success");
                     })
-                    .OnError((() => Debug.Log("gacha fail")))
+                    .OnError((() => {
+                        Debug.Log("gacha fail");
+                        isFailed = true;
+                    }))
                     .Build();
                 break;
+        }
+
+        //if (isFailed) return;
+        gold -= gachaNum * gachaPrice;
+        ChangeGoldTxt(gold);
+
+        ui.SetActive(false);
+        camera.transform.position = gachaRoomPos.transform.position;
+        camera.transform.rotation = gachaRoomPos.transform.rotation;
+
+        for (int i = 0; i < gachaNum; i++) {
+            GameObject obj = Instantiate(posObj, cardGroup.transform);
+            cardPos.Add(obj.transform);
+            GameObject c = Instantiate(card);
+            c.transform.localScale = new Vector3(10,10,1);
+            int ran = Random.Range(0, 360);
+            float x = Mathf.Cos(ran*Mathf.Deg2Rad) * spawnDistance;
+            float z = Mathf.Sin(ran*Mathf.Deg2Rad) * spawnDistance;
+            float y = Mathf.Tan(ran * Mathf.Deg2Rad) * spawnDistance;
+            Vector3 newPos = particleCanvas.transform.position + new Vector3(x, y ,z);
+            StartCoroutine(c.GetComponent<CardMove>().Move(newPos ,obj.transform));
         }
     }
 

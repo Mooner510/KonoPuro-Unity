@@ -131,10 +131,10 @@ namespace _root.Script.Network
         public string    endAt;
     }
 
-    [Serializable]
+    [Serializable] 
     public class GatchaResponses
     {
-        public List<GatchaLogResponse> data;
+        public List<GatchaResponse> data;
     }
 
     [Serializable]
