@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Playables;
 
 public enum Scenestate
@@ -23,10 +22,9 @@ public class TimelineManager : MonoBehaviour
     private CamManager camManager;
     [SerializeField] private GameObject login;
     
-    private UnityEvent SceneChange = new();
-    
-    
     public readonly Stack<Scenestate> stateStack = new();
+    public bool isChanging;
+    
     private void Awake()
     {
         director = GetComponent<PlayableDirector>();
@@ -49,6 +47,8 @@ public class TimelineManager : MonoBehaviour
 
     private IEnumerator PlayTimelineCoroutine(Scenestate state1, Scenestate state2)
     {
+        isChanging = true;
+        
         backBtn.OnOff(false);
         
         director.Stop();
@@ -75,7 +75,7 @@ public class TimelineManager : MonoBehaviour
             backBtn.OnOff(true);
         }
         
-        SceneChange.Invoke();
+        isChanging = false;
     }
 
     public void Back()

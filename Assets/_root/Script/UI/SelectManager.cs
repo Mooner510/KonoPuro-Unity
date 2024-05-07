@@ -24,18 +24,17 @@ public class SelectManager : MonoBehaviour
 
     private void Update()
     {
-        if (timelineManager.stateStack.TryPeek(out var state) && state == Scenestate.Lobby)
+        if (timelineManager.stateStack.TryPeek(out var state) && state == Scenestate.Lobby && !timelineManager.isChanging)
         {
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit) && hit.transform.gameObject.CompareTag("Selectable"))
             {
-                SetMaterial(hit);
-                
                 var cap = hit.transform.gameObject.name;
                 if (caption != cap)
                 {
                     SetCaption(cap);
                 }
+                SetMaterial(hit);
                 UpdateCaption(Time.deltaTime);
                 if (Input.GetMouseButtonDown(0))
                 {
