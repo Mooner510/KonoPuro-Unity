@@ -24,6 +24,6 @@ public class PressWindow : MonoBehaviour
             return;
         }
         
-        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.Lobby);
+        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.SignIn);
     }
 }

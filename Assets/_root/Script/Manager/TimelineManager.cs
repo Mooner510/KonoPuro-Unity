@@ -9,6 +9,8 @@ public enum Scenestate
     Start,
     Title,
     Lobby,
+    SignIn,
+    SignUp,
     Obj1,
     Obj2,
     Obj3
@@ -54,14 +56,6 @@ public class TimelineManager : MonoBehaviour
         director.Play();
         yield return null;
         yield return new WaitUntil(() => director.time >= director.duration);
-        
-        if (state1 == Scenestate.Title)
-        {
-            login.SetActive(true);
-            var loginScript = login.GetComponent<Login>();
-            yield return new WaitUntil(() => loginScript.isLogin);
-            login.SetActive(false);
-        }
         
         director.Stop();
         director.playableAsset = Resources.Load("Timeline/To" + state2 + "Timeline") as PlayableAsset;

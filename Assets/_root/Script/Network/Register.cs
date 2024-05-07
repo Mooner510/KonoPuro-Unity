@@ -3,51 +3,50 @@ using _root.Script.Network;
 using TMPro;
 using UnityEngine;
 
-public class Login : MonoBehaviour
+public class Register : MonoBehaviour
 {
     private TMP_InputField[] inputFields;
     private TextMeshProUGUI errorText;
     private TimelineManager timelineManager;
-
-    public bool isLogin;
     
     private void Awake()
     {
-        isLogin = false;
         inputFields = GetComponentsInChildren<TMP_InputField>();
         errorText = GetComponentInChildren<TextMeshProUGUI>();
         timelineManager = FindObjectOfType<TimelineManager>();
     }
-
-    public void SignIn()
+    
+    public void SignUp()
     {
-        if (inputFields[0].text == "" || inputFields[1].text == "")
+        if (inputFields[0].text == "" || inputFields[1].text == "" || inputFields[2].text == "" || inputFields[3].text == "")
         {
-            ChangeText("Id or Password is empty");
+            ChangeText("There is an empty field");
             return;
         }
-        var req = new SignInRequest { id = inputFields[0].text, password = inputFields[1].text};
-        API.SignIn(req)
+        
+        if (inputFields[2].text != inputFields[3].text)
+        {
+            ChangeText("Password is not same");
+            return;
+        }
+
+        var req = new SignUpRequest
+            { name = inputFields[0].text, id = inputFields[1].text, password = inputFields[2].text };
+        API.SignUp(req)
             .OnResponse(res =>
             {
-                isLogin = true;
-                Networking.AccessToken = res.accessToken;
+                ChangeText("Sign Up Success");
+                timelineManager.PlayTimeline(Scenestate.SignUp, Scenestate.SignIn);
             })
             .OnError(() =>
             {
-                isLogin = false;
-                ChangeText("Id or Password is incorrect");
+                ChangeText("Sign Up Failed");
             })
             .Build();
     }
-
-    public void ToSignUpPage()
-    {
-        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.SignUp);
-    }
     
     private Coroutine coroutine;
-
+    
     private void ChangeText(string text)
     {
         if (coroutine != null)
