@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using _root.Script.Network;
+using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
 public class GachaUI : MonoBehaviour {
@@ -46,10 +47,14 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private GameObject posObj;
     [SerializeField] private GameObject cardGroup;
     [SerializeField] private List<Transform> cardPos;
+    [SerializeField] private List<GachaCard> cards;
     [SerializeField] private GameObject card;
     [SerializeField] private Transform gachaRoomPos;
-    [SerializeField] private GameObject particleCanvas;
+    [SerializeField] private GameObject subCanvas;
     [SerializeField] private float spawnDistance;
+    [SerializeField] private GameObject openBtn;
+    [SerializeField] private GameObject backToGachaBtn;
+    [SerializeField] private float allOpenSpeed;
 
     private void Start() {
         meshFilter = box.GetComponent<MeshFilter>();
@@ -151,25 +156,65 @@ public class GachaUI : MonoBehaviour {
         }
 
         //if (isFailed) return;
-        gold -= gachaNum * gachaPrice;
+        gold -= gachaNum > 1 ? (gachaNum * gachaPrice)-1 : gachaPrice;
         ChangeGoldTxt(gold);
 
         ui.SetActive(false);
-        camera.transform.position = gachaRoomPos.transform.position;
-        camera.transform.rotation = gachaRoomPos.transform.rotation;
+        TpCam(gachaRoomPos.transform);
 
+        StartCoroutine(SpawnCard(gachaNum));
+    }
+
+    public void OpenAll() {
+        openBtn.SetActive(false);
+        StartCoroutine(OpeningCard());
+    }
+
+    IEnumerator OpeningCard() {
+        foreach (var c in cards) {
+            if (!c.Opened) {
+                c.Click();
+                yield return new WaitForSeconds(allOpenSpeed);
+            }
+        }
+        backToGachaBtn.SetActive(true);
+    }
+
+    public void BackToGacha() {
+        backToGachaBtn.SetActive(false);
+        TpCam(endPos);
+        ui.SetActive(true);
+        for (int i = 0; i < cards.Count; i++) {
+            Destroy(cards[i].gameObject);
+            Destroy(cardPos[i].gameObject);
+        }
+        cards.Clear();
+        cardPos.Clear();
+    }
+
+    public void TpCam(Transform pos) {
+        camera.transform.position = pos.position;
+        camera.transform.rotation = pos.rotation;
+    }
+
+    IEnumerator SpawnCard(int gachaNum) {
+        yield return null;
         for (int i = 0; i < gachaNum; i++) {
             GameObject obj = Instantiate(posObj, cardGroup.transform);
             cardPos.Add(obj.transform);
-            GameObject c = Instantiate(card);
-            c.transform.localScale = new Vector3(10,10,1);
             int ran = Random.Range(0, 360);
             float x = Mathf.Cos(ran*Mathf.Deg2Rad) * spawnDistance;
-            float z = Mathf.Sin(ran*Mathf.Deg2Rad) * spawnDistance;
             float y = Mathf.Tan(ran * Mathf.Deg2Rad) * spawnDistance;
-            Vector3 newPos = particleCanvas.transform.position + new Vector3(x, y ,z);
-            StartCoroutine(c.GetComponent<CardMove>().Move(newPos ,obj.transform));
+            float z = Mathf.Sin(ran*Mathf.Deg2Rad) * spawnDistance;
+            Vector3 newPos = subCanvas.transform.position + new Vector3(x, y ,z);
+            GameObject c = Instantiate(card, newPos, quaternion.identity);
+            cards.Add(c.GetComponent<GachaCard>());
+            c.transform.localScale = new Vector3(10,10,1);
+            StartCoroutine(c.GetComponent<GachaCard>().Move(newPos ,obj.transform));
         }
+
+        yield return new WaitForSeconds(3f);
+        openBtn.SetActive(true);
     }
 
     public void BackBtn() {
