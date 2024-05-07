@@ -24,6 +24,7 @@ public class GachaCard : MonoBehaviour {
 
         effect.SetActive(false);
         opened = true;
+        GachaUI.Instance.AllOpenedCheck();
         float t=0;
         
         while (t < openTime) {

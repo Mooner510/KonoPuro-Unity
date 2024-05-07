@@ -9,6 +9,7 @@ using Unity.Mathematics;
 using Random = UnityEngine.Random;
 
 public class GachaUI : MonoBehaviour {
+    public static GachaUI Instance;
     
     [Header("# CutScene")]
     [SerializeField] private GameObject camera;
@@ -57,6 +58,7 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private float allOpenSpeed;
 
     private void Start() {
+        Instance = this;
         meshFilter = box.GetComponent<MeshFilter>();
         meshRenderer = box.GetComponent<MeshRenderer>();
         
@@ -163,6 +165,16 @@ public class GachaUI : MonoBehaviour {
         TpCam(gachaRoomPos.transform);
 
         StartCoroutine(SpawnCard(gachaNum));
+    }
+
+    public void AllOpenedCheck() {
+        foreach (var c in cards) {
+            if (!c.Opened) {
+                return;
+            }
+        }
+        openBtn.SetActive(false);
+        backToGachaBtn.SetActive(true);
     }
 
     public void OpenAll() {
