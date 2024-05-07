@@ -32,6 +32,7 @@ public class Login : MonoBehaviour
             {
                 isLogin = true;
                 Networking.AccessToken = res.accessToken;
+                timelineManager.PlayTimeline(Scenestate.SignIn, Scenestate.Lobby);
             })
             .OnError(() =>
             {
@@ -43,7 +44,7 @@ public class Login : MonoBehaviour
 
     public void ToSignUpPage()
     {
-        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.SignUp);
+        timelineManager.PlayTimeline(Scenestate.SignIn, Scenestate.SignUp);
     }
     
     private Coroutine coroutine;
