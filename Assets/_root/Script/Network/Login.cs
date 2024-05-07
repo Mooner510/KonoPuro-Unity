@@ -8,12 +8,9 @@ public class Login : MonoBehaviour
     private TMP_InputField[] inputFields;
     private TextMeshProUGUI errorText;
     private TimelineManager timelineManager;
-
-    public bool isLogin;
     
     private void Awake()
     {
-        isLogin = false;
         inputFields = GetComponentsInChildren<TMP_InputField>();
         errorText = GetComponentInChildren<TextMeshProUGUI>();
         timelineManager = FindObjectOfType<TimelineManager>();
@@ -30,13 +27,11 @@ public class Login : MonoBehaviour
         API.SignIn(req)
             .OnResponse(res =>
             {
-                isLogin = true;
                 Networking.AccessToken = res.accessToken;
                 timelineManager.PlayTimeline(Scenestate.SignIn, Scenestate.Lobby);
             })
             .OnError(() =>
             {
-                isLogin = false;
                 ChangeText("Id or Password is incorrect");
             })
             .Build();
@@ -45,6 +40,12 @@ public class Login : MonoBehaviour
     public void ToSignUpPage()
     {
         timelineManager.PlayTimeline(Scenestate.SignIn, Scenestate.SignUp);
+    }
+    
+    //temp function
+    public void ToLobbyPage()
+    {
+        timelineManager.PlayTimeline(Scenestate.SignIn, Scenestate.Lobby);
     }
     
     private Coroutine coroutine;

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -10,7 +11,10 @@ public class SelectManager : MonoBehaviour
     private TimelineManager timelineManager;
     private PlayableDirector director;
     private string caption;
-
+    
+    [SerializeField] private Material selectMaterial;
+    private Queue<MeshRenderer> meshQueue = new();
+    
     private void Awake()
     {
         cam = Camera.main;
@@ -25,6 +29,8 @@ public class SelectManager : MonoBehaviour
             Ray ray = cam.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit) && hit.transform.gameObject.CompareTag("Selectable"))
             {
+                SetMaterial(hit);
+                
                 var cap = hit.transform.gameObject.name;
                 if (caption != cap)
                 {
@@ -38,12 +44,14 @@ public class SelectManager : MonoBehaviour
             }
             else
             {
+                ReSetMaterial();
                 UpdateCaption(-Time.deltaTime);
             }
         }
         else
         {
             caption = null;
+            ReSetMaterial();
             UpdateCaption(-Time.deltaTime);
         }
     }
@@ -52,13 +60,31 @@ public class SelectManager : MonoBehaviour
     {
         director.time = Mathf.Clamp((float)director.time + delta, 0, (float)director.duration);
     }
+    
+    private void ReSetMaterial()
+    {
+        while (meshQueue.Count > 0)
+        {
+            var dequeue = meshQueue.Dequeue();
+            dequeue.materials = new[] { dequeue.materials[0] };
+        }
+    }
 
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void SetMaterial(RaycastHit hit)
+    {
+        var meshRenderer = hit.transform.GetComponent<MeshRenderer>();
+        meshQueue.Enqueue(meshRenderer);
+        meshRenderer.materials = new[] { meshRenderer.materials[0], selectMaterial };
+    }
+    
     private void SetCaption(string cap)
     {
         caption = cap;
-        director.time = 0;
         captionText.color = new Color(1, 1, 1, 0);
         captionText.text = $"> {cap} <";
+        
+        director.time = 0;
         director.Play();
         director.playableGraph.GetRootPlayable(0).SetSpeed(0);
     }
