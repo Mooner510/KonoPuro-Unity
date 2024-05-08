@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
 using _root.Script.Manager;
+using _root.Script.Network;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
 using SocketIOClient.Transport;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace _root.Script.Client
 {
@@ -26,6 +28,14 @@ namespace _root.Script.Client
         private NetworkStream _stream;
         private Thread _thread;
 
+        private static Dictionary<int, Action<string>> actions = new ();
+
+        public static void AddEvent(int protocol, Action<string> action)
+        {
+            actions.TryAdd(protocol, _ => { });
+            actions[protocol] += action;
+        } 
+        
         private void Start()
         {
             if (autoHost)
@@ -34,6 +44,7 @@ namespace _root.Script.Client
             }
 
             Listen();
+
             // _thread = new Thread(Listen)
             // {
             //     IsBackground = true
@@ -82,6 +93,7 @@ namespace _root.Script.Client
         private async void Listen()
         {
             Debug.Log("Ready to Listen");
+            
             var uri = new Uri($"{(security ? "https" : "http")}://{host}{(ignorePort ? "" : $":{port}")}{path}");
             Debug.Log(uri);
             _client = new SocketIOClient.SocketIO(uri, new SocketIOOptions
@@ -89,7 +101,7 @@ namespace _root.Script.Client
                 Transport = TransportProtocol.WebSocket,
                 ExtraHeaders = new Dictionary<string, string>
                 {
-                    ["Authorization"] = "test"
+                    ["Authorization"] = Networking.AccessToken
                 }
             });
             _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -110,8 +122,13 @@ namespace _root.Script.Client
             //     response.GetValue<RawChat>()
             // });
             _client.OnAny((eventName, response) =>
-            {
-                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(response.GetValue<RawData>())}");
+            { 
+                var rawData = response.GetValue<RawData>();
+                if (actions.TryGetValue(rawData.protocol, out var action))
+                {
+                   action.Invoke(rawData.data);
+                }
+                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawData)}");
             });
             Debug.Log("Connecting..");
             await _client.ConnectAsync();
