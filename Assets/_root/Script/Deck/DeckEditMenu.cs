@@ -125,6 +125,7 @@ public class DeckEditMenu : MonoBehaviour
 		var req = API.ApplyDeck(applyDeckRequest);
 		req.OnSuccess((() => { UserData.Instance.ActiveDeck.deck = modifyingDeck; }));
 		req.OnError((() => { Debug.LogWarning("Error : Deck Apply Failed"); }));
+  		req.Build();
 	}
 
 	public void Equip(PlayerCardResponse card)
