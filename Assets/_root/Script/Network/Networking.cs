@@ -15,7 +15,7 @@ namespace _root.Script.Network
     
     public class Networking : MonoBehaviour
     {
-        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com/";
+        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com";
         private static Networking _networking;
         [CanBeNull] public static string     AccessToken;
 
