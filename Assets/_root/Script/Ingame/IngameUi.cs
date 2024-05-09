@@ -88,5 +88,6 @@ public class IngameUi : MonoBehaviour
 
 	public void SetProgressDetail()
 	{
+ 		//TODO: 소켓 연결 시 추가
 	}
 }
