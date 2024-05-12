@@ -10,7 +10,6 @@ using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
 using SocketIOClient.Transport;
 using UnityEngine;
-using UnityEngine.XR;
 
 namespace _root.Script.Client
 {
@@ -28,9 +27,9 @@ namespace _root.Script.Client
         private NetworkStream _stream;
         private Thread _thread;
 
-        private static Dictionary<int, Action<string>> actions = new ();
+        private static readonly Dictionary<int, Action<Dictionary<string, object>>> actions = new ();
 
-        public static void AddEvent(int protocol, Action<string> action)
+        public static void AddEvent(int protocol, Action<Dictionary<string, object>> action)
         {
             actions.TryAdd(protocol, _ => { });
             actions[protocol] += action;
@@ -122,11 +121,12 @@ namespace _root.Script.Client
             //     response.GetValue<RawChat>()
             // });
             _client.OnAny((eventName, response) =>
-            { 
+            {
                 var rawData = response.GetValue<RawData>();
                 if (actions.TryGetValue(rawData.protocol, out var action))
                 {
-                   action.Invoke(rawData.data);
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData.data);
+                   action.Invoke(data);
                 }
                 Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawData)}");
             });
