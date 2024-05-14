@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using _root.Script.Manager;
 using _root.Script.Network;
+using _root.Script.Utils.SingleTon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using SocketIO.Serializer.NewtonsoftJson;
@@ -13,7 +14,7 @@ using UnityEngine;
 
 namespace _root.Script.Client
 {
-    public class NetworkClient : MonoBehaviour
+    public class NetworkClient : SingleMono<NetworkClient>
     {
         public bool autoHost;
         public bool security;
@@ -33,8 +34,13 @@ namespace _root.Script.Client
         {
             actions.TryAdd(protocol, _ => { });
             actions[protocol] += action;
-        } 
-        
+        }
+
+        public static void Send(params object[] data)
+        {
+            Instance._client.EmitAsync("chat", data);
+        }
+
         private void Start()
         {
             if (autoHost)
@@ -49,34 +55,6 @@ namespace _root.Script.Client
             //     IsBackground = true
             // };
             // _thread.Start();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                Debug.Log("Q Key");
-                var rawChat = new RawData
-                {
-                    protocol = 1,
-                    data = "룰루랄라!"
-                };
-                var serializedItems = _client.Serializer.Serialize(_client.Options.EIO, "chat", _client.Namespace,
-                    new object[] { rawChat });
-                foreach (var serializedItem in serializedItems) Debug.Log($"Data: {serializedItem.Text}");
-                // Debug.Log($"FinalData: {serializedItems}");
-                _client.EmitAsync("chat", rawChat);
-            }
-
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                Debug.Log("W Key");
-                _client.EmitAsync("chat", new RawData
-                {
-                    protocol = 5,
-                    data = "korean"
-                });
-            }
         }
 
         private void OnDestroy()
@@ -125,8 +103,8 @@ namespace _root.Script.Client
                 var rawData = response.GetValue<RawData>();
                 if (actions.TryGetValue(rawData.protocol, out var action))
                 {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData.data);
-                   action.Invoke(data);
+                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData.data[0]);
+                     action.Invoke(data);
                 }
                 Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawData)}");
             });

@@ -12,78 +12,76 @@ public class IngameUi : MonoBehaviour
 	private TextMeshProUGUI dDayText;
 	private TextMeshProUGUI currentDayText;
 
-	private TextMeshProUGUI otherTimeText;
 	private TextMeshProUGUI selfTimeText;
+	private TextMeshProUGUI otherTimeText;
 
-	private Slider otherProgressSlider;
 	private Slider selfProgressSlider;
+	private Slider otherProgressSlider;
 
-	private TextMeshProUGUI otherProgressText;
 	private TextMeshProUGUI selfProgressText;
+	private TextMeshProUGUI otherProgressText;
 
-	private ProgressDetailUi otherProgressDetail;
 	private ProgressDetailUi selfProgressDetail;
+	private ProgressDetailUi otherProgressDetail;
 
 	private void Awake()
 	{
 		var textMeshProUis = GetComponentsInChildren<TextMeshProUGUI>();
-		dDayText       = textMeshProUis.First(s => s.gameObject.name == "D Day");
-		currentDayText = textMeshProUis.First(s => s.gameObject.name == "Current Day");
+		dDayText       = textMeshProUis[0];
+		currentDayText = textMeshProUis[1];
 
-		otherTimeText = textMeshProUis.First(s => s.gameObject.name == "Other Time");
-		selfTimeText  = textMeshProUis.First(s => s.gameObject.name == "Self Time");
 
 		var sliderUis = GetComponentsInChildren<Slider>();
-		otherProgressSlider = sliderUis.First(x => x.gameObject.name == "Other Progress");
-		selfProgressSlider  = sliderUis.First(x => x.gameObject.name == "Self Progress");
+		selfProgressSlider  = sliderUis[0];
+		otherProgressSlider = sliderUis[1];
 
-		otherProgressText = textMeshProUis.First(x => x.gameObject.name == "Other Progress Text");
-		selfProgressText  = textMeshProUis.First(x => x.gameObject.name == "Self Progress Text");
-
+		selfProgressText  = textMeshProUis[2];
+		otherProgressText = textMeshProUis[3];
+		
+		selfTimeText      = textMeshProUis[4];
+		otherTimeText     = textMeshProUis[5];
+		
 		var details = GetComponentsInChildren<ProgressDetailUi>();
-		otherProgressDetail = details.First(x => x.gameObject.name == "Other Progress Detail");
-		selfProgressDetail  = details.First(x => x.gameObject.name == "Self Progress Detail");
+		selfProgressDetail  = details[0];
+		otherProgressDetail = details[1];
 	}
 
-	private void Start()
+	public void Init(int dDay, int day, GameStatus self, GameStatus other)
 	{
-		Init();
-	}
-
-	private void Init()
-	{
-		const int dDay = 15;
 		dDayText.text       = $"D-Day {dDay}";
-		currentDayText.text = "Day - 1";
+		currentDayText.text = $"Day - {day}";
 
-		otherTimeText.text = "24";
-		selfTimeText.text  = "24";
+		selfTimeText.text  = $"{self.time}";
+		otherTimeText.text = $"{other.time}";
 
-		otherProgressSlider.value = 0;
-		selfProgressSlider.value  = 0;
+		selfProgressSlider.value  = self.totalProgress;
+		otherProgressSlider.value = other.totalProgress;
 
-		otherProgressText.text = "0%";
 		selfProgressText.text  = "0%";
+		otherProgressText.text = "0%";
+		
+		selfProgressDetail.Init(self.detailProgresses);
+		otherProgressDetail.Init(other.detailProgresses);
 	}
 
-	public void SetCurrentDay(int day)
+	public void DayChange(int day)
 	{
 		currentDayText.text = $"Day - {day}";
 	}
 
 	public void SetCurrentTime(int otherTime, int selfTime)
 	{
-		otherTimeText.text = $"{otherTime}";
 		selfTimeText.text  = $"{selfTime}";
+		otherTimeText.text = $"{otherTime}";
 	}
 
 	public void SetProgress(float otherProgress, float selfProgress)
 	{
-		otherProgressSlider.value = otherProgress;
 		selfProgressSlider.value  = selfProgress;
+		otherProgressSlider.value = otherProgress;
 
-		otherProgressText.text = $"{otherProgress * 100}%";
 		selfProgressText.text  = $"{selfProgress * 100}%";
+		otherProgressText.text = $"{otherProgress * 100}%";
 	}
 
 	public void SetProgressDetail()
