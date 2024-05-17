@@ -48,9 +48,9 @@ namespace _root.Script.Network
 
             private readonly string _path;
 
-            [CanBeNull] private Action _errorAction;
-            [CanBeNull] private Action _successAction;
-            [CanBeNull] private Action<T> _responseAction;
+            [CanBeNull] private Action<ErrorBody> _errorAction;
+            [CanBeNull] private Action            _successAction;
+            [CanBeNull] private Action<T>         _responseAction;
 
             protected Request(string path)
             {
@@ -71,7 +71,7 @@ namespace _root.Script.Network
                 return this;
             }
 
-            public Request<T> OnError(Action action)
+            public Request<T> OnError(Action<ErrorBody> action)
             {
                 _errorAction = action;
                 return this;
@@ -129,7 +129,7 @@ namespace _root.Script.Network
                     }
                 }
                 Debugger.Log($"Error Handled: {bodyText}");
-                _errorAction?.Invoke();
+                _errorAction?.Invoke(JsonUtility.FromJson<ErrorBody>(bodyText));
             }
 
             public void Build()

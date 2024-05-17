@@ -9,9 +9,9 @@ using UnityEngine.UI;
 
 public class IngameUi : MonoBehaviour
 {
-	private TextMeshProUGUI dDayText;
-	private TextMeshProUGUI currentDayText;
+	private TextMeshProUGUI dayText;
 
+	private Button          sleepButton;
 	private TextMeshProUGUI selfTimeText;
 	private TextMeshProUGUI otherTimeText;
 
@@ -24,32 +24,38 @@ public class IngameUi : MonoBehaviour
 	private ProgressDetailUi selfProgressDetail;
 	private ProgressDetailUi otherProgressDetail;
 
+	private EventTrigger selfDetailHover;
+	private EventTrigger otherDetailHover;
+
 	private void Awake()
 	{
 		var textMeshProUis = GetComponentsInChildren<TextMeshProUGUI>();
-		dDayText       = textMeshProUis[0];
-		currentDayText = textMeshProUis[1];
-
+		dayText = textMeshProUis[0];
 
 		var sliderUis = GetComponentsInChildren<Slider>();
 		selfProgressSlider  = sliderUis[0];
 		otherProgressSlider = sliderUis[1];
 
-		selfProgressText  = textMeshProUis[2];
-		otherProgressText = textMeshProUis[3];
+		selfProgressText  = textMeshProUis[1];
+		otherProgressText = textMeshProUis[2];
+
+		sleepButton   = GetComponentInChildren<Button>();
 		
-		selfTimeText      = textMeshProUis[4];
-		otherTimeText     = textMeshProUis[5];
+		selfTimeText  = textMeshProUis[3];
+		otherTimeText = textMeshProUis[4];
 		
 		var details = GetComponentsInChildren<ProgressDetailUi>();
 		selfProgressDetail  = details[0];
 		otherProgressDetail = details[1];
+
+		var detailHovers = GetComponentsInChildren<EventTrigger>();
+		selfDetailHover = detailHovers[0];
+		otherDetailHover = detailHovers[1];
 	}
 
 	public void Init(int dDay, int day, GameStatus self, GameStatus other)
 	{
-		dDayText.text       = $"D-Day {dDay}";
-		currentDayText.text = $"Day - {day}";
+		dayText.text = $"D - {(day == dDay ? "Day" : dDay - day)}";
 
 		selfTimeText.text  = $"{self.time}";
 		otherTimeText.text = $"{other.time}";
@@ -64,9 +70,16 @@ public class IngameUi : MonoBehaviour
 		otherProgressDetail.Init(other.detailProgresses);
 	}
 
+	public void SetHover(bool active)
+	{
+		sleepButton.enabled = active;
+		selfDetailHover.enabled = active;
+		otherDetailHover.enabled = active;
+	}
+
 	public void DayChange(int day)
 	{
-		currentDayText.text = $"Day - {day}";
+		dayText.text = $"Day - {day}";
 	}
 
 	public void SetCurrentTime(int otherTime, int selfTime)

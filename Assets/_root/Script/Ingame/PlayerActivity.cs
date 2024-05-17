@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _root.Script.Client;
 using _root.Script.Ingame;
 using _root.Script.Network;
@@ -8,42 +9,44 @@ using UnityEngine;
 
 public class PlayerActivity : MonoBehaviour
 {
-	private PlayerHeld held;
+	private PlayerHand selfHand;
+	private PlayerHand otherHand;
 	private Camera     mainCamera;
 
 	public PlayerCardResponse selectedCard;
+
+	private void Awake()
+	{
+		var hands = FindObjectsOfType<PlayerHand>().ToList();
+		selfHand             = hands.First(x=>x.gameObject.name == "Self Hand");
+		otherHand             = hands.First(x=>x.gameObject.name == "Other Hand");
+		//TODO: 빌드에는 포함시키기
+		// Cursor.lockState = CursorLockMode.Confined;
+	}
 
 	private void Start()
 	{
 		mainCamera = Camera.main;
 	}
 
-	private void Awake()
-	{
-		held = FindObjectOfType<PlayerHeld>();
-	}
-
 	private void Update()
 	{
-		if (Input.GetMouseButtonDown(0))
-		{
-			if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-			if (Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var hit))
-			{
-				SelectCard(hit.transform.GetComponent<IngameCard>());
-			}
-		}
+		if (!Input.GetMouseButtonDown(0)) return;
+		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+		SelectCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var hit)
+				           ? hit.transform.GetComponent<IngameCard>()
+				           : null);
 	}
-	
+
 	private void SelectCard(IngameCard card)
 	{
 		if (!card)
 		{
-			
+			selfHand.SelectCard(card);
 		}
-		if(card.type == IngameCardType.Held)
+		else if(card.type == IngameCardType.Hand)
 		{
-			held.SelectCard(card.card);
+			selfHand.SelectCard(card);
 		}
 	}	
 

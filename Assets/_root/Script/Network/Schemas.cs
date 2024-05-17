@@ -118,6 +118,7 @@ public class TokenResponse
 public class PlayerCardResponse
 {
 	public string          id;
+	public string          cardType;
 	public List<MajorType> cardGroups;
 	public int             tier;
 	public CardType        type;
@@ -165,7 +166,7 @@ public class GatchaResponse
 [Serializable]
 public class GatchaResponses
 {
-	public List<GatchaLogResponse> data;
+	public List<GatchaResponse> data;
 }
 
 [Serializable]
@@ -210,5 +211,12 @@ public class ApplyDeckRequest
 	public string       activeDeckId;
 	public List<string> addition;
 	public List<string> deletion;
+}
+
+[Serializable]
+public class ErrorBody
+{
+	public int    errorId;
+	public string message;
 }
 }
