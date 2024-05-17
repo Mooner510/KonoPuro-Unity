@@ -1,4 +1,5 @@
 using System;
+using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,6 +13,12 @@ namespace _root.Script.UI
         public void SButton()
         {
             _settingEnable = !_settingEnable;
+        }
+
+        public void Resign()
+        {
+            Debug.Log("Resigned");
+            // todo Resign-Code
         }
 
         private void Update()
