@@ -140,7 +140,7 @@ MonoBehaviour:
   openedXOffset: -0.1
   maxZWidth: 7
   maxSubZWidth: 15
-  selectedPos: {x: 1.5, y: 8, z: 0}
+  selectedPos: {x: 0.5, y: 12, z: 0}
   isMine: 1
   testCount: 6
 --- !u!54 &6517894210657583044
