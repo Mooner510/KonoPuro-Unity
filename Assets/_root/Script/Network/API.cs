@@ -28,16 +28,26 @@ namespace _root.Script.Network
             return get;
         }
 
-        public static Networking.Get<GatchaLogDataResponse> GatchaLog()
-            => new("/api/gatcha/log");
+        public static Networking.Get<GatchaLogDataResponse> GatchaLog(string tier)
+        {
+            var rep = new Networking.Get<GatchaLogDataResponse>("/api/gatcha/log");
+            rep.AddParam("tier", tier);
+            return rep;
+        }
 
         public static Networking.Get<GatchaResponses> GatchaList()
             => new("/api/gatcha/list");
 
-        public static Networking.Get<CardDataResponse> GetCard(string name, string id)
+        public static Networking.Get<DefaultDataResponse> GetDefaultCard(string id)
         {
-            var get = new Networking.Get<CardDataResponse>("/api/card");
-            get.AddParam("name", name);
+            var get = new Networking.Get<DefaultDataResponse>("/api/card");
+            get.AddParam("id", id);
+            return get;
+        }
+
+        public static Networking.Get<StudentDataResponse> GetStudentCard(string id)
+        {
+            var get = new Networking.Get<StudentDataResponse>("/api/card");
             get.AddParam("id", id);
             return get;
         }

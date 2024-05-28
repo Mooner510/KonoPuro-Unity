@@ -8,6 +8,13 @@ namespace _root.Script.Client
     {
         [JsonPropertyName("protocol")] public int protocol;
 
-        [JsonPropertyName("data")] public string data;
+        [JsonPropertyName("data")] public string[] data;
+
+        private RawData()
+        {
+        }
+        
+        public static RawData of(int protocol, params string[] data) => new()
+                                                                        { protocol = protocol, data = data };
     }
 }
