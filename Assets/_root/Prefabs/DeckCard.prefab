@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1427007501480135064}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -10, y: 20.05, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -65,11 +65,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEquippedDeckUi: 0
-  cardInfo:
-    sprite: {fileID: 0}
-    cardStats:
-      cardName: 
-    isEquipped: 0
+  card:
+    id: 
+    title: 
+    description: 
+    cardGroups: 
+    tier: 0
+    type: 0
+    passives: []
+    tiers: []
 --- !u!65 &5028578704216293540
 BoxCollider:
   m_ObjectHideFlags: 0
