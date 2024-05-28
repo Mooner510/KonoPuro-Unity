@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+  - enabled: 1
+    path: Assets/Scenes/CardGatchaSingle.unity
+    guid: 9b1e8285c4eca2f48ad568263d7389d7
+  - enabled: 1
+    path: Assets/Scenes/GachaUI.unity
+    guid: 914557f233fd8164ea31ff2418269ca5
   m_configObjects: {}

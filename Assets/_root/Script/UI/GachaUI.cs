@@ -18,7 +18,8 @@ public class GachaUI : MonoBehaviour {
     
     [Header("# Gold")]
     [SerializeField] private TextMeshProUGUI goldText;
-    [SerializeField] private int gold;
+    [SerializeField] private int initGold;
+    [SerializeField] private static int gold;
     
     [Header("# Info")]
     [SerializeField] private GameObject infoPanel;
@@ -37,7 +38,18 @@ public class GachaUI : MonoBehaviour {
     [SerializeField] private TextMeshProUGUI multiPriceTxt;
     [SerializeField] int gachaPrice;
 
+    private static bool load = false;
+
+    private void Awake()
+    {
+        if(load) return;
+        load = !load;
+        gold = initGold;
+        Debug.Log("Awake");
+    }
+
     private void Start() {
+        Debug.Log(gold);
         meshFilter = box.GetComponent<MeshFilter>();
         meshRenderer = box.GetComponent<MeshRenderer>();
         
@@ -58,7 +70,7 @@ public class GachaUI : MonoBehaviour {
         
         while (t < time) {
             t += Time.deltaTime;
-            
+            end.position = new Vector3(end.position.x - 1, end.position.y, end.position.z - 1);
             camera.transform.position = Vector3.Lerp(start.position, end.position, t/time);
             camera.transform.rotation = Quaternion.Lerp(start.rotation, end.rotation, t/time);
             
@@ -90,7 +102,15 @@ public class GachaUI : MonoBehaviour {
     }
 
     public void DoGacha(int gachaNum) {
-        gold -= gachaNum * gachaPrice;
+        if (gold >= gachaNum*gachaPrice)
+        {
+            gold -= gachaNum * gachaPrice;  
+        }
+        else
+        {
+            Debug.Log("살 수 없습니다:(");
+        }
+
         ChangeGoldTxt(gold);
         // 가챠
     }
@@ -107,5 +127,10 @@ public class GachaUI : MonoBehaviour {
 
     public void ChangeGoldTxt(int gold) {
         goldText.text = string.Format($"{gold:N0}");
+    }
+
+    private void Update()
+    {
+        //DontDestroyOnLoad();
     }
 }
