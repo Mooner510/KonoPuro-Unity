@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Data;
+using _root.Script.Manager;
 using _root.Script.Network;
 using Mono.Cecil.Cil;
 using TMPro;
@@ -86,7 +87,7 @@ public class DeckEditMenu : MonoBehaviour
 			SetActive(!isActive);
 		}
 
-		if (Input.GetMouseButtonDown(0)) CheckSelect();
+		if (Input.GetMouseButtonDown(0) && isActive) CheckSelect();
 	}
 
 	public void SetActive(bool active)
@@ -94,7 +95,8 @@ public class DeckEditMenu : MonoBehaviour
 		ResetUis();
 
 		if (active) Init();
-		else ApplyDeck();
+		else if (isActive) ApplyDeck();
+		else ResourceManager.ClearAll();
 		isActive       = active;
 		canvas.enabled = active;
 	}
@@ -121,28 +123,28 @@ public class DeckEditMenu : MonoBehaviour
 		                       { activeDeckId = deckId,
 		                         addition     = addedDeck,
 		                         deletion     = removedDeck };
-
+		
 		var req = API.ApplyDeck(applyDeckRequest);
 		req.OnSuccess((() => { UserData.Instance.ActiveDeck.deck = modifyingDeck; }));
-		req.OnError((() => { Debug.LogWarning("Error : Deck Apply Failed"); }));
-  		req.Build();
+		req.OnError((_ => { Debug.LogWarning("Error : Deck Apply Failed"); }));
+		req.Build();
 	}
 
 	public void Equip(PlayerCardResponse card)
 	{
-		var deck = UserData.Instance.ActiveDeck.deck;
-
-		var equipped = deck.Contains(card.id);
+		var equipped = modifyingDeck.Contains(card.id);
 		if (equipped)
 		{
-			deck.Remove(card.id);
+			modifyingDeck.Remove(card.id);
 			RefreshAll();
 		}
 		else
 		{
-			deck.Add(card.id);
+			modifyingDeck.Add(card.id);
 			RefreshAll();
 		}
+
+		cardInfoUi.SetUi(card, !equipped);
 	}
 
 	private void ResetUis()
@@ -167,10 +169,15 @@ public class DeckEditMenu : MonoBehaviour
 		Ray        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
 		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-		SelectCard(Physics.Raycast(ray, out hit) ? hit.transform.GetComponent<DeckCardUi>()?.card : null);
+		SelectCard(Physics.Raycast(ray, out hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
 	}
 
-	public void SelectCard(PlayerCardResponse card) => selectedCard = card;
+	public void SelectCard(PlayerCardResponse card)
+	{
+		selectedCard = card;
+		RefreshAll();
+		cardInfoUi.SetUi(card, card != null && equippedFilteredCards.Contains(card));
+	}
 
 	private void SortCards()
 	{

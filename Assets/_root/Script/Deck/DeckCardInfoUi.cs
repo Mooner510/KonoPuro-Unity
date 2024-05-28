@@ -18,7 +18,7 @@ public class DeckCardInfoUi : MonoBehaviour
         }
         
         var cardNameUi = transform.GetChild(0).Find("CardName").GetComponent<TextMeshProUGUI>();
-        cardNameUi.text = card.title;
+        cardNameUi.text = card.id;
 
         var deckEditMenu = GetComponentInParent<DeckEditMenu>();
         var equipButton  = transform.GetChild(0).Find("EquipButton").GetComponent<Button>();
