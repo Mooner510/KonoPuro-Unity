@@ -85,7 +85,7 @@ namespace _root.Script.Network
 
             public Request<T> OnResponse(Action<T> action)
             {
-                _responseAction = action;
+                _responseAction += action;
                 return this;
             }
 
