@@ -13,7 +13,7 @@ public class MainManager : MonoBehaviour
 	private PlayableDirector     director;
 
 	[SerializeField] private PlayableAsset start;
-	
+
 	private PlaceableObject hoveredPlaceableObject;
 	private Camera          mainCam;
 
@@ -25,7 +25,7 @@ public class MainManager : MonoBehaviour
 		cineController = FindObjectOfType<CinemacineController>();
 		director       = FindObjectOfType<PlayableDirector>();
 		var spotLight = FindObjectsOfType<Light>();
-		spotLight.ToList().First(x=>x.type == LightType.Spot).intensity = 0;
+		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
 	}
 
 	private void Start()
@@ -41,18 +41,18 @@ public class MainManager : MonoBehaviour
 
 	private void CheckPlaceable()
 	{
-		if(isInteracting) return;
-		var        ray = mainCam.ScreenPointToRay(Input.mousePosition);
+		if (isInteracting) return;
+		var ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
 		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 
 		if (Physics.Raycast(ray, out var hit))
 		{
 			var placeble = hit.transform.GetComponent<PlaceableObject>();
-			if(!placeble) return;
-			if(hoveredPlaceableObject)
+			if (!placeble) return;
+			if (hoveredPlaceableObject)
 			{
-				if(placeble != hoveredPlaceableObject)
+				if (placeble != hoveredPlaceableObject)
 				{
 					hoveredPlaceableObject.OnHover(false);
 					placeble.OnHover(true);
@@ -70,15 +70,13 @@ public class MainManager : MonoBehaviour
 			return;
 		}
 
-		if (Input.GetMouseButtonDown(0))
-		{
-			var cam = hoveredPlaceableObject.Interact();
-			if(cam == CinemacineController.VCamName.None) return;
+		if (!hoveredPlaceableObject || !Input.GetMouseButtonDown(0)) return;
+		var cam = hoveredPlaceableObject.Interact();
+		if (cam == CinemacineController.VCamName.None) return;
 
-			isInteracting = true;
-			mainUi.SetInteractQuitButton(true);
-			cineController.SetPriority(cam);
-		}
+		isInteracting = true;
+		mainUi.SetInteractQuitButton(true);
+		cineController.SetPriority(cam);
 	}
 
 	public void QuitInteract()
@@ -95,23 +93,12 @@ public class MainManager : MonoBehaviour
 		director.playableAsset = asset;
 		director.Play();
 	}
-
+	
 	private IEnumerator StartFlow()
 	{
-		if(UserData.Instance.ActiveDeck == null)
-		{
-			API.GetActiveDeck().OnResponse(response => UserData.Instance.ActiveDeck = response)
-			   .OnError((body => Debug.Log("Active Deck Load Failed"))).Build();
-		}
-		if (UserData.Instance.InventoryCards == null)
-		{
-			API.GetInventoryCardAll().OnResponse(responses => UserData.Instance.InventoryCards = responses)
-			   .OnError((body => Debug.Log("Inventory Cards Load Failed"))).Build();
-		}
-		
-		yield return new WaitUntil((() => UserData.Instance.ActiveDeck != null &&
-		                                  UserData.Instance.InventoryCards != null));
+		isInteracting = true;
 		yield return new WaitForSeconds(1f);
 		PlayTimeline(start);
+		director.stopped += (_ => isInteracting = false);
 	}
 }

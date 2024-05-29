@@ -238,14 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dc0610ee01241746842da38a791204d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 677011956}
-  startPos: {fileID: 1600460993}
-  endPos: {fileID: 177490719}
-  ui: {fileID: 473443560}
-  time: 1
-  light: {fileID: 1892015239}
   goldText: {fileID: 1147347025}
-  gold: 100000
   infoPanel: {fileID: 598266426}
   box: {fileID: 1827109237}
   boxMeshes:
@@ -254,7 +247,6 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 0e771690fad43914fb256fd021ff1796, type: 2}
   singlePriceTxt: {fileID: 998445117}
   multiPriceTxt: {fileID: 651248719}
-  gachaPrice: 100
 --- !u!1 &168471820
 GameObject:
   m_ObjectHideFlags: 0

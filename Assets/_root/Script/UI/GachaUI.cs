@@ -1,111 +1,133 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Data;
+using _root.Script.Network;
 using TMPro;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class GachaUI : MonoBehaviour {
-    
-    [Header("# CutScene")]
-    [SerializeField] private GameObject camera;
-    [SerializeField] private Transform startPos;
-    [SerializeField] private Transform endPos;
-    [SerializeField] private GameObject ui;
-    [SerializeField] private float time;
-    [SerializeField] private GameObject light;
-    private Vector3 vel = Vector3.zero;
-    
-    [Header("# Gold")]
-    [SerializeField] private TextMeshProUGUI goldText;
-    [SerializeField] private int gold;
-    
-    [Header("# Info")]
-    [SerializeField] private GameObject infoPanel;
-    private bool infoToggle;
-    
-    [Header("# Box")]
-    [SerializeField] private GameObject box;
-    [SerializeField] private List<Mesh> boxMeshes;
-    [SerializeField] private List<Material> boxMaterials;
-    private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
-    private int boxIndex;
+public class GachaUI : MonoBehaviour
+{
+	private MainUi mainUi;
 
-    [Header("# Gacha")]
-    [SerializeField] private TextMeshProUGUI singlePriceTxt;
-    [SerializeField] private TextMeshProUGUI multiPriceTxt;
-    [SerializeField] int gachaPrice;
+	[Header("# Gold")] [SerializeField] private TextMeshProUGUI goldText;
 
-    private void Start() {
-        meshFilter = box.GetComponent<MeshFilter>();
-        meshRenderer = box.GetComponent<MeshRenderer>();
-        
-        singlePriceTxt.text = string.Format($"{gachaPrice:N0}");
-        multiPriceTxt.text = string.Format($"<color=#54d5ff><s>{gachaPrice*10:N0}</s></color>\n{gachaPrice*10-1:N0}");
-        ChangeGoldTxt(gold);
-        ui.SetActive(false);
-        GachaToggle(startPos, endPos, time);
-    }
+	[Header("# Info")] [SerializeField] private GameObject infoPanel;
+	private                                     bool       infoToggle;
 
-    public void GachaToggle(Transform start, Transform end, float t) {
-        StartCoroutine(CamMove(start, end));
-        StartCoroutine(UiDisable(t));
-    }
+	[Header("# Box")] [SerializeField] private GameObject     box;
+	[SerializeField]                   private List<Mesh>     boxMeshes;
+	[SerializeField]                   private List<Material> boxMaterials;
+	private                                    MeshFilter     meshFilter;
+	private                                    MeshRenderer   meshRenderer;
+	private                                    int            boxIndex = 0;
 
-    IEnumerator CamMove(Transform start, Transform end) {
-        float t=0;
-        
-        while (t < time) {
-            t += Time.deltaTime;
-            
-            camera.transform.position = Vector3.Lerp(start.position, end.position, t/time);
-            camera.transform.rotation = Quaternion.Lerp(start.rotation, end.rotation, t/time);
-            
-            yield return null;
-        }
-    }
+	[Header("# Gacha")] [SerializeField] private TextMeshProUGUI singlePriceTxt;
+	[SerializeField]                     private TextMeshProUGUI multiPriceTxt;
 
-    IEnumerator UiDisable(float s) {
-        yield return new WaitForSeconds(s);
-        ui.SetActive(!ui.activeSelf);
-        light.SetActive(!light.activeSelf);
-    }
+	private int                      gatchaPrice;
+	private List<PlayerCardResponse> gatchaCards = new();
 
-    public void LeftBtn() {
-        if (boxIndex <= 0) return;
-        boxIndex--;
-        ChangeBox();
-    }
+	private void Awake()
+	{
+		mainUi = FindObjectOfType<MainUi>();
+	}
 
-    public void RightBtn() {
-        if (boxIndex >= boxMeshes.Count-1) return;
-        boxIndex++;
-        ChangeBox();
-    }
+	private void Start()
+	{
+		meshFilter          = box.GetComponent<MeshFilter>();
+		meshRenderer        = box.GetComponent<MeshRenderer>();
+		singlePriceTxt.text = string.Format($"{GameStatics.gatchaOncePrice:N0}");
+		multiPriceTxt.text =
+				string.Format($"<color=#54d5ff><s>{GameStatics.gatchaMultiPrice + 1:N0}</s></color>\n{GameStatics.gatchaMultiPrice:N0}");
+		SetActive(false);
+	}
 
-    void ChangeBox() {
-        meshFilter.mesh = boxMeshes[boxIndex];
-        meshRenderer.material = boxMaterials[boxIndex];
-    }
+	public void SetActive(bool active)
+	{
+		gameObject.SetActive(active);
+		if (active) ChangeGoldTxt(UserData.Instance.gold);
+	}
 
-    public void DoGacha(int gachaNum) {
-        gold -= gachaNum * gachaPrice;
-        ChangeGoldTxt(gold);
-        // 가챠
-    }
+	public void LeftBtn()
+	{
+		if (boxIndex <= 0) return;
+		boxIndex--;
+		ChangeBox();
+	}
 
-    public void BackBtn() {
-        // 이전화면
-        GachaToggle(endPos, startPos, 0);
-    }
+	public void RightBtn()
+	{
+		if (boxIndex >= boxMeshes.Count - 1) return;
+		boxIndex++;
+		ChangeBox();
+	}
 
-    public void ToggleInfo() {
-        infoToggle = !infoToggle;
-        infoPanel.SetActive(infoToggle);
-    }
+	void ChangeBox()
+	{
+		meshFilter.mesh       = boxMeshes[boxIndex];
+		meshRenderer.material = boxMaterials[boxIndex];
+	}
 
-    public void ChangeGoldTxt(int gold) {
-        goldText.text = string.Format($"{gold:N0}");
-    }
+	private void GatchaInit()
+	{
+		gatchaPrice = 0;
+		gatchaCards.Clear();
+	}
+
+	public void Gatcha(bool multi)
+	{
+		GatchaInit();
+		gatchaPrice = multi ? GameStatics.gatchaMultiPrice : GameStatics.gatchaOncePrice;
+		if (UserData.Instance.gold < gatchaPrice)
+		{
+			
+			return;
+		}
+
+		if(multi)
+			API.GatchaMulti(GameStatics.gatchaList[boxIndex].id)
+			   .OnResponse(response =>
+			               { gatchaCards.AddRange(response.cards);
+			                 GatchaSuccess();
+			                 })
+			   .OnError(GatchaError)
+			   .Build();
+		else
+			API.GatchaOnce(GameStatics.gatchaList[boxIndex].id)
+			   .OnResponse(response => 
+			               { gatchaCards.Add(response); 
+			                             GatchaSuccess();
+			                             })
+			   .OnError(GatchaError)
+			   .Build();
+		mainUi.SetThrobber(true);
+	}
+
+	private void GatchaSuccess()
+	{
+		mainUi.SetThrobber(false);
+		var gold = UserData.Instance.gold -= gatchaPrice;
+		ChangeGoldTxt(gold);
+		UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
+	}
+
+	private void GatchaError(ErrorBody body)
+	{
+		mainUi.SetThrobber(false);
+	}
+
+	public void ToggleInfo()
+	{
+		infoToggle = !infoToggle;
+		infoPanel.SetActive(infoToggle);
+	}
+
+	private void ChangeGoldTxt(int gold)
+	{
+		goldText.text = string.Format($"{gold:N0}");
+	}
 }

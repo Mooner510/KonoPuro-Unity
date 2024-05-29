@@ -18,10 +18,10 @@ public class Throbber : MonoBehaviour
 
 	private void Start()
 	{
-		On(false);
+		SetActive(false);
 	}
 
-	public void On(bool on)
+	public void SetActive(bool on)
 	{
 		gameObject.SetActive(on);
 		if (coroutine != null) StopCoroutine(coroutine);

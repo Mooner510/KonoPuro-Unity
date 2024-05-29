@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class MainUi : MonoBehaviour
 {
+	private Throbber   throbber;
 	private GameObject interactQuitButton;
-	private Throbber throbber;
 
 	private void Awake()
 	{
@@ -17,6 +17,11 @@ public class MainUi : MonoBehaviour
 	private void Start()
 	{
 		SetInteractQuitButton(false);
+	}
+
+	public void SetThrobber(bool active)
+	{
+		throbber.SetActive(active);
 	}
 
 	public void SetInteractQuitButton(bool active)

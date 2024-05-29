@@ -37,8 +37,8 @@ public class TitleUi : MonoBehaviour
 		}
 	}
 
-	public void CoverThrobber(bool active)
+	public void SetThrobber(bool active)
 	{
-		throbber.On(active);
+		throbber.SetActive(active);
 	}
 }
