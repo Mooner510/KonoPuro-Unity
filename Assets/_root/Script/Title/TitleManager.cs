@@ -4,6 +4,7 @@ using System.Linq;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
@@ -55,6 +56,7 @@ public class TitleManager : MonoBehaviour
 		director.playableAsset = end;
 		director.Play();
 		yield return new WaitForSeconds(2.5f);
+		SceneManager.LoadScene("MainScene");
 	}
 
 	public void Sign(bool signUp)

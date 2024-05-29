@@ -22,6 +22,7 @@ public class DeckEditMenu : MonoBehaviour
 {
 	private Canvas canvas;
 
+	private GameObject       equipBackground;
 	private List<DeckCardUi> equippedCardUis;
 	private List<DeckCardUi> inventoryCardUis;
 
@@ -48,6 +49,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void Start()
 	{
+		equipBackground = transform.GetChild(2).gameObject;
+		
 		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
 			equippedCardUi.isEquippedDeckUi = true;
@@ -97,6 +100,7 @@ public class DeckEditMenu : MonoBehaviour
 		if (active) Init();
 		else if (isActive) ApplyDeck();
 		else ResourceManager.ClearAll();
+		equipBackground.SetActive(active);
 		isActive       = active;
 		canvas.enabled = active;
 	}
