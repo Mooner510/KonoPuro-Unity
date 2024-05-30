@@ -37,7 +37,8 @@ public class TitleManager : MonoBehaviour
 		director.playableAsset = start;
 		director.Play();
 		yield return new WaitForSeconds(2.5f);
-		authPanel.Show(true);
+		if(Networking.AccessToken == null) authPanel.Show(true);
+		else titleUi.Login(false);
 	}
 
 	public void Exit()
@@ -80,20 +81,20 @@ public class TitleManager : MonoBehaviour
 		if (GameStatics.gatchaList == null)
 		{
 			API.GatchaList()
-			   // .OnResponse(responses =>
-			   //             { GameStatics.gatchaList = responses.data; })
-			   .OnResponse(responses => GameStatics.gatchaList = responses.data
-			                                                              .Where(x =>
-								                                                                DateTime
-										                                                               .Compare(DateTime.Parse(x.startAt),
-												                                                                 DateTime
-														                                                                .Now) !=
-								                                                                1 &&
-								                                                                DateTime
-										                                                               .Compare(DateTime.Parse(x.endAt),
-												                                                                 DateTime
-														                                                                .Now) !=
-								                                                                -1).ToList())
+			   .OnResponse(responses =>
+			               { GameStatics.gatchaList = responses.data; })
+			   // .OnResponse(responses => GameStatics.gatchaList = responses.data
+			   //                                                            .Where(x =>
+						// 		                                                                DateTime
+						// 				                                                               .Compare(DateTime.Parse(x.startAt),
+						// 						                                                                 DateTime
+						// 								                                                                .Now) !=
+						// 		                                                                1 &&
+						// 		                                                                DateTime
+						// 				                                                               .Compare(DateTime.Parse(x.endAt),
+						// 						                                                                 DateTime
+						// 								                                                                .Now) !=
+						// 		                                                                -1).ToList())
 			   .OnError((body => Debug.Log("Gatcha List Load Failed")))
 			  .Build();
 		}

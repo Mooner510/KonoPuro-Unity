@@ -88,17 +88,12 @@ public class MainManager : MonoBehaviour
 		cineController.SetPriority(CinemacineController.VCamName.Overview);
 	}
 
-	private void PlayTimeline(PlayableAsset asset)
-	{
-		director.playableAsset = asset;
-		director.Play();
-	}
-	
 	private IEnumerator StartFlow()
 	{
 		isInteracting = true;
 		yield return new WaitForSeconds(1f);
-		PlayTimeline(start);
+		director.playableAsset = start;
+		director.Play();
 		director.stopped += (_ => isInteracting = false);
 	}
 }

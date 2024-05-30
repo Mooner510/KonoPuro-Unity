@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4746153767186878206}
   - component: {fileID: 166133975038095291}
   - component: {fileID: -2065208589599628067}
+  - component: {fileID: 1113393366609560752}
   m_Layer: 5
   m_Name: Progress Detail Panel
   m_TagString: Untagged
@@ -92,9 +93,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementPrefab: {fileID: 7543583457310013691, guid: 5f1518ad65c50d14fb020bf68e53863d,
     type: 3}
-  insideX: -5.5
-  outsideX: -15
-  richTime: 0.5
+  richTime: 0.25
 --- !u!114 &-2065208589599628067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,3 +118,15 @@ MonoBehaviour:
   m_Spacing: {x: 0.6, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!225 &1113393366609560752
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6014919479835422429}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

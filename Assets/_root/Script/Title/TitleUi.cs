@@ -26,15 +26,13 @@ public class TitleUi : MonoBehaviour
 
 	public void Login(bool logout)
 	{
-		baseAuths.SetActive(logout);
 		loginRequired.SetActive(!logout);
 
-		if (logout)
-		{
-			Networking.AccessToken       = null;
-			UserData.Instance.ActiveDeck = null;
-			UserData.Instance.InventoryCards = null;
-		}
+		if (!logout) return;
+		baseAuths.SetActive(true);
+		Networking.AccessToken           = null;
+		UserData.Instance.ActiveDeck     = null;
+		UserData.Instance.InventoryCards = null;
 	}
 
 	public void SetThrobber(bool active)

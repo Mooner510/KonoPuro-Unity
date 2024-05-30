@@ -28,6 +28,7 @@ public class ResourceManager : MonoBehaviour
 
 	public static Sprite GetSprite(string type)
 	{
+		if (type == null) return null;
 		if (spriteDictionary.TryGetValue(type, out var data)) return data;
 		var sprite = Resources.Load<Sprite>($"Card/DisplayData/Sprite/{type}");
 		if (!sprite)
