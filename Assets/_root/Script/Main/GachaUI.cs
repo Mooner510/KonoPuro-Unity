@@ -11,6 +11,7 @@ using UnityEngine.UI;
 
 public class GachaUI : MonoBehaviour
 {
+	private Canvas canvas;
 	private MainUi mainUi;
 
 	[Header("# Gold")] [SerializeField] private TextMeshProUGUI goldText;
@@ -33,6 +34,7 @@ public class GachaUI : MonoBehaviour
 
 	private void Awake()
 	{
+		canvas = GetComponent<Canvas>();
 		mainUi = FindObjectOfType<MainUi>();
 	}
 
@@ -48,6 +50,7 @@ public class GachaUI : MonoBehaviour
 
 	public void SetActive(bool active)
 	{
+		canvas.enabled = active;
 		gameObject.SetActive(active);
 		if (active) ChangeGoldTxt(UserData.Instance.gold);
 	}

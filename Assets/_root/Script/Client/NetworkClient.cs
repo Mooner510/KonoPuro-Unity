@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using _root.Script.Utils.SingleTon;
@@ -28,17 +29,15 @@ namespace _root.Script.Client
         private NetworkStream _stream;
         private Thread _thread;
 
-        private static readonly Dictionary<int, Action<Dictionary<string, object>>> actions = new ();
+        public static Action                           onMatched;
+        public static Action gameStarted;
+        public static Action<UpdatedData, UpdatedData> updateData;
 
-        public static void AddEvent(int protocol, Action<Dictionary<string, object>> action)
-        {
-            actions.TryAdd(protocol, _ => { });
-            actions[protocol] += action;
-        }
+        private static string roomId;
 
-        public static void Send(params object[] data)
+        public static void Send(string channel, params object[] data)
         {
-            Instance._client.EmitAsync("chat", data);
+            Instance._client.EmitAsync(channel, data);
         }
 
         private void Start()
@@ -49,7 +48,7 @@ namespace _root.Script.Client
             }
 
             Listen();
-
+            
             // _thread = new Thread(Listen)
             // {
             //     IsBackground = true
@@ -100,13 +99,34 @@ namespace _root.Script.Client
             // });
             _client.OnAny((eventName, response) =>
             {
-                var rawData = response.GetValue<RawData>();
-                if (actions.TryGetValue(rawData.protocol, out var action))
+                var rawProtocol = response.GetValue<RawProtocol>();
+            
+                if (rawProtocol.protocol == 2)
                 {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData.data[0]);
-                     action.Invoke(data);
+                    roomId = rawProtocol.data[0];
+                    onMatched.Invoke();
                 }
-                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawData)}");
+                else if (rawProtocol.protocol == 200)
+                {
+                    var rawData = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0]);
+                    var self    = UpdatedData.ConvertUpdatedData(rawData.self);
+                    var other    = UpdatedData.ConvertUpdatedData(rawData.other);
+
+                    GameStatics.self = self;
+                    GameStatics.other = other;
+
+                    gameStarted.Invoke();
+                }
+                else if (rawProtocol.protocol == 206)
+                {
+                    var rawData = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0]);
+                    var self    = UpdatedData.ConvertUpdatedData(rawData.self);
+                    var other    = UpdatedData.ConvertUpdatedData(rawData.other);
+                    
+                    updateData.Invoke(self, other);
+                }
+            
+                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
             });
             Debug.Log("Connecting..");
             await _client.ConnectAsync();

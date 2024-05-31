@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
 using System.Linq;
+using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 public class MainManager : MonoBehaviour
 {
@@ -26,6 +28,9 @@ public class MainManager : MonoBehaviour
 		director       = FindObjectOfType<PlayableDirector>();
 		var spotLight = FindObjectsOfType<Light>();
 		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
+
+		NetworkClient.onMatched += Matched;
+		NetworkClient.gameStarted += GameStart;
 	}
 
 	private void Start()
@@ -75,7 +80,8 @@ public class MainManager : MonoBehaviour
 		if (cam == CinemacineController.VCamName.None) return;
 
 		isInteracting = true;
-		mainUi.SetInteractQuitButton(true);
+		if (cam == CinemacineController.VCamName.Matching) Matching();
+		else mainUi.SetInteractQuitButton(true);
 		cineController.SetPriority(cam);
 	}
 
@@ -86,6 +92,44 @@ public class MainManager : MonoBehaviour
 		mainUi.SetInteractQuitButton(false);
 		hoveredPlaceableObject.Init();
 		cineController.SetPriority(CinemacineController.VCamName.Overview);
+	}
+
+	public void Matching()
+	{
+		mainUi.SetThrobber(true);
+		mainUi.SetMatchingCancelButton(true);
+		API.Match().OnSuccess((() => mainUi.SetThrobber(false))).OnError((body => MatchingExit(true))).Build();
+	}
+
+	public void MatchingExit(bool onError)
+	{
+		if (onError)
+		{
+			mainUi.SetMatchingCancelButton(false);
+			mainUi.SetThrobber(false);
+			QuitInteract();
+			return;
+		}
+
+		mainUi.SetThrobber(true);
+
+		API.MatchCancel().OnResponse((_=>
+		                              { mainUi.SetThrobber(false);
+		                                mainUi.SetMatchingCancelButton(false);
+		                                QuitInteract(); })).OnError(_ =>
+		                                                            { mainUi.SetThrobber(false);
+		                                                            Debug.LogError("error");
+		                                                               }).Build();
+	}
+
+	public void Matched()
+	{
+		mainUi.SetThrobber(true);
+	}
+
+	public void GameStart()
+	{
+		SceneManager.LoadScene("IngameScene");
 	}
 
 	private IEnumerator StartFlow()

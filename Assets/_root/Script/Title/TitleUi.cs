@@ -26,6 +26,7 @@ public class TitleUi : MonoBehaviour
 
 	public void Login(bool logout)
 	{
+		baseAuths.SetActive(false);
 		loginRequired.SetActive(!logout);
 
 		if (!logout) return;

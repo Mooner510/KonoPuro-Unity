@@ -4,13 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Card;
 using _root.Script.Client;
-using _root.Script.Data.Event.CardEvents;
-using _root.Script.Ingame;
+using _root.Script.Data;
 using _root.Script.Network;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using UnityEngine.Playables;
-using UnityEngine.PlayerLoop;
 
 public class IngameManager : MonoBehaviour
 {
@@ -24,8 +21,8 @@ public class IngameManager : MonoBehaviour
 	private readonly GameStatus selfStats  = new();
 	private readonly GameStatus otherStats = new();
 
-	public List<PlayerCardResponse> selfStudents  = new();
-	public List<PlayerCardResponse> otherStudents = new();
+	public List<GameStudentCard> selfStudents  = new();
+	public List<GameStudentCard> otherStudents = new();
 
 	private DrawDeck selfDeck;
 	private DrawDeck otherDeck;
@@ -54,13 +51,6 @@ public class IngameManager : MonoBehaviour
 		activity = GetComponent<PlayerActivity>();
 
 		ui = FindObjectOfType<IngameUi>();
-		NetworkClient.AddEvent(200, GameStarted);
-		NetworkClient.AddEvent(204, _ => NextDay());
-		NetworkClient.AddEvent(207, DrawCard);
-		NetworkClient.AddEvent(208, HeldUpdate);
-		NetworkClient.AddEvent(209, FieldUpdate);
-		NetworkClient.AddEvent(210, ProjectUpdate);
-		NetworkClient.AddEvent(211, SetTurn);
 
 		var lights = FindObjectsOfType<Light>();
 		foreach (var areaLight in lights)
@@ -74,43 +64,44 @@ public class IngameManager : MonoBehaviour
 		}
 
 		FindObjectsOfType<Canvas>().First(x => x.gameObject.name == "Field Canvas").enabled = false;
+
+		NetworkClient.updateData  += UpdateData;
 	}
 
 	private void Start()
 	{
-		GameStarted(null);
-	}
-
-	private void GameStarted(Dictionary<string, object> dictionary)
-	{
-		//TODO: 소켓 연결 후 데이터 변환하기
-		
-		var selfDraws = new List<PlayerCardResponse>()
-		                { null, null, null, null, null };
-		var otherDraws = new List<PlayerCardResponse>()
-		                 { null, null, null, null, null };
-		
-		List<PlayerCardResponse> students = new()
-		                                    { new PlayerCardResponse
-		                                      { type = CardType.Student },
-		                                      new PlayerCardResponse
-		                                      { type = CardType.Student },
-		                                      new PlayerCardResponse
-		                                      { type = CardType.Student },
-		                                      new PlayerCardResponse
-		                                      { type = CardType.Student } };
+		//TODO: 실험용 삭제 필요
+		List<GameStudentCard> students = new()
+		                                 { new(), new(), new(), new() };
 		selfStudents  = students;
 		otherStudents = students;
+
+		StartCoroutine(StartFlow(new()
+		                         { new(), new(), new(), new(), new() }, 5));
 		
-		StartCoroutine(StartFlow(selfDraws, otherDraws));
+		
+		//TODO: 위의 실험용 삭제 시 사용
+		// GameStart();
 	}
 
-	private IEnumerator StartFlow(List<PlayerCardResponse> selfDraws, List<PlayerCardResponse> otherDraws)
+	private void GameStart()
+	{
+		var selfHeldCards  = GameStatics.self.heldCards;
+		var otherHeldCards = GameStatics.other.heldCards;
+		if (selfHeldCards == null || otherHeldCards == null)
+		{
+			Debug.LogError("game start held cards data is null");
+			return;
+		}
+		StartCoroutine(StartFlow(selfHeldCards.cards, otherHeldCards.cards.Count));
+	}
+
+	private IEnumerator StartFlow(List<GameCard> selfDraws, int otherDrawCount)
 	{
 		day = 1;
 		selfStats.Init();
 		otherStats.Init();
-		
+
 		ui.Init(day, selfStats, otherStats);
 
 		yield return new WaitForSeconds(1f);
@@ -120,8 +111,8 @@ public class IngameManager : MonoBehaviour
 
 		yield return new WaitForSeconds(1f);
 
-		StartCoroutine(FieldSet(true));
-		StartCoroutine(FieldSet(false));
+		StartCoroutine(SetStudent(true));
+		StartCoroutine(SetStudent(false));
 
 		yield return new WaitForSeconds(1f);
 
@@ -130,7 +121,7 @@ public class IngameManager : MonoBehaviour
 
 		//TODO: 처음 시작할 때 카드 드로우 - 지금은 임시용 변경 필요
 		selfDeck.DrawCards(activity.AddHandCard, false, selfDraws);
-		otherDeck.DrawCards(activity.AddHandCard, false, otherDraws);
+		otherDeck.DrawCards(activity.AddHandCard, false, otherDrawCount);
 
 		yield return new WaitForSeconds(3f);
 
@@ -139,17 +130,20 @@ public class IngameManager : MonoBehaviour
 		activity.SetActive(true);
 	}
 
-	private IEnumerator FieldSet(bool isMine)
+	private IEnumerator SetStudent(bool isMine)
 	{
 		var students = isMine ? selfStudents : otherStudents;
 		var field    = isMine ? otherField : selfField;
 
 		foreach (var student in students)
 		{
-			student.type = CardType.Student;
 			field.AddNewCard(student);
 			yield return new WaitForSeconds(0.25f);
 		}
+	}
+
+	private void UpdateData(UpdatedData self, UpdatedData other)
+	{
 	}
 
 	private void NextDay()
