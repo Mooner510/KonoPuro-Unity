@@ -1,0 +1,133 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using _root.Script.Network;
+using Unity.VisualScripting;
+using UnityEngine;
+
+namespace _root.Script.Ingame
+{
+public class PlayerHand : MonoBehaviour
+{
+	private                  IngameUi ui;
+	[SerializeField] private GameObject heldCardPrefab;
+
+	private readonly         List<IngameCard> handCards  = new();
+	private                  List<Transform>  transforms = new();
+
+	[SerializeField] private float            cardSize      = .7f;
+	[SerializeField] private float            cardMoveSpeed = 2;
+
+	[SerializeField] private float      closedXOffset = .1f;
+	[SerializeField] private float      openedXOffset = .2f;
+
+	[SerializeField] private float      maxZWidth;
+	[SerializeField] private float      maxSubZWidth;
+
+	[SerializeField] private Vector3    selectedPos = new Vector3(-1, 10, 0);
+
+	private                  IngameCard selectedCard;
+
+	private bool      heldUpdating;
+	private bool      handOpened;
+
+	public bool isMine;
+
+	private Camera cam;
+
+	private void Awake()
+	{
+		ui       = FindObjectOfType<IngameUi>();
+		cam        = Camera.main;
+		transforms = GetComponentsInChildren<Transform>().ToList();
+		transforms.Remove(transform);
+	}
+
+	private void Start()
+	{
+		selectedCard = null;
+		handOpened   = false;
+		HandUpdate(false);
+	}
+
+	private void Update()
+	{
+		if (isMine) HandShowCheck();
+	}
+
+	public void SetActive(bool active)
+	{
+		selectedCard      = null;
+		enabled           = active;
+	}
+
+	public void SelectCard(IngameCard card)
+	{
+		selectedCard = card;
+		HandUpdate(card || handOpened);
+	}
+
+	private void HandShowCheck()
+	{
+		if (selectedCard) return;
+		var tr         = transforms[(handOpened ? 1 : 0)];
+		var position   = tr.position;
+		var localScale = tr.localScale;
+		var mousePos   = Input.mousePosition;
+		mousePos.z = Mathf.Abs(position.y - cam.transform.position.y);
+		mousePos   = cam.ScreenToWorldPoint(mousePos);
+		var inner = (mousePos.x >= position.x - (localScale.x * 0.5f)) &&
+		            (mousePos.x <= position.x + (localScale.x * 0.5f)) &&
+		            (mousePos.z >= position.z - (localScale.y * 0.5f)) &&
+		            (mousePos.z <= position.z + (localScale.y * 0.5f));
+		if (handOpened ? !inner : inner) HandUpdate(!handOpened);
+	}
+
+	public void AddCard(IngameCard card)
+	{
+		handCards.Add(card);
+		HandUpdate(false);
+	}
+
+	public void AddCards(IEnumerable<IngameCard> cards)
+	{
+		handCards.AddRange(cards);
+		HandUpdate(false);
+	}
+
+	public void RemoveHandCard(IngameCard card)
+	{
+		if (!isMine)
+		{
+			card = handCards[0];
+			handCards.RemoveAt(0);
+		}
+		else if (handCards.Contains(card)) handCards.Remove(card);
+
+		card.DestroyCard();
+		HandUpdate(false);
+	}
+
+	private void HandUpdate(bool show)
+	{
+		ui.SetHover(!show);
+		handOpened = show;
+		
+		var handCount = handCards.Count;
+		var origin    = transforms[show ? 1 : 0];
+		var position  = origin.position;
+		var defaultX  = position.x + (show ? openedXOffset : closedXOffset);
+		var defaultY  = position.y;
+		var multiplyZ = (show ? maxSubZWidth : maxZWidth ) / handCount;
+		var defaultZ  = position.z - ((handCount - 1) * multiplyZ * .5f);
+		
+		for (var i = 0; i < handCount; i++)
+		{
+			var appliedPos = new Vector3(defaultX, defaultY + i * .05f, defaultZ + multiplyZ * i);
+			if (selectedCard && selectedCard == handCards[i]) appliedPos = selectedPos;
+			handCards[i].MoveBySpeed(appliedPos, cardMoveSpeed);
+		}
+	}
+}
+}

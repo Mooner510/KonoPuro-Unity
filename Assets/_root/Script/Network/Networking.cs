@@ -15,8 +15,8 @@ namespace _root.Script.Network
     
     public class Networking : MonoBehaviour
     {
-        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com/";
-        private static Networking _networking;
+        private const             string     BaseUrl = "https://konopuro.dsm-dongpo.com";
+        private static            Networking _networking;
         [CanBeNull] public static string     AccessToken;
 
         private string _password;
@@ -48,9 +48,9 @@ namespace _root.Script.Network
 
             private readonly string _path;
 
-            [CanBeNull] private Action _errorAction;
-            [CanBeNull] private Action _successAction;
-            [CanBeNull] private Action<T> _responseAction;
+            [CanBeNull] private Action<ErrorBody> _errorAction;
+            [CanBeNull] private Action            _successAction;
+            [CanBeNull] private Action<T>         _responseAction;
 
             protected Request(string path)
             {
@@ -71,7 +71,7 @@ namespace _root.Script.Network
                 return this;
             }
 
-            public Request<T> OnError(Action action)
+            public Request<T> OnError(Action<ErrorBody> action)
             {
                 _errorAction = action;
                 return this;
@@ -85,7 +85,7 @@ namespace _root.Script.Network
 
             public Request<T> OnResponse(Action<T> action)
             {
-                _responseAction = action;
+                _responseAction += action;
                 return this;
             }
 
@@ -105,6 +105,10 @@ namespace _root.Script.Network
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
+                if (webRequest.downloadHandler == null)
+                {
+                    webRequest.downloadHandler = new DownloadHandlerBuffer();
+                }
                 string bodyText = webRequest.downloadHandler.text;
                 if (webRequest.result == UnityWebRequest.Result.Success)
                 {
@@ -129,7 +133,7 @@ namespace _root.Script.Network
                     }
                 }
                 Debugger.Log($"Error Handled: {bodyText}");
-                _errorAction?.Invoke();
+                _errorAction?.Invoke(JsonUtility.FromJson<ErrorBody>(bodyText));
             }
 
             public void Build()
@@ -185,7 +189,7 @@ namespace _root.Script.Network
             {
             }
 
-            protected override UnityWebRequest WebRequest(string url) => UnityWebRequest.Delete(url);
+            protected override UnityWebRequest WebRequest(string url) => new(url, "DELETE", new DownloadHandlerBuffer(), null);
         }
     }
 }
