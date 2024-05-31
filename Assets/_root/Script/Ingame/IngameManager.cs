@@ -78,14 +78,23 @@ public class IngameManager : MonoBehaviour
 
 		StartCoroutine(StartFlow(new()
 		                         { new(), new(), new(), new(), new() }, 5));
-		
-		
+
+
 		//TODO: 위의 실험용 삭제 시 사용
 		// GameStart();
 	}
 
 	private void GameStart()
 	{
+		var selfStudent = GameStatics.self.student;
+		var otherStudent = GameStatics.other.student;
+		if (selfStudent == null || otherStudent == null)
+		{
+			Debug.LogError("game start student cards data is null");
+			return;
+		}
+		selfStudents = selfStudent.cards;
+		selfStudents = selfStudent.cards;
 		var selfHeldCards  = GameStatics.self.heldCards;
 		var otherHeldCards = GameStatics.other.heldCards;
 		if (selfHeldCards == null || otherHeldCards == null)

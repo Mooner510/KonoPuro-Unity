@@ -15,8 +15,8 @@ namespace _root.Script.Network
     
     public class Networking : MonoBehaviour
     {
-        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com";
-        private static Networking _networking;
+        private const             string     BaseUrl = "https://konopuro.dsm-dongpo.com";
+        private static            Networking _networking;
         [CanBeNull] public static string     AccessToken;
 
         private string _password;
@@ -105,6 +105,10 @@ namespace _root.Script.Network
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
+                if (webRequest.downloadHandler == null)
+                {
+                    webRequest.downloadHandler = new DownloadHandlerBuffer();
+                }
                 string bodyText = webRequest.downloadHandler.text;
                 if (webRequest.result == UnityWebRequest.Result.Success)
                 {
@@ -185,7 +189,7 @@ namespace _root.Script.Network
             {
             }
 
-            protected override UnityWebRequest WebRequest(string url) => UnityWebRequest.Delete(url);
+            protected override UnityWebRequest WebRequest(string url) => new(url, "DELETE", new DownloadHandlerBuffer(), null);
         }
     }
 }

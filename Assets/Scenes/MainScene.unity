@@ -1502,12 +1502,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canBeDestroy: 0
-  autoHost: 1
-  security: 0
+  localHost: 0
+  security: 1
   host: 
   port: 0
-  ignorePort: 0
-  path: 
+  ignorePort: 1
+  path: /socket-io
 --- !u!4 &529301516
 Transform:
   m_ObjectHideFlags: 0
