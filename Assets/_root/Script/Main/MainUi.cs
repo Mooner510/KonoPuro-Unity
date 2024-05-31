@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,16 +9,19 @@ public class MainUi : MonoBehaviour
 {
 	private Throbber   throbber;
 	private GameObject interactQuitButton;
+	private GameObject matchingCancelButton;
 
 	private void Awake()
 	{
-		interactQuitButton = transform.GetChild(0).gameObject;
-		throbber           = GetComponentInChildren<Throbber>();
+		interactQuitButton   = transform.GetChild(0).gameObject;
+		matchingCancelButton = transform.GetChild(3).gameObject;
+		throbber             = GetComponentInChildren<Throbber>();
 	}
 
 	private void Start()
 	{
 		SetInteractQuitButton(false);
+		SetMatchingCancelButton(false);
 	}
 
 	public void SetThrobber(bool active)
@@ -29,7 +33,12 @@ public class MainUi : MonoBehaviour
 	{
 		interactQuitButton.SetActive(active);
 	}
-
+	
+	public void SetMatchingCancelButton(bool active)
+	{
+		matchingCancelButton.SetActive(active);
+	}
+	
 	public void QuitGame()
 	{
 		Application.Quit();
@@ -39,5 +48,4 @@ public class MainUi : MonoBehaviour
 	{
 		SceneManager.LoadScene("TitleScene");
 	}
-			
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
+using _root.Script.Client;
 using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
@@ -50,7 +51,7 @@ public class IngameCard : MonoBehaviour
 	{
 		Destroy(gameObject);
 	}
-	
+
 	public void MoveBySpeed(Vector3 pos, float moveSpeed)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
@@ -113,24 +114,59 @@ public class IngameCard : MonoBehaviour
 
 		moveCoroutine = null;
 	}
-	
-	public IngameCard LoadDisplay(PlayerCardResponse data)
+
+	public IngameCard LoadDisplay(GameStudentCard data)
+	{
+		type = IngameCardType.Student;
+		if (data == null) return this;
+		var card                          = GetComponent<Card.Card>();
+		var sprite                        = ResourceManager.GetSprite(data.defaultCardType);
+		if (sprite) card.frontSide.sprite = sprite;
+		return this;
+	}
+
+	public IngameCard LoadDisplay(GameCard data)
 	{
 		if (data == null) return this;
 		var card                                    = GetComponent<Card.Card>();
-		if (data.type == CardType.Student) type = IngameCardType.Student;
-		var sprite                                  = ResourceManager.GetSprite(data.cardType);
+		var sprite                                  = ResourceManager.GetSprite(data.defaultCardType);
 		if (sprite) card.frontSide.sprite           = sprite;
 		return this;
 	}
 
+	public static IngameCard CreateIngameCard()
+	{
+		return CreateIngameCard(Vector3.zero, Quaternion.identity);
+	}
 
-	public static IngameCard CreateIngameCard(PlayerCardResponse cardData)
+	public static IngameCard CreateIngameCard(GameStudentCard cardData)
 	{
 		return CreateIngameCard(cardData, Vector3.zero, Quaternion.identity);
 	}
 
-	public static IngameCard CreateIngameCard(PlayerCardResponse cardData, Vector3 spawnPos, Quaternion spawnRot)
+	public static IngameCard CreateIngameCard(GameCard cardData)
+	{
+		return CreateIngameCard(cardData, Vector3.zero, Quaternion.identity);
+	}
+
+	public static IngameCard CreateIngameCard(Vector3 spawnPos, Quaternion spawnRot)
+	{
+		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
+		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
+		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		return ingameCard;
+	}
+	
+	public static IngameCard CreateIngameCard(GameStudentCard cardData, Vector3 spawnPos, Quaternion spawnRot)
+	{
+		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
+		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
+		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCard.LoadDisplay(cardData);
+		return ingameCard;
+	}
+
+	public static IngameCard CreateIngameCard(GameCard cardData, Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);

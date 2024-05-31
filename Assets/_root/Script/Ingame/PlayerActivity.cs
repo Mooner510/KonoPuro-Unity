@@ -94,6 +94,6 @@ public class PlayerActivity : MonoBehaviour
 
 	public void Sleep()
 	{
-		NetworkClient.Send(RawData.of(105, null));
+		// NetworkClient.Send(RawData.of(105, null));
 	}
 }

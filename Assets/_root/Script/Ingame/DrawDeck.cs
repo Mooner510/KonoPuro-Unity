@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Client;
 using _root.Script.Ingame;
 using _root.Script.Network;
 using UnityEngine;
@@ -16,12 +17,12 @@ public class DrawDeck : MonoBehaviour
 
 	public void Init()
 	{
-		currentCard = IngameCard.CreateIngameCard(null, transform.position + new Vector3(0, 0.1f), Quaternion.identity);
+		currentCard = IngameCard.CreateIngameCard(transform.position + new Vector3(0, 0.1f), Quaternion.identity);
 		currentCard.Init(isMine, IngameCardType.Deck);
 		currentCard.transform.rotation = Quaternion.Euler(90f, isMine ? 90f : -90f, 90f);
 	}
 
-	public void DrawCard(Action<IngameCard, bool> drawCallback, bool last, PlayerCardResponse data)
+	public void DrawCard(Action<IngameCard, bool> drawCallback, bool last, GameCard data)
 	{
 		if(!currentCard) return;
 		var card = currentCard;
@@ -29,13 +30,21 @@ public class DrawDeck : MonoBehaviour
 		if (!last) Init();
 		else currentCard = null;
 	}
-
-	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, List<PlayerCardResponse> data)
+	
+	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, int count)
+	{
+		var cards = new List<GameCard>()
+		            { new GameCard(){}, new GameCard(){}, new GameCard(){}, new GameCard(){}};
+		
+		StartCoroutine(DrawMultiSequence(drawCallback, last, cards));
+	}
+	
+	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, List<GameCard> data)
 	{
 		StartCoroutine(DrawMultiSequence(drawCallback, last, data));
 	}
 
-	private IEnumerator DrawMultiSequence(Action<IngameCard, bool> drawCallback, bool last, List<PlayerCardResponse> data)
+	private IEnumerator DrawMultiSequence(Action<IngameCard, bool> drawCallback, bool last, List<GameCard> data)
 	{
 		if(!currentCard) yield break;
 		foreach (var cardData in data)
@@ -50,7 +59,7 @@ public class DrawDeck : MonoBehaviour
 		else currentCard = null;
 	}
 
-	private IEnumerator DrawSequence(IngameCard card, Action<IngameCard, bool> drawCallback, PlayerCardResponse data)
+	private IEnumerator DrawSequence(IngameCard card, Action<IngameCard, bool> drawCallback, GameCard data)
 	{
 		card.LoadDisplay(data);
 		for (int i = 0; i < 5; i++)

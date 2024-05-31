@@ -38,19 +38,22 @@ public class DeckEditMenu : MonoBehaviour
 
 	private bool isActive;
 
-	private List<PlayerCardResponse> equippedFilteredCards;
-	private List<PlayerCardResponse> filteredCards;
+	private List<PlayerCardResponse> equippedCharacterCards;
+	private List<PlayerCardResponse> inventoryCharacterCards;
+
+	private List<PlayerCardResponse> equippedUseCards;
+	private List<PlayerCardResponse> inventoryUseCards;
 
 	public enum DeckType
 	{
 		Character,
-		Skill
+		Use
 	}
 
 	private void Start()
 	{
 		equipBackground = transform.GetChild(2).gameObject;
-		
+
 		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
 			equippedCardUi.isEquippedDeckUi = true;
@@ -73,8 +76,8 @@ public class DeckEditMenu : MonoBehaviour
 		var skillDeckButton = canvas.transform.Find("SkillDeck").GetComponent<Button>();
 		skillDeckButton.onClick.RemoveAllListeners();
 		skillDeckButton.onClick.AddListener(() =>
-		                                    { if (currentDeckType == DeckType.Skill) return;
-		                                      SetDeckType(DeckType.Skill);
+		                                    { if (currentDeckType == DeckType.Use) return;
+		                                      SetDeckType(DeckType.Use);
 		                                      ResetPage();
 		                                      RefreshAll(); });
 
@@ -110,13 +113,27 @@ public class DeckEditMenu : MonoBehaviour
 		SetDeckType(DeckType.Character);
 		ResetPage();
 
-		modifyingDeck = new List<string>(UserData.Instance.ActiveDeck.deck);
+		if (UserData.Instance.ActiveDeck.deck != null)
+			modifyingDeck = new List<string>(UserData.Instance.ActiveDeck.deck);
+		else
+		{
+			Debug.LogError("Deck Not Loaded");
+
+			//TODO: 실험용 삭제 필요
+			modifyingDeck = new();
+		}
 
 		RefreshAll();
 	}
 
 	private void ApplyDeck()
 	{
+		if (equippedUseCards.Count != GameStatics.deckUseCardRequired || equippedCharacterCards.Count != GameStatics.deckUseCardRequired)
+		{
+			//TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
+			return;
+		}
+		
 		var originDeck = UserData.Instance.ActiveDeck.deck;
 
 		var deckId      = UserData.Instance.ActiveDeck.deckId;
@@ -127,7 +144,7 @@ public class DeckEditMenu : MonoBehaviour
 		                       { activeDeckId = deckId,
 		                         addition     = addedDeck,
 		                         deletion     = removedDeck };
-		
+
 		var req = API.ApplyDeck(applyDeckRequest);
 		req.OnSuccess((() => { UserData.Instance.ActiveDeck.deck = modifyingDeck; }));
 		req.OnError((_ => { Debug.LogWarning("Error : Deck Apply Failed"); }));
@@ -180,7 +197,7 @@ public class DeckEditMenu : MonoBehaviour
 	{
 		selectedCard = card;
 		RefreshAll();
-		cardInfoUi.SetUi(card, card != null && equippedFilteredCards.Contains(card));
+		cardInfoUi.SetUi(card, card != null && equippedUseCards.Contains(card));
 	}
 
 	private void SortCards()
@@ -188,39 +205,47 @@ public class DeckEditMenu : MonoBehaviour
 		//ToDo: 카드들 정렬하기
 	}
 
-	private void SetFilteredCards(List<PlayerCardResponse> cards, List<string> deck, DeckType deckType)
+	private void SetCards(List<PlayerCardResponse> cards, List<string> deck)
 	{
-		switch (deckType)
-		{
-			case DeckType.Character:
-				filteredCards = cards.Where(response => response.type == CardType.Student).ToList();
-				break;
-			case DeckType.Skill:
-				filteredCards = cards.Where(response => response.type != CardType.Student).ToList();
-				break;
-		}
-
-		equippedFilteredCards = filteredCards.Where(response => deck.Contains(response.id)).ToList();
+		inventoryCharacterCards = cards.Where(response => response.type == CardType.Student).ToList();
+		inventoryUseCards       = cards.Where(response => response.type != CardType.Student).ToList();
+		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
+		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
 	}
 
 	public void RefreshAll()
 	{
-		SetFilteredCards(UserData.Instance.InventoryCards.cards, modifyingDeck, currentDeckType);
+		if (UserData.Instance.InventoryCards != null) SetCards(UserData.Instance.InventoryCards.cards, modifyingDeck);
+		else
+		{
+			Debug.LogError("Inventory Cards Not Loaded");
+
+			//TODO: 실험용 삭제 필요
+			modifyingDeck = new();
+		}
+
+		var character      = currentDeckType == DeckType.Character;
+		var  equipCards     = character ? equippedCharacterCards : equippedUseCards;
+		var  inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
 		canvas.transform.GetChild(1).Find("EquipPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{equippedPage + 1} / {(equippedFilteredCards.Count - 1) / equippedCardUis.Count + 1}";
+				$"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
 		canvas.transform.GetChild(1).Find("InventoryPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{inventoryPage + 1} / {(filteredCards.Count - 1) / inventoryCardUis.Count + 1}";
+				$"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
 
 		SortCards();
-		RefreshWithListAndPage(equippedPage, equippedFilteredCards, equippedCardUis, modifyingDeck);
-		RefreshWithListAndPage(inventoryPage, filteredCards, inventoryCardUis, modifyingDeck);
+		RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
+		RefreshWithListAndPage(inventoryPage, inventoryCards, inventoryCardUis, modifyingDeck);
 	}
 
 	public void FlipEquipPage(bool pre)
 	{
+		var character      = currentDeckType == DeckType.Character;
+		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
+		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+		
 		var applyPage = equippedPage + (pre ? -1 : 1);
-		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equippedFilteredCards.Count) return;
+		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;
 		equippedPage = applyPage;
 
 		RefreshAll();
@@ -228,15 +253,18 @@ public class DeckEditMenu : MonoBehaviour
 
 	public void FlipInventoryPage(bool pre)
 	{
-		var applyPage = inventoryPage + (pre ? -1 : 1);
-		if (applyPage < 0 || applyPage * inventoryCardUis.Count >= filteredCards.Count) return;
+		var character      = currentDeckType == DeckType.Character;
+		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+
+		var applyPage      = inventoryPage + (pre ? -1 : 1);
+		if (applyPage < 0 || applyPage * inventoryCardUis.Count >= inventoryCards.Count) return;
 		inventoryPage = applyPage;
 
 		RefreshAll();
 	}
 
-	private void RefreshWithListAndPage(int currentPage, List<PlayerCardResponse> cards, List<DeckCardUi> cardUis,
-		List<string>                        deck)
+	private void RefreshWithListAndPage(int currentPage, IReadOnlyList<PlayerCardResponse> cards,
+		IReadOnlyList<DeckCardUi>           cardUis,     ICollection<string>               deck)
 	{
 		var pageCardCount = cardUis.Count;
 		for (int i = 0; i < pageCardCount; i++)

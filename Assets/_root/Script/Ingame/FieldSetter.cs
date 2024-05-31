@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _root.Script.Client;
 using _root.Script.Ingame;
 using _root.Script.Network;
 using UnityEngine;
@@ -46,13 +47,23 @@ public class FieldSetter : MonoBehaviour
 		if (ingameCards.Any(x => x.type != IngameCardType.Student)) UpdateCards();
 	}
 
-	public void AddNewCard(PlayerCardResponse addition) =>
+	public void AddNewCard(GameStudentCard addition) =>
 			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
 			                                       Quaternion.Euler(-90, 0, 90)));
 
-	public void AddNewCards(IEnumerable<PlayerCardResponse> addition) =>
+	public void AddNewCards(IEnumerable<GameStudentCard> addition) =>
 			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
 			                                                             Quaternion.Euler(-90, 0, 90))));
+
+	public void AddNewCard(GameCard addition) =>
+			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+			                                       Quaternion.Euler(-90, 0, 90)));
+
+	public void AddNewCards(IEnumerable<GameCard> addition) =>
+			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+			                                                             Quaternion.Euler(-90, 0, 90))));
+	
+	
 
 	private void StudentUpdate()
 	{

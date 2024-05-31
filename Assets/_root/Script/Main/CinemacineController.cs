@@ -14,7 +14,8 @@ public class CinemacineController : MonoBehaviour
         None,
         Overview,
         Deck,
-        Gatcha
+        Gatcha,
+        Matching
     }
 
     private void Awake()
