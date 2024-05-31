@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Data;
 using _root.Script.Network;
 using UnityEngine;
 
@@ -15,7 +16,6 @@ public class TitleUi : MonoBehaviour
 	private void Awake()
 	{
 		throbber = FindObjectOfType<Throbber>();
-		CoverThrobber(false);
 	}
 
 	private void Start()
@@ -26,17 +26,17 @@ public class TitleUi : MonoBehaviour
 
 	public void Login(bool logout)
 	{
-		baseAuths.SetActive(logout);
 		loginRequired.SetActive(!logout);
 
-		if (logout)
-		{
-			Networking.AccessToken = null;
-		}
+		if (!logout) return;
+		baseAuths.SetActive(true);
+		Networking.AccessToken           = null;
+		UserData.Instance.ActiveDeck     = null;
+		UserData.Instance.InventoryCards = null;
 	}
 
-	public void CoverThrobber(bool active)
+	public void SetThrobber(bool active)
 	{
-		throbber.On(active);
+		throbber.SetActive(active);
 	}
 }

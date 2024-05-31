@@ -197,7 +197,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.5, y: 0.5, z: 0.5, w: 0.5}
   m_LocalPosition: {x: -10, y: 13.02, z: -2.8678498}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.2, y: 1.2, z: 1.2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3683089652969769785}
@@ -230,9 +230,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5dba79d539e4f3ba4af9dfc5514802d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isMine: 0
   type: 1
-  card:
+  cardData:
     id: 
+    cardType: 
     cardGroups: 
     tier: 0
     type: 0
@@ -253,7 +255,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
