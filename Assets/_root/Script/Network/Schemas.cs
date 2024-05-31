@@ -21,7 +21,8 @@ public enum CardType
 	Student,
 	Event,
 	Tool,
-	Activity
+	Activity,
+	Field
 }
 
 public enum Passives

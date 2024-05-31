@@ -1,11 +1,8 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
-using Mono.Cecil.Cil;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -46,8 +43,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	public enum DeckType
 	{
-		Character,
-		Use
+		Character = 0,
+		Use = 1
 	}
 
 	private void Start()
@@ -69,7 +66,7 @@ public class DeckEditMenu : MonoBehaviour
 		characterDeckButton.onClick.RemoveAllListeners();
 		characterDeckButton.onClick.AddListener(() =>
 		                                        { if (currentDeckType == DeckType.Character) return;
-		                                          SetDeckType(DeckType.Character);
+		                                          SetDeckType(true);
 		                                          ResetPage();
 		                                          RefreshAll(); });
 
@@ -77,7 +74,7 @@ public class DeckEditMenu : MonoBehaviour
 		skillDeckButton.onClick.RemoveAllListeners();
 		skillDeckButton.onClick.AddListener(() =>
 		                                    { if (currentDeckType == DeckType.Use) return;
-		                                      SetDeckType(DeckType.Use);
+		                                      SetDeckType(false);
 		                                      ResetPage();
 		                                      RefreshAll(); });
 
@@ -110,7 +107,7 @@ public class DeckEditMenu : MonoBehaviour
 
 	void Init()
 	{
-		SetDeckType(DeckType.Character);
+		SetDeckType(true);
 		ResetPage();
 
 		if (UserData.Instance.ActiveDeck.deck != null)
@@ -182,7 +179,10 @@ public class DeckEditMenu : MonoBehaviour
 		inventoryPage = 0;
 	}
 
-	public void SetDeckType(DeckType deckType) => currentDeckType = deckType;
+	public void SetDeckType(bool character)
+	{
+		currentDeckType = character ? DeckType.Character : DeckType.Use;
+	}
 
 	private void CheckSelect()
 	{
@@ -208,9 +208,23 @@ public class DeckEditMenu : MonoBehaviour
 	private void SetCards(List<PlayerCardResponse> cards, List<string> deck)
 	{
 		inventoryCharacterCards = cards.Where(response => response.type == CardType.Student).ToList();
-		inventoryUseCards       = cards.Where(response => response.type != CardType.Student).ToList();
+		inventoryUseCards       = cards.Except(inventoryCharacterCards).ToList();
 		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
 		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
+
+		Debug.Log(11111111111);
+		foreach (var playerCardResponse in inventoryCharacterCards)
+			Debug.Log(playerCardResponse);		
+		Debug.Log(2222222222222);
+		foreach (var playerCardResponse in inventoryUseCards)
+			Debug.Log(playerCardResponse);
+		Debug.Log(33333333333333);
+		foreach (var playerCardResponse in equippedCharacterCards)
+			Debug.Log(playerCardResponse);
+		Debug.Log(444444444444444);
+		foreach (var playerCardResponse in equippedUseCards)
+			Debug.Log(playerCardResponse);
+		Debug.Log(55555555555555555);
 	}
 
 	public void RefreshAll()
@@ -242,7 +256,6 @@ public class DeckEditMenu : MonoBehaviour
 	{
 		var character      = currentDeckType == DeckType.Character;
 		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 		
 		var applyPage = equippedPage + (pre ? -1 : 1);
 		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;

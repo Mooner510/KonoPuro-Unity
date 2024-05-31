@@ -28,14 +28,12 @@ public class MainManager : MonoBehaviour
 		director       = FindObjectOfType<PlayableDirector>();
 		var spotLight = FindObjectsOfType<Light>();
 		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
-
-		NetworkClient.onMatched += Matched;
-		NetworkClient.gameStarted += GameStart;
 	}
 
 	private void Start()
 	{
-		mainCam = Camera.main;
+		NetworkClient.gameStarted += GameStart;
+		mainCam                   =  Camera.main;
 		StartCoroutine(StartFlow());
 	}
 
@@ -121,14 +119,10 @@ public class MainManager : MonoBehaviour
 		                                                            Debug.LogError("error");
 		                                                               }).Build();
 	}
-
-	public void Matched()
-	{
-		mainUi.SetThrobber(true);
-	}
-
+	
 	public void GameStart()
 	{
+		Debug.Log("game started");
 		SceneManager.LoadScene("IngameScene");
 	}
 
