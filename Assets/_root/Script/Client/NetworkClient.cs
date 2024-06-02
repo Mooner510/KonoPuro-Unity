@@ -30,7 +30,6 @@ public class NetworkClient : SingleMono<NetworkClient>
 	private NetworkStream           _stream;
 	private Thread                  _thread;
 
-	public static Action                           onMatched;
 	public static Action                           gameStarted;
 	public static Action<UpdatedData, UpdatedData> updateData;
 
@@ -103,7 +102,6 @@ public class NetworkClient : SingleMono<NetworkClient>
 		                if (rawProtocol.protocol == 2)
 		                {
 			                roomId = rawProtocol.data[0];
-			                onMatched.Invoke();
 		                }
 		                else if (rawProtocol.protocol == 200)
 		                {

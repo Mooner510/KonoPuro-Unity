@@ -21,6 +21,8 @@ public class TitleUi : MonoBehaviour
 	private void Start()
 	{
 		gameObject.SetActive(false);
+		baseAuths.SetActive(false);
+		loginRequired.SetActive(false);
 		if(Networking.AccessToken == null) Login(true); 
 	}
 
