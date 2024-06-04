@@ -16,7 +16,12 @@ public class Throbber : MonoBehaviour
 		throbberRect = transform.GetChild(0).GetComponent<RectTransform>();
 	}
 
-	public void On(bool on)
+	private void Start()
+	{
+		SetActive(false);
+	}
+
+	public void SetActive(bool on)
 	{
 		gameObject.SetActive(on);
 		if (coroutine != null) StopCoroutine(coroutine);

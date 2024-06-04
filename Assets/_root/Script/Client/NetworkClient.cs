@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
+using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using _root.Script.Utils.SingleTon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using SocketIO.Core;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
 using SocketIOClient.Transport;
@@ -14,103 +17,154 @@ using UnityEngine;
 
 namespace _root.Script.Client
 {
-    public class NetworkClient : SingleMono<NetworkClient>
-    {
-        public bool autoHost;
-        public bool security;
-        public string host;
-        public int port;
-        public bool ignorePort;
-        public string path;
+public class NetworkClient : SingleMono<NetworkClient>
+{
+	public bool   localHost;
+	public bool   security;
+	public string host;
+	public int    port;
+	public bool   ignorePort;
+	public string path;
 
-        private SocketIOClient.SocketIO _client;
-        private bool _connected;
-        private NetworkStream _stream;
-        private Thread _thread;
+	private SocketIOClient.SocketIO _client;
+	private bool                    _connected;
+	private NetworkStream           _stream;
+	private Thread                  _thread;
 
-        private static readonly Dictionary<int, Action<Dictionary<string, object>>> actions = new ();
+	public static bool                           gameStarted;
+	public static Action onDataUpdate;
 
-        public static void AddEvent(int protocol, Action<Dictionary<string, object>> action)
-        {
-            actions.TryAdd(protocol, _ => { });
-            actions[protocol] += action;
-        }
+	public static Action<Action> RunInMainThread;
 
-        public static void Send(params object[] data)
-        {
-            Instance._client.EmitAsync("chat", data);
-        }
+	private static string roomId;
 
-        private void Start()
-        {
-            if (autoHost)
-            {
-                host = IPAddressor.GetLocalIP();
-            }
+	public static void Send(params object[] data)
+	{
+		try
+		{
+			Debug.Log($"send to {roomId} :: {data[0]}");
+			Instance._client.EmitAsync(roomId, data);
+		}
+		catch (Exception e)
+		{
+			Debug.LogError(e);
+		}
+	}
 
-            Listen();
+	protected override void Awake()
+	{
+		base.Awake();
+		RunInMainThread = (runner) => StartCoroutine(_Run(runner));
+	}
 
-            // _thread = new Thread(Listen)
-            // {
-            //     IsBackground = true
-            // };
-            // _thread.Start();
-        }
+	private void Start()
+	{
+		if (localHost)
+		{
+			host = IPAddressor.GetLocalIP();
+		}
 
-        private void OnDestroy()
-        {
-            _client?.DisconnectAsync();
-        }
+		if (host is not
+		    { Length: > 0 })
+		{
+			host = "socket.dsm-dongpo.com";
+		}
 
-        private void OnApplicationQuit()
-        {
-            _client?.DisconnectAsync();
-        }
+		Listen();
 
-        private async void Listen()
-        {
-            Debug.Log("Ready to Listen");
-            
-            var uri = new Uri($"{(security ? "https" : "http")}://{host}{(ignorePort ? "" : $":{port}")}{path}");
-            Debug.Log(uri);
-            _client = new SocketIOClient.SocketIO(uri, new SocketIOOptions
-            {
-                Transport = TransportProtocol.WebSocket,
-                ExtraHeaders = new Dictionary<string, string>
-                {
-                    ["Authorization"] = Networking.AccessToken
-                }
-            });
-            _client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
-            {
-                ContractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                }
-            });
-            _client.OnConnected += (sender, args) => { Debug.Log($"Connected, {args}"); };
-            _client.OnError += (sender, s) => { Debug.LogError($"Error: {sender}, {s}"); };
-            _client.OnReconnected += (sender, i) => { Debug.Log($"Reconnected {i}"); };
-            _client.OnReconnectFailed += (sender, args) => { Debug.Log($"Reconnected Failed, {args}"); };
-            _client.OnReconnectError += (sender, args) => { Debug.Log($"Reconnected Error, {args}"); };
-            _client.OnReconnectAttempt += (sender, args) => { Debug.Log($"Reconnected Attempt, {args}"); };
-            // _client.On("chat", response =>
-            // {
-            //     response.GetValue<RawChat>()
-            // });
-            _client.OnAny((eventName, response) =>
-            {
-                var rawData = response.GetValue<RawData>();
-                if (actions.TryGetValue(rawData.protocol, out var action))
-                {
-                    var data = JsonConvert.DeserializeObject<Dictionary<string, object>>(rawData.data[0]);
-                     action.Invoke(data);
-                }
-                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawData)}");
-            });
-            Debug.Log("Connecting..");
-            await _client.ConnectAsync();
-            Debug.Log("Connected!!!");
-        }
-    }
+		// _thread = new Thread(Listen)
+		// {
+		//     IsBackground = true
+		// };
+		// _thread.Start();
+	}
+
+	private void OnDestroy()
+	{
+		_client?.DisconnectAsync();
+	}
+
+	private void OnApplicationQuit()
+	{
+		_client?.DisconnectAsync();
+	}
+
+	private async void Listen()
+	{
+		var uri = new Uri($"{(security ? "https" : "http")}://{host}{(ignorePort ? "" : $":{port}")}{path}");
+		Debug.Log($"Ready to Listen: {uri}");
+		_client = new SocketIOClient.SocketIO(uri, new SocketIOOptions
+		                                           { Transport = TransportProtocol.WebSocket,
+		                                             // EIO       = EngineIO.V4,
+		                                             ExtraHeaders = new Dictionary<string, string>
+		                                                            { ["Authorization"] = Networking.AccessToken } });
+		_client.Serializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
+		                                                  { ContractResolver = new DefaultContractResolver
+		                                                                       { NamingStrategy =
+				                                                                       new
+						                                                                       CamelCaseNamingStrategy() } });
+		_client.OnConnected        += (sender, args) => { Debug.Log($"Connected, {args}"); };
+		_client.OnError            += (sender, s) => { Debug.LogError($"Error: {sender}, {s}"); };
+		_client.OnReconnected      += (sender, i) => { Debug.Log($"Reconnected {i}"); };
+		_client.OnReconnectFailed  += (sender, args) => { Debug.Log($"Reconnected Failed, {args}"); };
+		_client.OnReconnectError   += (sender, args) => { Debug.Log($"Reconnected Error, {args}"); };
+		_client.OnReconnectAttempt += (sender, args) => { Debug.Log($"Reconnected Attempt, {args}"); };
+		// _client.On("chat", response =>
+		// {
+		//     response.GetValue<RawChat>()
+		// });
+		_client.OnAny((eventName, response) =>
+		              { Debug.Log($"{eventName}: Listened\n{response}");
+		                try
+		                {
+
+			                var rawProtocol = response.GetValue<RawProtocol>();
+
+			                if (rawProtocol.protocol == 2)
+			                {
+				                roomId = (string)rawProtocol.data[0];
+			                }
+			                else if (rawProtocol.protocol == 200)
+			                {
+				                var rawData = JsonConvert.DeserializeObject<RawData>(JsonConvert.SerializeObject(rawProtocol.data[0]));
+				                var self    = UpdatedData.ConvertUpdatedData(rawData.self);
+				                var other   = UpdatedData.ConvertUpdatedData(rawData.other);
+
+				                GameStatics.self   = self;
+				                GameStatics.other  = other;
+				                GameStatics.isTurn = rawData.turn;
+
+				                gameStarted = true;
+			                }
+			                else if (rawProtocol.protocol == 206)
+			                {
+				                var rawData  = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0].ToString());
+				                var self     = UpdatedData.ConvertUpdatedData(rawData.self);
+				                var other    = UpdatedData.ConvertUpdatedData(rawData.other);
+
+				                GameStatics.self   = self;
+				                GameStatics.other  = other;
+				                GameStatics.isTurn = rawData.turn;
+
+				                onDataUpdate();
+			                }
+
+			                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
+		                }
+		                catch (Exception e)
+		                {
+			                Debug.LogError(e);
+			                // ignored
+		                } });
+		Debug.Log("Connecting..");
+		await _client.ConnectAsync();
+		Debug.Log("Connected!!!");
+	}
+
+	private IEnumerator _Run(Action runner)
+	{
+		runner.Invoke();
+		yield break;
+	}
+}
 }

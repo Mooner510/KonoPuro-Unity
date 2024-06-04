@@ -4,29 +4,27 @@ using System.Collections.Generic;
 using _root.Script.Client;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.UI;
 
 public class ProgressDetailUi : MonoBehaviour
 {
 	[SerializeField] private GameObject elementPrefab;
 
 	private readonly List<ProgressDetailElementUi> elementUis = new();
-			
-	private                  RectTransform rect;
-	[SerializeField] private float         insideX;
-	[SerializeField] private float         outsideX;
-	[SerializeField] private float         richTime;
-	private                  Coroutine     coroutine;
+
+	private                  CanvasGroup canvasGroup;
+	private                  float       originAlpha;
+	[SerializeField] private float       richTime;
+	private                  Coroutine   coroutine;
 
 	private void Awake()
 	{
-		rect = GetComponent<RectTransform>();
+		canvasGroup = GetComponent<CanvasGroup>();
 	}
 
 	private void Start()
 	{
-		var pos  = rect.anchoredPosition;
-		pos.x                 = outsideX;
-		rect.anchoredPosition = pos;
+		canvasGroup.alpha = 0;
 	}
 
 	public void Init(List<DetailProgressInfo> infos)
@@ -40,23 +38,22 @@ public class ProgressDetailUi : MonoBehaviour
 			element.Init(info);
 		}
 	}
-	
+
 	public void Show(bool show)
 	{
 		if (coroutine != null) StopCoroutine(coroutine);
-		coroutine = StartCoroutine(ShowCoroutine(show ? -1 : 1));
+		coroutine = StartCoroutine(ShowCoroutine(show ? 1 : -1));
 	}
 
 	private IEnumerator ShowCoroutine(float destination)
 	{
-		var timer = (insideX - rect.anchoredPosition.x) / (insideX - outsideX) * richTime;
-		while (timer < richTime || timer > 0)
+		var timer = canvasGroup.alpha * richTime;
+		while (timer <= richTime && timer >= 0)
 		{
 			timer += Time.deltaTime * destination;
 
-			var pos = rect.anchoredPosition;
-			pos.x = Mathf.Lerp(insideX, outsideX, Mathf.Clamp01(timer / richTime));
-			rect.anchoredPosition = pos;
+			canvasGroup.alpha = Mathf.Lerp(0, 1, Mathf.Clamp01(timer / richTime));
+
 			yield return null;
 		}
 	}

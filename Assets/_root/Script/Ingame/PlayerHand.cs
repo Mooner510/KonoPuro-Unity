@@ -29,16 +29,14 @@ public class PlayerHand : MonoBehaviour
 
 	private                  IngameCard selectedCard;
 
-	private Coroutine cardMoveCoroutine;
 	private bool      heldUpdating;
-	private bool      heldOpened;
+	private bool      handOpened;
 
 	public bool isMine;
 
 	private Camera cam;
 
-	//TODO: 실험용 - 삭제 필요
-	public int testCount;
+	private bool interactable;
 
 	private void Awake()
 	{
@@ -51,18 +49,8 @@ public class PlayerHand : MonoBehaviour
 	private void Start()
 	{
 		selectedCard = null;
-		heldOpened   = false;
+		handOpened   = false;
 		HandUpdate(false);
-
-		//TODO: 실험용 - 삭제 필요
-		for (int i = 0; i < testCount; i++)
-		{
-			var card = IngameCard.CreateIngameCard(null);
-			card.transform.localScale = Vector3.one * cardSize;
-			card.Init(isMine, IngameCardType.Hand);
-			AddCards(new List<IngameCard>()
-			         { card });
-		}
 	}
 
 	private void Update()
@@ -70,16 +58,22 @@ public class PlayerHand : MonoBehaviour
 		if (isMine) HandShowCheck();
 	}
 
-	public void SelectCard(IngameCard card)
+	public void SetActive(bool active)
+	{
+		if(!active) SelectCard(null);
+		interactable = active;
+	}
+
+	public void SelectCard(IngameCard card, bool? powerUpdate = null)
 	{
 		selectedCard = card;
-		HandUpdate(card || heldOpened);
+		HandUpdate(powerUpdate is null or true && (card || handOpened));
 	}
 
 	private void HandShowCheck()
 	{
-		if (selectedCard) return;
-		var tr         = transforms[(heldOpened ? 1 : 0)];
+		if (!interactable || selectedCard) return;
+		var tr         = transforms[(handOpened ? 1 : 0)];
 		var position   = tr.position;
 		var localScale = tr.localScale;
 		var mousePos   = Input.mousePosition;
@@ -89,66 +83,53 @@ public class PlayerHand : MonoBehaviour
 		            (mousePos.x <= position.x + (localScale.x * 0.5f)) &&
 		            (mousePos.z >= position.z - (localScale.y * 0.5f)) &&
 		            (mousePos.z <= position.z + (localScale.y * 0.5f));
-		if (heldOpened ? !inner : inner) HandUpdate(!heldOpened);
+		if (handOpened ? !inner : inner) HandUpdate(!handOpened);
 	}
 
-	public void AddCards(List<IngameCard> cards)
+	public void AddCard(IngameCard card)
 	{
-		foreach (var card in cards)
-			handCards.Add(card);
+		handCards.Add(card);
+		HandUpdate(false);
+	}
+
+	public void AddCards(IEnumerable<IngameCard> cards)
+	{
+		handCards.AddRange(cards);
+		HandUpdate(false);
+	}
+
+	public void RemoveHandCard(IngameCard card)
+	{
+		if (!isMine)
+		{
+			card = handCards[0];
+			handCards.RemoveAt(0);
+		}
+		else if (handCards.Contains(card)) handCards.Remove(card);
+
+		card.DestroyCard();
 		HandUpdate(false);
 	}
 
 	public void HandUpdate(bool show)
 	{
 		ui.SetHover(!show);
-		heldOpened = show;
-		if (cardMoveCoroutine != null) StopCoroutine(cardMoveCoroutine);
-		cardMoveCoroutine = StartCoroutine(HandUpdateCoroutine(!show));
-	}
-
-	private IEnumerator HandUpdateCoroutine(bool state)
-	{
-		List<Tuple<Transform, Vector3>> moveTuples = new();
-
-		var heldCount = handCards.Count;
-		var origin    = transforms[state ? 0 : 1];
+		handOpened = show;
+		
+		var handCount = handCards.Count;
+		var origin    = transforms[show ? 1 : 0];
 		var position  = origin.position;
-		var defaultX  = position.x + (state ? closedXOffset : openedXOffset);
+		var defaultX  = position.x + (show ? openedXOffset : closedXOffset);
 		var defaultY  = position.y;
-		var multiplyZ = (state ? maxZWidth : maxSubZWidth) / heldCount;
-		var defaultZ  = position.z - ((heldCount - 1) * multiplyZ * .5f);
-
-		for (int i = 0; i < heldCount; i++)
+		var multiplyZ = (show ? maxSubZWidth : maxZWidth ) / handCount;
+		var defaultZ  = position.z - ((handCount - 1) * multiplyZ * .5f);
+		
+		for (var i = 0; i < handCount; i++)
 		{
 			var appliedPos = new Vector3(defaultX, defaultY + i * .05f, defaultZ + multiplyZ * i);
 			if (selectedCard && selectedCard == handCards[i]) appliedPos = selectedPos;
-			moveTuples.Add(new Tuple<Transform, Vector3>(handCards[i].transform, appliedPos));
+			handCards[i].MoveBySpeed(appliedPos, cardMoveSpeed);
 		}
-
-		while (moveTuples.Count > 0)
-		{
-			List<Tuple<Transform, Vector3>> RemoveRequired = new();
-			foreach (var tuple in moveTuples)
-			{
-				var tr          = tuple.Item1;
-				var currentPosition    = tr.position;
-				var destination = tuple.Item2;
-				var alpha       = Mathf.Clamp01((cardMoveSpeed * Time.deltaTime) / Vector3.Distance(currentPosition, destination));
-				var movePos     = Vector3.Lerp(currentPosition, destination, alpha);
-				tr.position = movePos;
-				if (!(Mathf.Abs(tr.position.magnitude - destination.magnitude) < .000001)) continue;
-				tr.position = destination;
-				RemoveRequired.Add(tuple);
-			}
-
-			foreach (var tuple in RemoveRequired) moveTuples.Remove(tuple);
-			RemoveRequired.Clear();
-
-			yield return null;
-		}
-
-		cardMoveCoroutine = null;
 	}
 }
 }
