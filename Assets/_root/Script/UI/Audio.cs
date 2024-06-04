@@ -1,18 +1,24 @@
+using System;
 using UnityEngine;
 
 namespace _root.Script.UI
 {
     public class Audio : MonoBehaviour
     {
-        public AudioSource audioSource;
+        private AudioSource _audioSource;
         public AudioClip loop;
-    
+
+        private void Start()
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
+
         private void Update()
         {
-            if (audioSource.isPlaying) return;
-            audioSource.clip = loop;
-            audioSource.Play();
-            audioSource.loop = true;
+            if (_audioSource.isPlaying) return;
+            _audioSource.clip = loop;
+            _audioSource.Play();
+            _audioSource.loop = true;
         }
     }
 }
