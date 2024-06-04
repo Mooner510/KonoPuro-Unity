@@ -13,7 +13,8 @@ public class TitleManager : MonoBehaviour
 
 	[SerializeField] private PlayableAsset start;
 	[SerializeField] private PlayableAsset end;
-
+	[SerializeField] private GameObject LoginFaild;
+	[SerializeField] private GameObject LoginSuccess;
 	private TitleUi   titleUi;
 	private AuthPanel authPanel;
 
@@ -51,6 +52,8 @@ public class TitleManager : MonoBehaviour
 	public void GameStart()
 	{
 		titleUi.gameObject.SetActive(false);
+		LoginFaild.SetActive(false);
+		LoginSuccess.SetActive(false);
 		StartCoroutine(GameStartFlow());
 	}
 
@@ -155,11 +158,15 @@ public class TitleManager : MonoBehaviour
 		titleUi.SetThrobber(false);
 		Networking.AccessToken = response.accessToken;
 		titleUi.Login(false);
+		LoginSuccess.SetActive(true);
+		Invoke("LogSuccess",2f);
 	}
 
 	private void SignInError(ErrorBody errorBody)
 	{
 		titleUi.SetThrobber(false);
+		LoginFaild.SetActive(true);
+		Invoke("LogFaild", 2f);
 	}
 
 	private void SignUpSuccess()
@@ -170,5 +177,15 @@ public class TitleManager : MonoBehaviour
 	private void SignUpError(ErrorBody errorBody)
 	{
 		titleUi.SetThrobber(false);
+	}
+
+	void LogFaild()
+	{
+		LoginFaild.SetActive(false);
+	}
+
+	void LogSuccess()
+	{
+		LoginSuccess.SetActive(false);
 	}
 }
