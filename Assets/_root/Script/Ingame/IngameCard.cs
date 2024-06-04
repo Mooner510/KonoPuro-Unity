@@ -73,7 +73,7 @@ public class IngameCard : MonoBehaviour
 	public void MoveBySpeed(Vector3 pos, float moveSpeed)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-		moveCoroutine = StartCoroutine(MoveBySpeedCoroutine(pos, transform.rotation, moveSpeed, 1));
+		moveCoroutine = StartCoroutine(MoveBySpeedCoroutine(pos, transform.rotation, moveSpeed, 0));
 	}
 
 	public void MoveBySpeed(Vector3 pos, Quaternion rot, float moveSpeed, float rotSpeed)
@@ -104,7 +104,13 @@ public class IngameCard : MonoBehaviour
 	public void MoveByRichTime(Vector3 pos, float moveRichTime)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 1));
+		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 0));
+	}
+	
+	public void MoveByRichTime(Vector3 pos, Quaternion rot, float moveRichTime)
+	{
+		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, rot, moveRichTime, moveRichTime));
 	}
 
 	public void MoveByRichTime(Vector3 pos, Quaternion rot, float moveRichTime, float rotRichTime)
@@ -154,17 +160,6 @@ public class IngameCard : MonoBehaviour
 		return this;
 	}
 
-	public IngameCard LoadDisplay(PlayerCardResponse data)
-	{
-		if (data == null) return this;
-		if(data.type == CardType.Student) type = IngameCardType.Student;
-		this.defaultData = data;
-		var card                                    = GetComponent<Card.Card>();
-		var sprite                                  = ResourceManager.GetSprite(data.cardType);
-		if (sprite) card.frontSide.sprite           = sprite;
-		return this;
-	}
-
 	public static IngameCard CreateIngameCard()
 	{
 		return CreateIngameCard(Vector3.zero, Quaternion.identity);
@@ -198,15 +193,6 @@ public class IngameCard : MonoBehaviour
 	}
 
 	public static IngameCard CreateIngameCard(GameCard cardData, Vector3 spawnPos, Quaternion spawnRot)
-	{
-		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
-		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
-		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
-		ingameCard.LoadDisplay(cardData);
-		return ingameCard;
-	}
-	
-	public static IngameCard CreateIngameCard(PlayerCardResponse cardData, Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
