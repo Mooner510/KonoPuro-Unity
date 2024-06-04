@@ -1,26 +1,26 @@
-﻿name: "Todo"
+name: "Todo"
 description: "할일 추가하기 📗"
 body:
   - type: textarea
     attributes:
       label: Describe
       description: |
-        [개요] 할일에 관한 설명을 간단하게 작성해주세요.
+        [개요] 할일에 대한 설명을 간단하게 작성해주세요.
       placeholder: |
-        Update 코드 수정
+        Update문 수정
 
   - type: textarea
     attributes:
       label: Work
       description: |
-        [작업내용] 무슨 작업을 하셨나요?
+        [작업내용] 작업할 내용을 입력해주세요.
       placeholder: |
-        [ ] 저거 뭐뭐 했어요
-        [ ] 저거 뭐 어쩌구를 했습니다.
-        [ ] 저거 그런거 대충 끝냈을걸요?"
+        [ ] 저거 거시기 했어요 
+        [ ] 저거 거시기 거시기를 했습니다.
+        [ ] 저거 거시기를 끝냈을걸요?
 
   - type: textarea
     attributes:
       label: Additional
       description: |
-        [추가사항] 추가로 할말이 있으신가요?
+        [추가사항] 추가로 할말을 작성해주세요.
