@@ -2,7 +2,7 @@ namespace _root.Script.Network
 {
 public static class API
 {
-	public static Networking.Post<Void> SignUp(SignUpRequest req) => new("/api/auth/sign-up", req);
+	public static Networking.Post<Void> SignUp(SignUpRequest req) => new("/api/auth/sign-up", req); 
 
 	public static Networking.Post<TokenResponse> SignIn(SignInRequest req) => new("/api/auth/sign-in", req);
 
