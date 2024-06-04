@@ -5,7 +5,7 @@ body:
     attributes:
       label: Describe
       description: |
-        [개요] 할일에 대한 설명을 간단하게 작성해주세요.
+        [개요] 할일에 대한 설명을 작성해주세요.
       placeholder: |
         Update문 수정
 
