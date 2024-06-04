@@ -7,23 +7,22 @@ using UnityEngine.EventSystems;
 public class ExampleScript : MonoBehaviour {
     public Camera camera;
     [SerializeField] private GameObject todayscard;
+    
 
     private void Start()
     {
+        Debug.Log(gameObject.name);
         todayscard.SetActive(false);
     }
 
     void Update(){
         RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
-        //Debug.Log(ray);
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 6)) {
-            
+            if (Physics.Raycast(ray, out hit, 15f, 1 << 6)) {
                 todayscard.SetActive(true);
             }
         }
-
     }
 }
