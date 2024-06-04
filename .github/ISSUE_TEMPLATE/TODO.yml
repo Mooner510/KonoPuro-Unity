@@ -14,10 +14,7 @@ body:
       label: Work
       description: |
         [작업내용] 무슨 작업을 하셨나요?
-      placeholder: |
-        - [ ] 저거 뭐뭐 했어요 
-        - [ ] 저거 뭐 어쩌구를 했습니다.
-        - [ ] 저거 그런거 대충 끝냈을걸요?
+      placeholder: "- [ ] 저거 뭐뭐 했어요\n- [ ] 저거 뭐 어쩌구를 했습니다.\n- [ ] 저거 그런거 대충 끝냈을걸요?"
 
   - type: textarea
     attributes:
