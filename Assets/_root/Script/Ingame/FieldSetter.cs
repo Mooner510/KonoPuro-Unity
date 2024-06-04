@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _root.Script.Client;
 using _root.Script.Ingame;
 using _root.Script.Network;
 using UnityEngine;
@@ -9,66 +10,86 @@ using UnityEngine;
 public class FieldSetter : MonoBehaviour
 {
 	[SerializeField] private GameObject cardPrefab;
-	
-	[SerializeField]
-	private List<IngameCard> fieldCards = new();
 
-	private List<Transform> trs = new List<Transform>();
+	[SerializeField] private List<IngameCard> fieldCards = new();
+
+	private List<Transform> trs = new();
 
 	[SerializeField] private float cardSize = 1;
 
-	[SerializeField]
-	private bool isMine = true;
-	
+	public bool isMine = true;
+
 	private void Awake()
 	{
 		var transforms = GetComponentsInChildren<Transform>().ToList();
 		trs = transforms;
 		trs.Remove(transform);
-
-		
-		//TODO: 실험용 삭제 필요
-		for (int i = 0; i < 5; i++)
-		{
-			var card = IngameCard.CreateIngameCard(null);
-			card.type = IngameCardType.Student;
-			card.Init(isMine, IngameCardType.Student);
-			fieldCards.Add(card);
-		}
-		for (int i = 0; i < 3; i++)
-		{
-			var card = IngameCard.CreateIngameCard(null);
-			card.type = IngameCardType.Field;
-			card.Init(isMine, IngameCardType.Field);
-			fieldCards.Add(card);
-		}
 	}
 
 	private void Start()
 	{
+		StudentUpdate();
 		UpdateCards();
 	}
 
 	public void AddNewCard(IngameCard addition)
 	{
 		fieldCards.Add(addition);
-		UpdateCards();
-	} 
+		if (addition.type == IngameCardType.Student) StudentUpdate();
+		else
+		{
+			addition.type = IngameCardType.Field;
+			UpdateCards();
+		}
+	}
 
 	public void AddNewCards(IEnumerable<IngameCard> addition)
 	{
-		fieldCards.AddRange(addition);
-		UpdateCards();
+		var ingameCards = addition as IngameCard[] ?? addition.ToArray();
+		fieldCards.AddRange(ingameCards);
+		if (ingameCards.Any(x => x.type == IngameCardType.Student)) StudentUpdate();
+		if (ingameCards.Any(x => x.type != IngameCardType.Student)) UpdateCards();
 	}
 
-	public void UpdateCards()
+	public void AddNewCard(GameStudentCard addition) =>
+			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+			                                       Quaternion.Euler(-90, 0, 90)));
+
+	public void AddNewCards(IEnumerable<GameStudentCard> addition) =>
+			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+			                                                             Quaternion.Euler(-90, 0, 90))));
+
+	public void AddNewCard(GameCard addition) =>
+			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+			                                       Quaternion.Euler(-90, 0, 90)));
+
+	public void AddNewCards(IEnumerable<GameCard> addition) =>
+			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+			                                                             Quaternion.Euler(-90, 0, 90))));
+	
+	public void AddNewCard(PlayerCardResponse addition) =>
+			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+			                                       Quaternion.Euler(-90, 0, 90)));
+
+	public void AddNewCards(List<PlayerCardResponse> addition) =>
+			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+			                                                             Quaternion.Euler(-90, 0, 90))));
+	
+	
+
+	private void StudentUpdate()
+	{
+		var students = fieldCards.Where(c => c.type == IngameCardType.Student).ToList();
+		SetPos(trs[0], students);
+	}
+
+	private void UpdateCards()
 	{
 		var students = fieldCards.Where(c => c.type == IngameCardType.Student).ToList();
 		var skills1  = fieldCards.Except(students).ToList();
 		var skills2  = skills1.GetRange(0, skills1.Count / 2);
 		skills1 = skills1.Except(skills2).ToList();
 
-		SetPos(trs[0], students);
 		SetPos(trs[1], skills1);
 		SetPos(trs[2], skills2);
 	}
@@ -79,6 +100,7 @@ public class FieldSetter : MonoBehaviour
 		float   multiplyZ  = field.localScale.y / count;
 		Vector3 defaultPos = field.position;
 		defaultPos.z -= (count - 1) * multiplyZ * 0.5f;
+		defaultPos.y += .1f;
 		for (int i = 0; i < count; i++)
 		{
 			var appliedPos = defaultPos;

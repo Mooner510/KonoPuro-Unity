@@ -5,7 +5,9 @@ namespace _root.Script.Data
 {
     public class UserData: SingleTon<UserData>
     {
-        public DeckResponse        ActiveDeck;
+        public     DeckResponse        ActiveDeck;
         public PlayerCardResponses InventoryCards;
+
+        public int gold = 1000;
     }
 }
