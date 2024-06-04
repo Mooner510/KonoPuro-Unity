@@ -17,8 +17,12 @@ public class PlayerActivity : MonoBehaviour
 	private Camera     mainCamera;
 
 	public IngameCard selectedCard;
-
 	private bool interactable;
+	//Card Info UI
+	[SerializeField] private GameObject CardInfoPanel;
+	private Animator CardAnim;
+	private DiscriptionUI cardui;
+	
 
 	private void Awake()
 	{
@@ -27,7 +31,10 @@ public class PlayerActivity : MonoBehaviour
 		var hands = FindObjectsOfType<PlayerHand>().ToList();
 		mainCamera = Camera.main;
 		selfHand   = hands.First(x => x.gameObject.name == "Self Hand");
-		otherHand  = hands.First(x => x.gameObject.name == "Other Hand");
+		otherHand = hands.First(x => x.gameObject.name == "Other Hand");
+		CardInfoPanel           = GameObject.Find("Card Info Panel");
+		cardui = CardInfoPanel.GetComponent<DiscriptionUI>();
+		CardAnim = CardInfoPanel.GetComponent<Animator>();
 	}
 
 	private void Start()
@@ -37,7 +44,17 @@ public class PlayerActivity : MonoBehaviour
 
 	private void Update()
 	{
+		if (Input.GetMouseButtonDown(1))
+		{	
+			//CardInfoUI Interact
+			Debug.Log("um");
+			cardui.Out();
+			viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var viewcard)
+				? viewcard.transform.GetComponent<IngameCard>()
+				: null);
+		}
 		if (!interactable || !Input.GetMouseButtonDown(0)) return;
+		cardui.Out();
 		SelectCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var hit)
 				           ? hit.transform.GetComponent<IngameCard>()
 				           : null);
@@ -56,6 +73,47 @@ public class PlayerActivity : MonoBehaviour
 		interactable = active;
 	}
 
+	private void viewCard(IngameCard card)//CardInfoUI
+	{
+		CardInfoPanel.SetActive(true);
+		if (!card)
+		{
+			CardInfoPanel.SetActive(false);
+		}
+		else
+		{
+			if(card.type == IngameCardType.Hand)
+			{
+				if (card.isMine)
+				{
+					CardInfoPanel.SetActive(true);
+					CardAnim.Play("CardInfoFadeIn");
+					cardui.viewCard(card);
+				}
+				else
+				{
+					CardInfoPanel.SetActive(false);
+				}
+			}
+			else if (card.type == IngameCardType.Field)
+			{
+				CardInfoPanel.SetActive(true);
+				CardAnim.Play("CardInfoFadeIn");
+				cardui.viewCard(card);
+			}
+			else if (card.type == IngameCardType.Student)
+			{
+				CardInfoPanel.SetActive(true);
+				CardAnim.Play("CardInfoFadeIn");
+				cardui.viewCard(card);
+			}
+			else
+			{
+				CardInfoPanel.SetActive(false);
+			}
+		}
+		
+	}
 	private void SelectCard(IngameCard card)
 	{
 		if (card && card == selectedCard && card.type == IngameCardType.Hand && card.isMine)
