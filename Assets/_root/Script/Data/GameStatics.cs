@@ -11,7 +11,8 @@ public static class GameStatics
 
 	public static UpdatedData self;
 	public static UpdatedData other;
-	
+	public static bool isTurn;
+
 	public static int gatchaOncePrice = 100;
 	public static int gatchaMultiPrice = 999;
 

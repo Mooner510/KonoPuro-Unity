@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using _root.Script.Client;
+using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
@@ -23,11 +24,28 @@ public class IngameCard : MonoBehaviour
 {
 	private static GameObject ingameCardPrefab;
 
-	public bool               isMine;
-	public IngameCardType     type;
-	public PlayerCardResponse cardData;
+	public  bool               isMine;
+	public  IngameCardType     type;
+	private GameStudentCard    student;
+	private GameCard           cardData;
+	private PlayerCardResponse defaultData;
 
 	private Coroutine moveCoroutine;
+
+	public GameStudentCard GetStudentData()
+	{
+		return student;
+	}
+
+	public GameCard GetCardData()
+	{
+		return cardData;
+	}
+
+	public PlayerCardResponse GetData()
+	{
+		return defaultData;
+	}
 
 	public void Init(bool mine, IngameCardType cardType)
 	{
@@ -55,7 +73,7 @@ public class IngameCard : MonoBehaviour
 	public void MoveBySpeed(Vector3 pos, float moveSpeed)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-		moveCoroutine = StartCoroutine(MoveBySpeedCoroutine(pos, transform.rotation, moveSpeed, 1));
+		moveCoroutine = StartCoroutine(MoveBySpeedCoroutine(pos, transform.rotation, moveSpeed, 0));
 	}
 
 	public void MoveBySpeed(Vector3 pos, Quaternion rot, float moveSpeed, float rotSpeed)
@@ -86,7 +104,13 @@ public class IngameCard : MonoBehaviour
 	public void MoveByRichTime(Vector3 pos, float moveRichTime)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 1));
+		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 0));
+	}
+	
+	public void MoveByRichTime(Vector3 pos, Quaternion rot, float moveRichTime)
+	{
+		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
+		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, rot, moveRichTime, moveRichTime));
 	}
 
 	public void MoveByRichTime(Vector3 pos, Quaternion rot, float moveRichTime, float rotRichTime)
@@ -117,10 +141,11 @@ public class IngameCard : MonoBehaviour
 
 	public IngameCard LoadDisplay(GameStudentCard data)
 	{
-		type = IngameCardType.Student;
+		type    = IngameCardType.Student;
 		if (data == null) return this;
+		student = data;
 		var card                          = GetComponent<Card.Card>();
-		var sprite                        = ResourceManager.GetSprite(data.defaultCardType);
+		var sprite                        = ResourceManager.GetSprite(data.cardType);
 		if (sprite) card.frontSide.sprite = sprite;
 		return this;
 	}
@@ -128,6 +153,7 @@ public class IngameCard : MonoBehaviour
 	public IngameCard LoadDisplay(GameCard data)
 	{
 		if (data == null) return this;
+		cardData = data;
 		var card                                    = GetComponent<Card.Card>();
 		var sprite                                  = ResourceManager.GetSprite(data.defaultCardType);
 		if (sprite) card.frontSide.sprite           = sprite;
@@ -156,7 +182,7 @@ public class IngameCard : MonoBehaviour
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
 		return ingameCard;
 	}
-	
+
 	public static IngameCard CreateIngameCard(GameStudentCard cardData, Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");

@@ -28,23 +28,27 @@ public class FieldSetter : MonoBehaviour
 
 	private void Start()
 	{
-		StudentUpdate();
-		UpdateCards();
+		UpdateStudentPos();
+		UpdateFieldCardPos();
 	}
 
 	public void AddNewCard(IngameCard addition)
 	{
 		fieldCards.Add(addition);
-		if (addition.type == IngameCardType.Student) StudentUpdate();
-		else UpdateCards();
+		if (addition.type == IngameCardType.Student) UpdateStudentPos();
+		else
+		{
+			addition.type = IngameCardType.Field;
+			UpdateFieldCardPos();
+		}
 	}
 
 	public void AddNewCards(IEnumerable<IngameCard> addition)
 	{
 		var ingameCards = addition as IngameCard[] ?? addition.ToArray();
 		fieldCards.AddRange(ingameCards);
-		if (ingameCards.Any(x => x.type == IngameCardType.Student)) StudentUpdate();
-		if (ingameCards.Any(x => x.type != IngameCardType.Student)) UpdateCards();
+		if (ingameCards.Any(x => x.type == IngameCardType.Student)) UpdateStudentPos();
+		if (ingameCards.Any(x => x.type != IngameCardType.Student)) UpdateFieldCardPos();
 	}
 
 	public void AddNewCard(GameStudentCard addition) =>
@@ -62,16 +66,14 @@ public class FieldSetter : MonoBehaviour
 	public void AddNewCards(IEnumerable<GameCard> addition) =>
 			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
 			                                                             Quaternion.Euler(-90, 0, 90))));
-	
-	
 
-	private void StudentUpdate()
+	private void UpdateStudentPos()
 	{
 		var students = fieldCards.Where(c => c.type == IngameCardType.Student).ToList();
 		SetPos(trs[0], students);
 	}
 
-	private void UpdateCards()
+	private void UpdateFieldCardPos()
 	{
 		var students = fieldCards.Where(c => c.type == IngameCardType.Student).ToList();
 		var skills1  = fieldCards.Except(students).ToList();
@@ -82,14 +84,14 @@ public class FieldSetter : MonoBehaviour
 		SetPos(trs[2], skills2);
 	}
 
-	public void SetPos(Transform field, List<IngameCard> cards)
+	private void SetPos(Transform field, IReadOnlyList<IngameCard> cards)
 	{
 		var     count      = cards.Count;
-		float   multiplyZ  = field.localScale.y / count;
-		Vector3 defaultPos = field.position;
+		var   multiplyZ  = field.localScale.y / count;
+		var defaultPos = field.position;
 		defaultPos.z -= (count - 1) * multiplyZ * 0.5f;
 		defaultPos.y += .1f;
-		for (int i = 0; i < count; i++)
+		for (var i = 0; i < count; i++)
 		{
 			var appliedPos = defaultPos;
 			appliedPos.z                  += i * multiplyZ;

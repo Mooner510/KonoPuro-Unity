@@ -1502,12 +1502,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canBeDestroy: 0
-  autoHost: 1
-  security: 0
+  localHost: 0
+  security: 1
   host: 
   port: 0
-  ignorePort: 0
-  path: 
+  ignorePort: 1
+  path: /socket-io
 --- !u!4 &529301516
 Transform:
   m_ObjectHideFlags: 0
@@ -4376,6 +4376,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 974457331352170274, guid: 0344355c4a781db4b87a969ab8a79408,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -150
+      objectReference: {fileID: 0}
     - target: {fileID: 3089250711847255041, guid: 0344355c4a781db4b87a969ab8a79408,
         type: 3}
       propertyPath: m_Name
@@ -4431,10 +4436,15 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4392796463341984285, guid: 0344355c4a781db4b87a969ab8a79408,
+    - target: {fileID: 5097337977969229445, guid: 0344355c4a781db4b87a969ab8a79408,
         type: 3}
-      propertyPath: m_Enabled
-      value: 1
+      propertyPath: m_AnchoredPosition.y
+      value: -150
+      objectReference: {fileID: 0}
+    - target: {fileID: 7298053196000537531, guid: 0344355c4a781db4b87a969ab8a79408,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -150
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

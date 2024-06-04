@@ -36,6 +36,8 @@ public class PlayerHand : MonoBehaviour
 
 	private Camera cam;
 
+	private bool interactable;
+
 	private void Awake()
 	{
 		ui       = FindObjectOfType<IngameUi>();
@@ -58,19 +60,19 @@ public class PlayerHand : MonoBehaviour
 
 	public void SetActive(bool active)
 	{
-		selectedCard      = null;
-		enabled           = active;
+		if(!active) SelectCard(null);
+		interactable = active;
 	}
 
-	public void SelectCard(IngameCard card)
+	public void SelectCard(IngameCard card, bool? powerUpdate = null)
 	{
 		selectedCard = card;
-		HandUpdate(card || handOpened);
+		HandUpdate(powerUpdate is null or true && (card || handOpened));
 	}
 
 	private void HandShowCheck()
 	{
-		if (selectedCard) return;
+		if (!interactable || selectedCard) return;
 		var tr         = transforms[(handOpened ? 1 : 0)];
 		var position   = tr.position;
 		var localScale = tr.localScale;
@@ -109,7 +111,7 @@ public class PlayerHand : MonoBehaviour
 		HandUpdate(false);
 	}
 
-	private void HandUpdate(bool show)
+	public void HandUpdate(bool show)
 	{
 		ui.SetHover(!show);
 		handOpened = show;

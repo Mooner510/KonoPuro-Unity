@@ -16,13 +16,13 @@ public class TitleManager : MonoBehaviour
 
 	private TitleUi   titleUi;
 	private AuthPanel authPanel;
-	
+
 	private void Awake()
 	{
-		titleUi                                = FindObjectOfType<TitleUi>();
-		authPanel                              = FindObjectOfType<AuthPanel>();
+		titleUi   = FindObjectOfType<TitleUi>();
+		authPanel = FindObjectOfType<AuthPanel>();
 		var spotLight = FindObjectsOfType<Light>();
-		spotLight.ToList().First(x=>x.type == LightType.Spot).intensity = 0;
+		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
 	}
 
 	// Start is called before the first frame update
@@ -34,10 +34,12 @@ public class TitleManager : MonoBehaviour
 	private IEnumerator StartFlow()
 	{
 		yield return new WaitForSeconds(1f);
+		bool cutSceneEnd = false;
 		director.playableAsset = start;
 		director.Play();
-		yield return new WaitForSeconds(2.5f);
-		if(Networking.AccessToken == null) authPanel.Show(true);
+		director.stopped += _ => cutSceneEnd = true;
+		yield return new WaitUntil((() => cutSceneEnd));
+		if (Networking.AccessToken == null) authPanel.Show(true);
 		else titleUi.Login(false);
 	}
 
@@ -54,11 +56,11 @@ public class TitleManager : MonoBehaviour
 
 	private IEnumerator GameStartFlow()
 	{
+		StartCoroutine(LoadCoroutine());
 		yield return new WaitForSeconds(2f);
 		director.playableAsset = end;
 		director.Play();
 		yield return new WaitForSeconds(2.5f);
-		StartCoroutine(LoadCoroutine());
 		yield return new WaitUntil((() => UserData.Instance.ActiveDeck != null &&
 		                                  UserData.Instance.InventoryCards != null && GameStatics.gatchaList != null));
 		SceneManager.LoadScene("MainScene");
@@ -80,23 +82,20 @@ public class TitleManager : MonoBehaviour
 
 		if (GameStatics.gatchaList == null)
 		{
-			API.GatchaList()
-			   .OnResponse(responses =>
-			               { GameStatics.gatchaList = responses.data; })
-			   // .OnResponse(responses => GameStatics.gatchaList = responses.data
-			   //                                                            .Where(x =>
-						// 		                                                                DateTime
-						// 				                                                               .Compare(DateTime.Parse(x.startAt),
-						// 						                                                                 DateTime
-						// 								                                                                .Now) !=
-						// 		                                                                1 &&
-						// 		                                                                DateTime
-						// 				                                                               .Compare(DateTime.Parse(x.endAt),
-						// 						                                                                 DateTime
-						// 								                                                                .Now) !=
-						// 		                                                                -1).ToList())
-			   .OnError((body => Debug.Log("Gatcha List Load Failed")))
-			  .Build();
+			API.GatchaList().OnResponse(responses => { GameStatics.gatchaList = responses.data; })
+			    // .OnResponse(responses => GameStatics.gatchaList = responses.data
+			    //                                                            .Where(x =>
+			    // 		                                                                DateTime
+			    // 				                                                               .Compare(DateTime.Parse(x.startAt),
+			    // 						                                                                 DateTime
+			    // 								                                                                .Now) !=
+			    // 		                                                                1 &&
+			    // 		                                                                DateTime
+			    // 				                                                               .Compare(DateTime.Parse(x.endAt),
+			    // 						                                                                 DateTime
+			    // 								                                                                .Now) !=
+			    // 		                                                                -1).ToList())
+			   .OnError((body => Debug.Log("Gatcha List Load Failed"))).Build();
 		}
 	}
 
@@ -104,22 +103,24 @@ public class TitleManager : MonoBehaviour
 	{
 		const float iterTime  = 3f;
 		const int   iterCount = 2;
-		
+
 		for (int i = 0; i < iterCount; i++)
 		{
 			LoadData();
 			yield return new WaitForSeconds(iterTime);
-			if (UserData.Instance.ActiveDeck != null &&
-			    UserData.Instance.InventoryCards != null && GameStatics.gatchaList != null)
+			if (UserData.Instance.ActiveDeck != null && UserData.Instance.InventoryCards != null &&
+			    GameStatics.gatchaList != null)
 			{
 				yield break;
 			}
 		}
-		if (UserData.Instance.ActiveDeck != null &&
-		    UserData.Instance.InventoryCards != null && GameStatics.gatchaList != null)
+
+		if (UserData.Instance.ActiveDeck != null && UserData.Instance.InventoryCards != null &&
+		    GameStatics.gatchaList != null)
 		{
 			yield break;
 		}
+
 		Application.Quit();
 	}
 
@@ -132,6 +133,7 @@ public class TitleManager : MonoBehaviour
 			{
 				return;
 			}
+
 			titleUi.SetThrobber(true);
 			post.OnSuccess(SignUpSuccess).OnError(SignUpError).Build();
 		}
@@ -142,6 +144,7 @@ public class TitleManager : MonoBehaviour
 			{
 				return;
 			}
+
 			titleUi.SetThrobber(true);
 			post.OnResponse(SignInSuccess).OnError(SignInError).Build();
 		}

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Web;
 using _root.Script.Utils;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -15,8 +16,8 @@ namespace _root.Script.Network
     
     public class Networking : MonoBehaviour
     {
-        private const  string     BaseUrl = "https://konopuro.dsm-dongpo.com";
-        private static Networking _networking;
+        private const             string     BaseUrl = "https://konopuro.dsm-dongpo.com";
+        private static            Networking _networking;
         [CanBeNull] public static string     AccessToken;
 
         private string _password;
@@ -35,6 +36,8 @@ namespace _root.Script.Network
 
         private void Awake()
         {
+            Application.runInBackground = true;
+            
             // _baseUrl = baseUrl;
             if (_networking != null)
                 Destroy(_networking);
@@ -105,6 +108,10 @@ namespace _root.Script.Network
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
+                if (webRequest.downloadHandler == null)
+                {
+                    webRequest.downloadHandler = new DownloadHandlerBuffer();
+                }
                 string bodyText = webRequest.downloadHandler.text;
                 if (webRequest.result == UnityWebRequest.Result.Success)
                 {
@@ -121,7 +128,7 @@ namespace _root.Script.Network
                         }
                         else
                         {
-                            _responseAction?.Invoke(JsonUtility.FromJson<T>(bodyText));
+                            _responseAction?.Invoke(JsonConvert.DeserializeObject<T>(bodyText));
                         }
                         _successAction?.Invoke();
 
@@ -129,7 +136,7 @@ namespace _root.Script.Network
                     }
                 }
                 Debugger.Log($"Error Handled: {bodyText}");
-                _errorAction?.Invoke(JsonUtility.FromJson<ErrorBody>(bodyText));
+                _errorAction?.Invoke(JsonConvert.DeserializeObject<ErrorBody>(bodyText));
             }
 
             public void Build()
@@ -185,7 +192,7 @@ namespace _root.Script.Network
             {
             }
 
-            protected override UnityWebRequest WebRequest(string url) => UnityWebRequest.Delete(url);
+            protected override UnityWebRequest WebRequest(string url) => new(url, "DELETE", new DownloadHandlerBuffer(), null);
         }
     }
 }

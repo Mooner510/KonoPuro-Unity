@@ -32,10 +32,10 @@ public class IngameManager : MonoBehaviour
 
 	private IngameUi ui;
 
-	public static bool myTurn;
-
 	//TODO: 실험용 삭제필요
 	[SerializeField] private bool spriteDebug;
+
+	private bool preTurn;
 
 	private void Awake()
 	{
@@ -65,34 +65,45 @@ public class IngameManager : MonoBehaviour
 
 		FindObjectsOfType<Canvas>().First(x => x.gameObject.name == "Field Canvas").enabled = false;
 
-		NetworkClient.updateData  += UpdateData;
+		NetworkClient.onDataUpdate += UpdateData;
+		
+		
+		//TODO: 빌드시에 포함 고려 (커서가 화면 밖으로 안나가는 기능)
+		// Cursor.lockState = CursorLockMode.Confined;
 	}
 
 	private void Start()
 	{
-		//TODO: 실험용 삭제 필요
-		List<GameStudentCard> students = new()
-		                                 { new(), new(), new(), new() };
-		selfStudents  = students;
-		otherStudents = students;
-
-		StartCoroutine(StartFlow(new()
-		                         { new(), new(), new(), new(), new() }, 5));
-		
-		
-		//TODO: 위의 실험용 삭제 시 사용
-		// GameStart();
+		GameStart();
 	}
 
 	private void GameStart()
 	{
-		var selfHeldCards  = GameStatics.self.heldCards;
-		var otherHeldCards = GameStatics.other.heldCards;
+		//TODO: 실험용 삭제 필요
+		if (GameStatics.self == null || GameStatics.other == null)
+		{
+			List<GameStudentCard> student = new()
+			                                { new(), new(), new(), new(), new() };
+			selfStudents  = student;
+			otherStudents = student;
+
+			StartCoroutine(StartFlow(new()
+			                         { new(), new(), new(), new(), new() }, 5));
+			return;
+		}
+
+		var selfStudent                         = GameStatics.self.student;
+		var otherStudent                        = GameStatics.other.student;
+		if (selfStudent != null) selfStudents   = selfStudent.cards;
+		if (otherStudent != null) otherStudents = otherStudent.cards;
+		var selfHeldCards                       = GameStatics.self.heldCards;
+		var otherHeldCards                      = GameStatics.other.heldCards;
 		if (selfHeldCards == null || otherHeldCards == null)
 		{
 			Debug.LogError("game start held cards data is null");
 			return;
 		}
+
 		StartCoroutine(StartFlow(selfHeldCards.cards, otherHeldCards.cards.Count));
 	}
 
@@ -119,13 +130,13 @@ public class IngameManager : MonoBehaviour
 		selfDeck.Init();
 		otherDeck.Init();
 
-		//TODO: 처음 시작할 때 카드 드로우 - 지금은 임시용 변경 필요
 		selfDeck.DrawCards(activity.AddHandCard, false, selfDraws);
 		otherDeck.DrawCards(activity.AddHandCard, false, otherDrawCount);
 
 		yield return new WaitForSeconds(3f);
 
-		ui.TurnSet(false);
+		preTurn = GameStatics.isTurn;
+		TurnChanged(preTurn);
 
 		activity.SetActive(true);
 	}
@@ -142,8 +153,21 @@ public class IngameManager : MonoBehaviour
 		}
 	}
 
-	private void UpdateData(UpdatedData self, UpdatedData other)
+	private void UpdateData()
 	{
+		var self  = GameStatics.self;
+		var other = GameStatics.other;
+
+		var turn = GameStatics.isTurn;
+		if (turn != preTurn)
+		{
+			preTurn = turn;
+			TurnChanged(preTurn);
+		}
+
+		if (self == null && other == null) return;
+
+		// if(self.)
 	}
 
 	private void NextDay()
@@ -152,24 +176,25 @@ public class IngameManager : MonoBehaviour
 		ui.DayChange(day);
 	}
 
-	private void ProjectUpdate(Dictionary<string, object> dictionary)
+	private void ProjectUpdate()
 	{
 	}
 
-	private void FieldUpdate(Dictionary<string, object> dictionary)
+	private void FieldUpdate()
 	{
 	}
 
-	private void HeldUpdate(Dictionary<string, object> dictionary)
+	private void HeldUpdate()
 	{
 	}
 
-	private void DrawCard(Dictionary<string, object> dictionary)
+	private void DrawCard()
 	{
 	}
 
-	private void SetTurn(Dictionary<string, object> dictionary)
+	private void TurnChanged(bool myTurn)
 	{
+		ui.TurnSet(myTurn);
 	}
 }
 
