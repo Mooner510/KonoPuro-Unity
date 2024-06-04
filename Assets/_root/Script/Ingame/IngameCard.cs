@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Runtime.CompilerServices;
 using _root.Script.Client;
+using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
@@ -23,11 +24,28 @@ public class IngameCard : MonoBehaviour
 {
 	private static GameObject ingameCardPrefab;
 
-	public bool               isMine;
-	public IngameCardType     type;
-	public PlayerCardResponse cardData;
+	public  bool               isMine;
+	public  IngameCardType     type;
+	private GameStudentCard    student;
+	private GameCard           cardData;
+	private PlayerCardResponse defaultData;
 
 	private Coroutine moveCoroutine;
+
+	public GameStudentCard GetStudentData()
+	{
+		return student;
+	}
+
+	public GameCard GetCardData()
+	{
+		return cardData;
+	}
+
+	public PlayerCardResponse GetData()
+	{
+		return defaultData;
+	}
 
 	public void Init(bool mine, IngameCardType cardType)
 	{
@@ -117,10 +135,11 @@ public class IngameCard : MonoBehaviour
 
 	public IngameCard LoadDisplay(GameStudentCard data)
 	{
-		type = IngameCardType.Student;
+		type    = IngameCardType.Student;
 		if (data == null) return this;
+		student = data;
 		var card                          = GetComponent<Card.Card>();
-		var sprite                        = ResourceManager.GetSprite(data.defaultCardType);
+		var sprite                        = ResourceManager.GetSprite(data.cardType);
 		if (sprite) card.frontSide.sprite = sprite;
 		return this;
 	}
@@ -128,8 +147,20 @@ public class IngameCard : MonoBehaviour
 	public IngameCard LoadDisplay(GameCard data)
 	{
 		if (data == null) return this;
+		cardData = data;
 		var card                                    = GetComponent<Card.Card>();
 		var sprite                                  = ResourceManager.GetSprite(data.defaultCardType);
+		if (sprite) card.frontSide.sprite           = sprite;
+		return this;
+	}
+
+	public IngameCard LoadDisplay(PlayerCardResponse data)
+	{
+		if (data == null) return this;
+		if(data.type == CardType.Student) type = IngameCardType.Student;
+		this.defaultData = data;
+		var card                                    = GetComponent<Card.Card>();
+		var sprite                                  = ResourceManager.GetSprite(data.cardType);
 		if (sprite) card.frontSide.sprite           = sprite;
 		return this;
 	}
@@ -156,7 +187,7 @@ public class IngameCard : MonoBehaviour
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
 		return ingameCard;
 	}
-	
+
 	public static IngameCard CreateIngameCard(GameStudentCard cardData, Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
@@ -167,6 +198,15 @@ public class IngameCard : MonoBehaviour
 	}
 
 	public static IngameCard CreateIngameCard(GameCard cardData, Vector3 spawnPos, Quaternion spawnRot)
+	{
+		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
+		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
+		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCard.LoadDisplay(cardData);
+		return ingameCard;
+	}
+	
+	public static IngameCard CreateIngameCard(PlayerCardResponse cardData, Vector3 spawnPos, Quaternion spawnRot)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
 using _root.Script.Data;
@@ -32,9 +33,16 @@ public class MainManager : MonoBehaviour
 
 	private void Start()
 	{
-		NetworkClient.gameStarted += GameStart;
 		mainCam                   =  Camera.main;
 		StartCoroutine(StartFlow());
+		StartCoroutine(Routine());
+	}
+
+	private IEnumerator Routine()
+	{
+		yield return new WaitUntil(() => NetworkClient.gameStarted);
+		NetworkClient.gameStarted = false;
+		GameStart();
 	}
 
 	private void Update()
@@ -96,6 +104,9 @@ public class MainManager : MonoBehaviour
 	{
 		mainUi.SetThrobber(true);
 		mainUi.SetMatchingCancelButton(true);
+		mainUi.SetExitButton(false);
+		mainUi.SetTitleButton(false);
+
 		API.Match().OnSuccess((() => mainUi.SetThrobber(false))).OnError((body => MatchingExit(true))).Build();
 	}
 
@@ -111,19 +122,35 @@ public class MainManager : MonoBehaviour
 
 		mainUi.SetThrobber(true);
 
-		API.MatchCancel().OnResponse((_=>
+		API.MatchCancel().OnResponse((_ =>
 		                              { mainUi.SetThrobber(false);
 		                                mainUi.SetMatchingCancelButton(false);
-		                                QuitInteract(); })).OnError(_ =>
-		                                                            { mainUi.SetThrobber(false);
-		                                                            Debug.LogError("error");
-		                                                               }).Build();
+		                                QuitInteract();
+		                                mainUi.SetExitButton(true);
+		                                mainUi.SetTitleButton(true); })).OnError(_ =>
+					 { mainUi.SetThrobber(false);
+					   Debug.LogError("error"); }).Build();
 	}
-	
+
 	public void GameStart()
 	{
+		StartCoroutine(GameStartFlow());
+	}
+
+	private IEnumerator GameStartFlow()
+	{
+		mainUi.SetThrobber(true);
+		yield return new WaitForSeconds(1);
+		var selfStudent  = GameStatics.self.student;
+		var otherStudent = GameStatics.other.student;
+		if (selfStudent == null || otherStudent == null)
+		{
+			Debug.LogError("game start student cards data is null");
+			yield return new WaitUntil((() => selfStudent != null && otherStudent != null));
+		}
+		mainUi.SetThrobber(false);
 		Debug.Log("game started");
-		SceneManager.LoadScene("IngameScene");
+		SceneManager.LoadSceneAsync("IngameScene");
 	}
 
 	private IEnumerator StartFlow()

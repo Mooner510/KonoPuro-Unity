@@ -36,7 +36,11 @@ public class FieldSetter : MonoBehaviour
 	{
 		fieldCards.Add(addition);
 		if (addition.type == IngameCardType.Student) StudentUpdate();
-		else UpdateCards();
+		else
+		{
+			addition.type = IngameCardType.Field;
+			UpdateCards();
+		}
 	}
 
 	public void AddNewCards(IEnumerable<IngameCard> addition)
@@ -60,6 +64,14 @@ public class FieldSetter : MonoBehaviour
 			                                       Quaternion.Euler(-90, 0, 90)));
 
 	public void AddNewCards(IEnumerable<GameCard> addition) =>
+			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+			                                                             Quaternion.Euler(-90, 0, 90))));
+	
+	public void AddNewCard(PlayerCardResponse addition) =>
+			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+			                                       Quaternion.Euler(-90, 0, 90)));
+
+	public void AddNewCards(List<PlayerCardResponse> addition) =>
 			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
 			                                                             Quaternion.Euler(-90, 0, 90))));
 	

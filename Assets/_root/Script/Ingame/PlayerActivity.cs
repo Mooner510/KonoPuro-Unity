@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
+using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Network;
 using UnityEngine;
@@ -53,7 +54,7 @@ public class PlayerActivity : MonoBehaviour
 
 	private void SelectCard(IngameCard card)
 	{
-		if (card == selectedCard)
+		if (card && card == selectedCard && card.type == IngameCardType.Hand && card.isMine)
 		{
 			UseCard(selectedCard);
 			return;
@@ -79,17 +80,17 @@ public class PlayerActivity : MonoBehaviour
 
 	public void UseCard(IngameCard card)
 	{
-		if(!IngameManager.myTurn) return;
+		if(!GameStatics.isTurn) return;
 		selectedCard = null;
 		ingameUi.SetCardInfo(null);
 		RemoveHandCard(card, true);
 
-		// NetworkClient.Send(RawData.of(103, card.cardData.id));	
+		NetworkClient.Send(RawProtocol.of(103, card.type == IngameCardType.Student ? card.GetStudentData().id : card.GetCardData().id));	
 	}
 
 	public void UseAbility()
 	{
-		if(!IngameManager.myTurn) return;
+		if(!GameStatics.isTurn) return;
 	}
 
 	public void Sleep()

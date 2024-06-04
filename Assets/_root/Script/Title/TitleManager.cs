@@ -63,13 +63,6 @@ public class TitleManager : MonoBehaviour
 		yield return new WaitForSeconds(2.5f);
 		yield return new WaitUntil((() => UserData.Instance.ActiveDeck != null &&
 		                                  UserData.Instance.InventoryCards != null && GameStatics.gatchaList != null));
-
-		foreach (var inventoryCardsCard in UserData.Instance.InventoryCards.cards)
-		{
-			Debug.LogError(inventoryCardsCard.type);
-		}
-
-		yield return new WaitForSeconds(1f);
 		SceneManager.LoadScene("MainScene");
 	}
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Threading;
@@ -30,14 +31,30 @@ public class NetworkClient : SingleMono<NetworkClient>
 	private NetworkStream           _stream;
 	private Thread                  _thread;
 
-	public static Action                           gameStarted;
+	public static bool                           gameStarted;
 	public static Action<UpdatedData, UpdatedData> updateData;
+
+	public static Action<Action> RunInMainThread;
 
 	private static string roomId;
 
 	public static void Send(params object[] data)
 	{
-		Instance._client.EmitAsync(roomId, data);
+		try
+		{
+			Debug.Log($"send to {roomId} :: {data[0]}");
+			Instance._client.EmitAsync(roomId, data);
+		}
+		catch (Exception e)
+		{
+			Debug.LogError(e);
+		}
+	}
+
+	protected override void Awake()
+	{
+		base.Awake();
+		RunInMainThread = (runner) => StartCoroutine(_Run(runner));
 	}
 
 	private void Start()
@@ -97,36 +114,57 @@ public class NetworkClient : SingleMono<NetworkClient>
 		//     response.GetValue<RawChat>()
 		// });
 		_client.OnAny((eventName, response) =>
-		              { var rawProtocol = response.GetValue<RawProtocol>();
-
-		                if (rawProtocol.protocol == 2)
+		              { Debug.Log($"{eventName}: Listened\n{response}");
+		                try
 		                {
-			                roomId = rawProtocol.data[0];
+
+			                var rawProtocol = response.GetValue<RawProtocol>();
+
+			                if (rawProtocol.protocol == 2)
+			                {
+				                roomId = (string)rawProtocol.data[0];
+			                }
+			                else if (rawProtocol.protocol == 200)
+			                {
+				                var rawData = JsonConvert.DeserializeObject<RawData>(JsonConvert.SerializeObject(rawProtocol.data[0]));
+				                var self    = UpdatedData.ConvertUpdatedData(rawData.self);
+				                var other   = UpdatedData.ConvertUpdatedData(rawData.other);
+
+				                GameStatics.self   = self;
+				                GameStatics.other  = other;
+				                GameStatics.isTurn = rawData.turn;
+
+				                gameStarted = true;
+			                }
+			                else if (rawProtocol.protocol == 206)
+			                {
+				                var rawData  = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0].ToString());
+				                var self     = UpdatedData.ConvertUpdatedData(rawData.self);
+				                var other    = UpdatedData.ConvertUpdatedData(rawData.other);
+
+				                GameStatics.self   = self;
+				                GameStatics.other  = other;
+				                GameStatics.isTurn = rawData.turn;
+
+				                updateData.Invoke(self, other);
+			                }
+
+			                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
 		                }
-		                else if (rawProtocol.protocol == 200)
+		                catch (Exception e)
 		                {
-			                var rawData = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0]);
-			                var self    = UpdatedData.ConvertUpdatedData(rawData.self);
-			                var other   = UpdatedData.ConvertUpdatedData(rawData.other);
-
-			                GameStatics.self  = self;
-			                GameStatics.other = other;
-
-			                gameStarted.Invoke();
-		                }
-		                else if (rawProtocol.protocol == 206)
-		                {
-			                var rawData = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0]);
-			                var self    = UpdatedData.ConvertUpdatedData(rawData.self);
-			                var other   = UpdatedData.ConvertUpdatedData(rawData.other);
-
-			                updateData.Invoke(self, other);
-		                }
-
-		                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}"); });
+			                Debug.LogError(e);
+			                // ignored
+		                } });
 		Debug.Log("Connecting..");
 		await _client.ConnectAsync();
 		Debug.Log("Connected!!!");
+	}
+
+	private IEnumerator _Run(Action runner)
+	{
+		runner.Invoke();
+		yield break;
 	}
 }
 }

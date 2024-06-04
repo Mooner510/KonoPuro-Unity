@@ -44,8 +44,27 @@ public class IngameCardInfoUi : MonoBehaviour
 		Init();
 		SetActive(true);
 
-		var data = card.cardData;
-		if (data == null) return;
-		nameT.text = data.cardType;
+		if (card.type == IngameCardType.Student)
+		{
+			var studentData = card.GetStudentData();
+			if (studentData != null)
+			{
+				Debug.Log(studentData.cardType);
+				nameT.text = studentData.cardType;
+			}
+			else
+			{
+				var defaultData = card.GetData();
+				Debug.Log(defaultData);
+				nameT.text = defaultData.cardType;
+			}
+		}
+		else
+		{
+			var data = card.GetCardData();
+			if (data == null) return;
+			Debug.Log(data.defaultCardType);
+			nameT.text = data.defaultCardType;
+		}
 	}
 }

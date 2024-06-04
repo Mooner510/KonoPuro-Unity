@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _root.Script.Network;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using UnityEngine;
 
 namespace _root.Script.Client
 {
@@ -30,17 +31,12 @@ public class GameStudentCards
 [Serializable]
 public class GameStudentCard
 {
-	public string id;
-	public string defaultCardType;
-	public int    limit;
-	public bool   dayTime;
-}
-
-[Serializable]
-public class RawData
-{
-	public List<string> self;
-	public List<string> other;
+	public string                        id;
+	public string                        cardType;
+	public List<MajorType>               groups;
+	public List<Tiers>                   tiers;
+	public List<Passives>                passives;
+	public double                           fatigue;
 }
 
 public enum StudentState
@@ -65,12 +61,21 @@ public class StudentData
 }
 
 [Serializable]
+public class RawData
+{
+	public List<string> self;
+	public List<string> other;
+	public bool         turn;
+}
+
+[Serializable]
 public class StudentDatas
 {
 	public List<StudentData> students;
 }
 
-public enum Modifier {
+public enum Modifier
+{
 	Client,
 	Student,
 	Deck,
@@ -82,7 +87,8 @@ public enum Modifier {
 	Sleep,
 	DateData,
 	ProjectAdditionData,
-	Students
+	Students,
+	Turn
 }
 
 [CanBeNull]
@@ -101,66 +107,76 @@ public class UpdatedData
 	[CanBeNull] public Dictionary<string, int>                              dateData;
 	[CanBeNull] public Dictionary<MajorType, Dictionary<string, List<int>>> projectAdditionData;
 	[CanBeNull] public StudentDatas                                         students;
+	public             bool?                                                isTurn;
 
 	public static UpdatedData ConvertUpdatedData(List<string> data)
 	{
 		var updatedData = new UpdatedData();
-		
+
 		var set = data[0].Split(",");
 
 		for (var i = 0; i < set.Length; i++)
 		{
 			if (!Enum.TryParse<Modifier>(set[i], out var result)) continue;
+			Debug.Log($"changed : {result}");
 			var s = data[i + 1];
-			switch (result)
+			Debug.Log($"data : {s}");
+			try
 			{
-				case Modifier.Client:
-					updatedData.client = s;
-					break;
-				case Modifier.Student:
-					updatedData.student = JsonConvert.DeserializeObject<GameStudentCards>(s);
-					break;
-				case Modifier.Deck:
-					updatedData.deckSize = int.Parse(s);
-					break;
-				case Modifier.HeldCard:
-					updatedData.heldCards = JsonConvert.DeserializeObject<GameCards>(s);
-					break;
-				case Modifier.Time:
-					updatedData.time = int.Parse(s);
-					break;
-				case Modifier.FieldCard:
-					updatedData.fieldCards = JsonConvert.DeserializeObject<GameCards>(s);
-					break;
-				case Modifier.Project:
-					updatedData.projects = JsonConvert.DeserializeObject<Dictionary<MajorType, int>>(s);
-					break;
-				case Modifier.Issue:
-					updatedData.issues = JsonConvert.DeserializeObject<Dictionary<MajorType, List<int>>>(s);
-					break;
-				case Modifier.Sleep:
-					updatedData.sleep = bool.Parse(s);
-					break;
-				case Modifier.DateData:
-					updatedData.dateData = JsonConvert.DeserializeObject<Dictionary<string, int>>(s);
-					break;
-				case Modifier.ProjectAdditionData:
-					updatedData.projectAdditionData = JsonConvert.DeserializeObject<Dictionary<MajorType, Dictionary<string, List<int>>>>(s);
-					break;
-				case Modifier.Students:
-					updatedData.students = JsonConvert.DeserializeObject<StudentDatas>(s);
-					break;
-				default:
-					throw new ArgumentOutOfRangeException();
+				switch (result)
+				{
+					case Modifier.Client:
+						updatedData.client = s;
+						break;
+					case Modifier.Student:
+						updatedData.student = JsonConvert.DeserializeObject<GameStudentCards>(s);
+						break;
+					case Modifier.Deck:
+						updatedData.deckSize = int.Parse(s);
+						break;
+					case Modifier.HeldCard:
+						updatedData.heldCards = JsonConvert.DeserializeObject<GameCards>(s);
+						break;
+					case Modifier.Time:
+						updatedData.time = int.Parse(s);
+						break;
+					case Modifier.FieldCard:
+						updatedData.fieldCards = JsonConvert.DeserializeObject<GameCards>(s);
+						break;
+					case Modifier.Project:
+						updatedData.projects = JsonConvert.DeserializeObject<Dictionary<MajorType, int>>(s);
+						break;
+					case Modifier.Issue:
+						updatedData.issues = JsonConvert.DeserializeObject<Dictionary<MajorType, List<int>>>(s);
+						break;
+					case Modifier.Sleep:
+						updatedData.sleep = bool.Parse(s);
+						break;
+					case Modifier.DateData:
+						updatedData.dateData = JsonConvert.DeserializeObject<Dictionary<string, int>>(s);
+						break;
+					case Modifier.ProjectAdditionData:
+						updatedData.projectAdditionData = JsonConvert
+							   .DeserializeObject<Dictionary<MajorType, Dictionary<string, List<int>>>>(s);
+						break;
+					case Modifier.Students:
+						updatedData.students = JsonConvert.DeserializeObject<StudentDatas>(s);
+						break;
+					case Modifier.Turn:
+						updatedData.isTurn = bool.Parse(s);
+						break;
+					default:
+						throw new ArgumentOutOfRangeException();
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogError(e);
+				// ignored
 			}
 		}
-		
-		foreach (var element in set)
-		{
-			
-		}
 
-		return new UpdatedData();
+		return updatedData;
 	}
 }
 }

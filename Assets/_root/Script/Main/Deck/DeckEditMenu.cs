@@ -17,6 +17,7 @@ public class OriginDeckInfo
 
 public class DeckEditMenu : MonoBehaviour
 {
+	private Camera cam;
 	private Canvas canvas;
 
 	private GameObject       equipBackground;
@@ -49,6 +50,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void Start()
 	{
+		cam = Camera.main;
+		
 		equipBackground = transform.GetChild(2).gameObject;
 
 		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
@@ -125,12 +128,12 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void ApplyDeck()
 	{
-		if (equippedUseCards.Count != GameStatics.deckUseCardRequired || equippedCharacterCards.Count != GameStatics.deckUseCardRequired)
+		if (equippedUseCards.Count != GameStatics.deckUseCardRequired || equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
 		{
 			//TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
 			return;
 		}
-		
+
 		var originDeck = UserData.Instance.ActiveDeck.deck;
 
 		var deckId      = UserData.Instance.ActiveDeck.deckId;
@@ -186,11 +189,10 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void CheckSelect()
 	{
-		RaycastHit hit;
-		Ray        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+		var        ray = cam.ScreenPointToRay(Input.mousePosition);
 
 		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-		SelectCard(Physics.Raycast(ray, out hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
+		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
 	}
 
 	public void SelectCard(PlayerCardResponse card)
