@@ -11,7 +11,6 @@ public class ExampleScript : MonoBehaviour {
 
     private void Start()
     {
-        Debug.Log(gameObject.name);
         todayscard.SetActive(false);
     }
 
