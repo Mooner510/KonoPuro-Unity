@@ -5,7 +5,7 @@ public class Curve : MonoBehaviour
 {
     public GameObject target;
     public float time;
-    public float height;
+    public float height; 
 
     private void Start() => StartCoroutine(Run(time));
 
