@@ -1384,6 +1384,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 330585545}
   todayscard: {fileID: 616475843}
+  authpanel: {fileID: 541766745}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
