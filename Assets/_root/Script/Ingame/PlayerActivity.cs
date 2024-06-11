@@ -24,6 +24,8 @@ public class PlayerActivity : MonoBehaviour
 	private DiscriptionUI cardui;
 	
 
+	private bool interactable;
+
 	private void Awake()
 	{
 		ingameUi = FindObjectOfType<IngameUi>();
