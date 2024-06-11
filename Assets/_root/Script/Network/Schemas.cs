@@ -45,7 +45,8 @@ public enum Passives
 	Mastering,
 	IssueCracker,
 	Destore,
-	Brocker
+	Brocker,
+	Test
 }
 
 public enum Tiers

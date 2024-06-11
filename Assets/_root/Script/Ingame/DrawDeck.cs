@@ -38,13 +38,13 @@ public class DrawDeck : MonoBehaviour
 		
 		StartCoroutine(DrawMultiSequence(drawCallback, last, cards));
 	}
-	
-	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, List<GameCard> data)
+
+	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, IEnumerable<GameCard> data)
 	{
 		StartCoroutine(DrawMultiSequence(drawCallback, last, data));
 	}
 
-	private IEnumerator DrawMultiSequence(Action<IngameCard, bool> drawCallback, bool last, List<GameCard> data)
+	private IEnumerator DrawMultiSequence(Action<IngameCard, bool> drawCallback, bool last, IEnumerable<GameCard> data)
 	{
 		if(!currentCard) yield break;
 		foreach (var cardData in data)

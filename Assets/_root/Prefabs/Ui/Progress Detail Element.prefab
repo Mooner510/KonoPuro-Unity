@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5347324115434433635}
   - component: {fileID: 4296819759139614743}
   m_Layer: 5
-  m_Name: Major Efficiency
+  m_Name: Major Progress
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 3218227003535149090}
   - component: {fileID: 7728821156517103663}
   m_Layer: 5
-  m_Name: Major Progress
+  m_Name: Major Progress Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -462,6 +462,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7227373f5c264e4f95fff31fc629713, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
+  progress: 0
 --- !u!1 &7598913565450805236
 GameObject:
   m_ObjectHideFlags: 0

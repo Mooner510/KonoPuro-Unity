@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _root.Script.Client;
 using _root.Script.Network;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -37,6 +38,8 @@ public class PlayerHand : MonoBehaviour
 	private Camera cam;
 
 	private bool interactable;
+	
+	public List<GameCard> HandCards => handCards.Select(x=>x.GetCardData()).ToList();
 
 	private void Awake()
 	{

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _root.Script.Client;
 using _root.Script.Network;
 using _root.Script.Utils.SingleTon;
@@ -20,5 +21,8 @@ public static class GameStatics
 	public static int deckUseCardRequired = 25;
 	
 	public static List<GatchaResponse> gatchaList;
+
+	public static int maxProgress = 1000;
+	public static float CalcTotalProgress(int sum) => (float)sum / (Enum.GetValues(typeof(MajorType)).Length * maxProgress);
 }
 }

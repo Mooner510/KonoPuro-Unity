@@ -17,13 +17,10 @@ public class PlayerActivity : MonoBehaviour
 	private Camera     mainCamera;
 
 	public IngameCard selectedCard;
-	private bool interactable;
-	//Card Info UI
 	[SerializeField] private GameObject CardInfoPanel;
 	private Animator CardAnim;
 	private DiscriptionUI cardui;
 	
-
 	private bool interactable;
 
 	private void Awake()
@@ -74,7 +71,7 @@ public class PlayerActivity : MonoBehaviour
 		otherHand.SetActive(active);
 		interactable = active;
 	}
-
+	
 	private void viewCard(IngameCard card)//CardInfoUI
 	{
 		CardInfoPanel.SetActive(true);
@@ -116,6 +113,9 @@ public class PlayerActivity : MonoBehaviour
 		}
 		
 	}
+	
+	public List<GameCard> GetHandCards(bool self) => self ? selfHand.HandCards : otherHand.HandCards;
+
 	private void SelectCard(IngameCard card)
 	{
 		if (card && card == selectedCard && card.type == IngameCardType.Hand && card.isMine)
