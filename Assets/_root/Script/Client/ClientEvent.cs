@@ -17,8 +17,11 @@ public partial class NetworkClient
 	public enum ClientEvent
 	{
 		GameStarted,
+		GameEnd,
+		OtherCardUse,
+		OtherAbilityUse,
+		NextDay,
 		DataUpdated,
-		NextDay
 	}
 
 	private static IEnumerator ListenEvent(ClientEvent @event)
