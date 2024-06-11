@@ -151,10 +151,7 @@ public class PlayerActivity : MonoBehaviour
 
 	private IEnumerator UseCoroutine(IngameCard card)
 	{
-		NetworkClient.Send(RawProtocol.of(103,
-		                                  card.type == IngameCardType.Student
-				                                  ? card.GetStudentData().id
-				                                  : card.GetCardData().id));
+		NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id));
 
 		SetActive(false);
 		RemoveHandCard(card, true);
