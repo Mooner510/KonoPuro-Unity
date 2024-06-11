@@ -166,8 +166,8 @@ public class IngameManager : MonoBehaviour
 
 		ProjectUpdate(self?.projects, other?.projects);
 
-		if(self?.heldCards != null) selfDeck.DrawCards(activity.AddHandCard, self.deckSize == 0, self.heldCards.cards);
-		if(other?.heldCards != null) otherDeck.DrawCards(activity.AddHandCard, other.deckSize == 0, other.heldCards.cards);
+		if(self?.heldCards != null) DrawCard(self.heldCards.cards, true, self.deckSize == 0);
+		if(other?.heldCards != null) DrawCard(other.heldCards.cards, false, other.deckSize == 0);;
 
 		if(other?.sleep != null) OtherSleep();
 	}
@@ -193,9 +193,13 @@ public class IngameManager : MonoBehaviour
 	{
 	}
 
-	private void DrawCard()
+	private void DrawCard(IReadOnlyCollection<GameCard> cards, bool self, bool last)
 	{
-		
+		var handCards = activity.GetHandCards(self);
+		var ids       = cards.Select(x => x.id);
+		var handIds   = handCards.Select(x => x.id);
+		var drawIds   = ids.Except(handIds);
+		(self ? selfDeck : otherDeck).DrawCards(activity.AddHandCard, last, cards.Where(x=>drawIds.Contains(x.id)));
 	}
 
 	private void TimeChanged(int? self, int? other)
@@ -222,8 +226,6 @@ public class IngameManager : MonoBehaviour
 		if(!GameStatics.isTurn) return;
 		ui.TimeChanged(0, true);
 		ui.InteractBlock(false);
-		GameStatics.isTurn = false;
-		TurnChanged(false);
 		NetworkClient.Send(RawProtocol.of(105, null));
 	}
 
