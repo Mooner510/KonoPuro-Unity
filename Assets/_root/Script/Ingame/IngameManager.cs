@@ -67,6 +67,7 @@ public class IngameManager : MonoBehaviour
 
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, NextDay);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherCardUse, OtherCardUse);
 
 		//TODO: 빌드시에 포함 고려 (커서가 화면 밖으로 안나가는 기능)
 		// Cursor.lockState = CursorLockMode.Confined;
@@ -189,8 +190,9 @@ public class IngameManager : MonoBehaviour
 	{
 	}
 
-	private void HeldUpdate()
+	private void OtherCardUse()
 	{
+		activity.RemoveHandCard(null, false);
 	}
 
 	private void DrawCard(IReadOnlyCollection<GameCard> cards, bool self, bool last)
