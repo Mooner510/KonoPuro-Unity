@@ -92,24 +92,21 @@ public class IngameUi : MonoBehaviour
 		dayText.text = $"Day - {day}";
 	}
 
-	public void SetCurrentTime(int otherTime, int selfTime)
+	public void TimeChanged(int time, bool self)
 	{
-		selfTimeText.text  = $"{selfTime}";
-		otherTimeText.text = $"{otherTime}";
+		(self ? selfTimeText : otherTimeText).text  = $"{time}";
 	}
 
-	public void SetProgress(float otherProgress, float selfProgress)
+	public void SetProgress(float progress, bool self)
 	{
-		selfProgressSlider.value  = selfProgress;
-		otherProgressSlider.value = otherProgress;
-
-		selfProgressText.text  = $"{selfProgress:P0}";
-		otherProgressText.text = $"{otherProgress:P0}%";
+		(self ? selfProgressSlider : otherProgressSlider).value = progress;
+		(self ? selfProgressText : otherProgressText).text      = $"{progress:P2}";
 	}
 
-	public void SetProgressDetail()
+	public void SetProgressDetail(Dictionary<MajorType, int> projects, bool self)
 	{
-		//TODO: 소켓 연결 시 추가
+		var totalProgress = GameStatics.CalcTotalProgress((self ? selfProgressDetail : otherProgressDetail).SetProgresses(projects));
+		SetProgress(totalProgress, self);
 	}
 
 	public void SetCardInfo(IngameCard card)
@@ -120,5 +117,10 @@ public class IngameUi : MonoBehaviour
 	public void TurnSet(bool myTurn)
 	{
 		turnDisplayUi.TurnNotify(myTurn);
+	}
+
+	public void InteractBlock(bool active)
+	{
+		sleepButton.interactable = active;
 	}
 }

@@ -33,18 +33,12 @@ public class MainManager : MonoBehaviour
 
 	private void Start()
 	{
+		NetworkClient.Init();
 		mainCam                   =  Camera.main;
 		StartCoroutine(StartFlow());
-		StartCoroutine(Routine());
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameStarted, GameStart);
 	}
-
-	private IEnumerator Routine()
-	{
-		yield return new WaitUntil(() => NetworkClient.gameStarted);
-		NetworkClient.gameStarted = false;
-		GameStart();
-	}
-
+	
 	private void Update()
 	{
 		CheckPlaceable();

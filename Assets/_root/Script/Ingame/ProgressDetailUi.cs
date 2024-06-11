@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _root.Script.Client;
+using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
@@ -36,7 +38,23 @@ public class ProgressDetailUi : MonoBehaviour
 		{
 			var element = Instantiate(elementPrefab, transform).GetComponent<ProgressDetailElementUi>();
 			element.Init(info);
+			elementUis.Add(element);
 		}
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns>total progress</returns>
+	public int SetProgresses(Dictionary<MajorType, int> projects)
+	{
+		foreach (var pair in projects)
+		{
+			var element = elementUis.First(x => x.type == pair.Key);
+			if(element) element.SetProgress(pair.Value);
+		}
+
+		return elementUis.Select(x => x.progress).Sum();
 	}
 
 	public void Show(bool show)

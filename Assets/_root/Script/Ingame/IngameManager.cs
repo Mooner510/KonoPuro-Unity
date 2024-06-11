@@ -65,9 +65,9 @@ public class IngameManager : MonoBehaviour
 
 		FindObjectsOfType<Canvas>().First(x => x.gameObject.name == "Field Canvas").enabled = false;
 
-		NetworkClient.onDataUpdate += UpdateData;
-		
-		
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, NextDay);
+
 		//TODO: 빌드시에 포함 고려 (커서가 화면 밖으로 안나가는 기능)
 		// Cursor.lockState = CursorLockMode.Confined;
 	}
@@ -109,6 +109,7 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator StartFlow(List<GameCard> selfDraws, int otherDrawCount)
 	{
+		ui.InteractBlock(false);
 		day = 1;
 		selfStats.Init();
 		otherStats.Init();
@@ -159,25 +160,29 @@ public class IngameManager : MonoBehaviour
 		var other = GameStatics.other;
 
 		var turn = GameStatics.isTurn;
-		if (turn != preTurn)
-		{
-			preTurn = turn;
-			TurnChanged(preTurn);
-		}
+		if (turn != preTurn) TurnChanged(turn);
 
-		if (self == null && other == null) return;
+		TimeChanged(self?.time, other?.time);
 
-		// if(self.)
+		ProjectUpdate(self?.projects, other?.projects);
+
+		if(self?.heldCards != null) selfDeck.DrawCards(activity.AddHandCard, self.deckSize == 0, self.heldCards.cards);
+		if(other?.heldCards != null) otherDeck.DrawCards(activity.AddHandCard, other.deckSize == 0, other.heldCards.cards);
+
+		if(other?.sleep != null) OtherSleep();
 	}
 
 	private void NextDay()
 	{
 		day++;
 		ui.DayChange(day);
+		activity.SetActive(true);
 	}
 
-	private void ProjectUpdate()
+	private void ProjectUpdate(Dictionary<MajorType, int> self, Dictionary<MajorType, int> other)
 	{
+		if (self != null) ui.SetProgressDetail(self, true);
+		if (other != null) ui.SetProgressDetail(other, false);
 	}
 
 	private void FieldUpdate()
@@ -190,11 +195,41 @@ public class IngameManager : MonoBehaviour
 
 	private void DrawCard()
 	{
+		
+	}
+
+	private void TimeChanged(int? self, int? other)
+	{
+		if (self != null)
+		{
+			ui.TimeChanged(self.Value, true);
+		}
+		if (other != null)
+		{
+			ui.TimeChanged(other.Value, false);
+		}
 	}
 
 	private void TurnChanged(bool myTurn)
 	{
+		preTurn = myTurn;
 		ui.TurnSet(myTurn);
+		ui.InteractBlock(myTurn);
+	}
+
+	public void Sleep()
+	{
+		if(!GameStatics.isTurn) return;
+		ui.TimeChanged(0, true);
+		ui.InteractBlock(false);
+		GameStatics.isTurn = false;
+		TurnChanged(false);
+		NetworkClient.Send(RawProtocol.of(105, null));
+	}
+
+	private void OtherSleep()
+	{
+		ui.TimeChanged(0, false);
 	}
 }
 
@@ -222,5 +257,4 @@ public class DetailProgressInfo
 {
 	public MajorType major;
 	public float     progress   = 0;
-	public float     efficiency = 100;
 }

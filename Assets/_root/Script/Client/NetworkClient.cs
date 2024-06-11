@@ -9,7 +9,6 @@ using _root.Script.Network;
 using _root.Script.Utils.SingleTon;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using SocketIO.Core;
 using SocketIO.Serializer.NewtonsoftJson;
 using SocketIOClient;
 using SocketIOClient.Transport;
@@ -17,7 +16,7 @@ using UnityEngine;
 
 namespace _root.Script.Client
 {
-public class NetworkClient : SingleMono<NetworkClient>
+public partial class NetworkClient : SingleMono<NetworkClient>
 {
 	public bool   localHost;
 	public bool   security;
@@ -31,12 +30,17 @@ public class NetworkClient : SingleMono<NetworkClient>
 	private NetworkStream           _stream;
 	private Thread                  _thread;
 
-	public static bool                           gameStarted;
-	public static Action onDataUpdate;
-
-	public static Action<Action> RunInMainThread;
-
 	private static string roomId;
+
+	public static void Init() => Instance._Init();
+
+	private void _Init()
+	{
+		foreach (ClientEvent @event in Enum.GetValues(typeof(ClientEvent)))
+		{
+			StartCoroutine(ListenEvent(@event));
+		}
+	}
 
 	public static void Send(params object[] data)
 	{
@@ -49,12 +53,6 @@ public class NetworkClient : SingleMono<NetworkClient>
 		{
 			Debug.LogError(e);
 		}
-	}
-
-	protected override void Awake()
-	{
-		base.Awake();
-		RunInMainThread = (runner) => StartCoroutine(_Run(runner));
 	}
 
 	private void Start()
@@ -134,7 +132,7 @@ public class NetworkClient : SingleMono<NetworkClient>
 				                GameStatics.other  = other;
 				                GameStatics.isTurn = rawData.turn;
 
-				                gameStarted = true;
+				                CallEvent(ClientEvent.GameStarted);
 			                }
 			                else if (rawProtocol.protocol == 206)
 			                {
@@ -146,7 +144,11 @@ public class NetworkClient : SingleMono<NetworkClient>
 				                GameStatics.other  = other;
 				                GameStatics.isTurn = rawData.turn;
 
-				                onDataUpdate();
+				                CallEvent(ClientEvent.DataUpdated);
+			                }
+			                else if(rawProtocol.protocol == 204)
+			                {
+				                CallEvent(ClientEvent.NextDay);
 			                }
 
 			                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
@@ -159,12 +161,6 @@ public class NetworkClient : SingleMono<NetworkClient>
 		Debug.Log("Connecting..");
 		await _client.ConnectAsync();
 		Debug.Log("Connected!!!");
-	}
-
-	private IEnumerator _Run(Action runner)
-	{
-		runner.Invoke();
-		yield break;
 	}
 }
 }

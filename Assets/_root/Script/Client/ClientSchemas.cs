@@ -111,6 +111,7 @@ public class UpdatedData
 
 	public static UpdatedData ConvertUpdatedData(List<string> data)
 	{
+		if (data == null) return null;
 		var updatedData = new UpdatedData();
 
 		var set = data[0].Split(",");
@@ -119,7 +120,7 @@ public class UpdatedData
 		{
 			if (!Enum.TryParse<Modifier>(set[i], out var result)) continue;
 			Debug.Log($"changed : {result}");
-			var s = data[i + 1];
+			var s = data[i + 1].Replace(@"\", "");
 			Debug.Log($"data : {s}");
 			try
 			{
@@ -166,7 +167,8 @@ public class UpdatedData
 						updatedData.isTurn = bool.Parse(s);
 						break;
 					default:
-						throw new ArgumentOutOfRangeException();
+						Debug.LogError(result);
+						break;
 				}
 			}
 			catch (Exception e)
