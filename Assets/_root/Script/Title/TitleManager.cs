@@ -17,7 +17,7 @@ public class TitleManager : MonoBehaviour
 	[SerializeField] private GameObject LoginSuccess;
 	private TitleUi   titleUi;
 	private AuthPanel authPanel;
-
+	private bool loginsuccess;
 	private void Awake()
 	{
 		titleUi   = FindObjectOfType<TitleUi>();
@@ -159,14 +159,18 @@ public class TitleManager : MonoBehaviour
 		Networking.AccessToken = response.accessToken;
 		titleUi.Login(false);
 		LoginSuccess.SetActive(true);
-		Invoke("LogSuccess",2f);
+		loginsuccess = true;
+		StopAllCoroutines();
+		StartCoroutine(Login());
 	}
 
 	private void SignInError(ErrorBody errorBody)
 	{
 		titleUi.SetThrobber(false);
 		LoginFaild.SetActive(true);
-		Invoke("LogFaild", 2f);
+		loginsuccess = false;
+		StopAllCoroutines();
+		StartCoroutine(Login());
 	}
 
 	private void SignUpSuccess()
@@ -179,13 +183,17 @@ public class TitleManager : MonoBehaviour
 		titleUi.SetThrobber(false);
 	}
 
-	void LogFaild()
+	IEnumerator Login()
 	{
-		LoginFaild.SetActive(false);
-	}
-
-	void LogSuccess()
-	{
-		LoginSuccess.SetActive(false);
+		if (loginsuccess)
+		{
+			yield return new WaitForSeconds(2f);
+			LoginSuccess.SetActive(false);
+		}
+		else
+		{
+			yield return new WaitForSeconds(2f);
+			LoginFaild.SetActive(false);
+		}
 	}
 }

@@ -14,10 +14,4 @@ public class GoldFetcher : MonoBehaviour
     {
         _gachaui = gachaui.GetComponent<GachaUI>();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        _gachaui.ChangeGoldTxt(currentgold);
-    }
 }

@@ -25,13 +25,6 @@ public class CardinrandomRange : MonoBehaviour
         startposition.z = gameObject.transform.position.z;
         gameObject.transform.position = startposition;
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OnMouseDown()
     {
         if (cardclickcount == 0)
