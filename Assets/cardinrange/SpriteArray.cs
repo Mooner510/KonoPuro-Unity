@@ -14,13 +14,6 @@ public class SpriteArray : MonoBehaviour
         _spriteRenderer=gameObject.GetComponent<Image>();
         SpriteRandom();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void SpriteRandom()
     {
         randomindex = Random.Range(0, Sprites.Length);

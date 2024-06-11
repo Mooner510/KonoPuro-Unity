@@ -17,6 +17,14 @@ public class PlayerActivity : MonoBehaviour
 	private Camera     mainCamera;
 
 	public IngameCard selectedCard;
+	private bool interactable;
+	//Card Info UI
+	[SerializeField] private GameObject CardInfoPanel;
+	private Animator CardAnim;
+	private DiscriptionUI cardui;
+	
+
+	private bool interactable;
 
 	private void Awake()
 	{
@@ -25,10 +33,10 @@ public class PlayerActivity : MonoBehaviour
 		var hands = FindObjectsOfType<PlayerHand>().ToList();
 		mainCamera = Camera.main;
 		selfHand   = hands.First(x => x.gameObject.name == "Self Hand");
-		otherHand  = hands.First(x => x.gameObject.name == "Other Hand");
-
-		//TODO: 빌드에는 포함시키기 - 화면 밖으로 커서가 안나가도록 해줌
-		// Cursor.lockState = CursorLockMode.Confined;
+		otherHand = hands.First(x => x.gameObject.name == "Other Hand");
+		CardInfoPanel           = GameObject.Find("Card Info Panel");
+		cardui = CardInfoPanel.GetComponent<DiscriptionUI>();
+		CardAnim = CardInfoPanel.GetComponent<Animator>();
 	}
 
 	private void Start()
@@ -38,7 +46,17 @@ public class PlayerActivity : MonoBehaviour
 
 	private void Update()
 	{
-		if (!Input.GetMouseButtonDown(0)) return;
+		if (Input.GetMouseButtonDown(1))
+		{	
+			//CardInfoUI Interact
+			Debug.Log("um");
+			cardui.Out();
+			viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var viewcard)
+				? viewcard.transform.GetComponent<IngameCard>()
+				: null);
+		}
+		if (!interactable || !Input.GetMouseButtonDown(0)) return;
+		cardui.Out();
 		SelectCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var hit)
 				           ? hit.transform.GetComponent<IngameCard>()
 				           : null);
@@ -46,12 +64,58 @@ public class PlayerActivity : MonoBehaviour
 
 	public void SetActive(bool active)
 	{
-		selectedCard = null;
+		if (!active)
+		{
+			ingameUi.SetCardInfo(null);
+			SelectCard(null);
+		}
+
 		selfHand.SetActive(active);
 		otherHand.SetActive(active);
-		enabled = active;
+		interactable = active;
 	}
 
+	private void viewCard(IngameCard card)//CardInfoUI
+	{
+		CardInfoPanel.SetActive(true);
+		if (!card)
+		{
+			CardInfoPanel.SetActive(false);
+		}
+		else
+		{
+			if(card.type == IngameCardType.Hand)
+			{
+				if (card.isMine)
+				{
+					CardInfoPanel.SetActive(true);
+					CardAnim.Play("CardInfoFadeIn");
+					cardui.viewCard(card);
+				}
+				else
+				{
+					CardInfoPanel.SetActive(false);
+				}
+			}
+			else if (card.type == IngameCardType.Field)
+			{
+				CardInfoPanel.SetActive(true);
+				CardAnim.Play("CardInfoFadeIn");
+				cardui.viewCard(card);
+			}
+			else if (card.type == IngameCardType.Student)
+			{
+				CardInfoPanel.SetActive(true);
+				CardAnim.Play("CardInfoFadeIn");
+				cardui.viewCard(card);
+			}
+			else
+			{
+				CardInfoPanel.SetActive(false);
+			}
+		}
+		
+	}
 	private void SelectCard(IngameCard card)
 	{
 		if (card && card == selectedCard && card.type == IngameCardType.Hand && card.isMine)
@@ -61,7 +125,8 @@ public class PlayerActivity : MonoBehaviour
 		}
 
 		selectedCard = card;
-		if (!card || card.type == IngameCardType.Deck) selfHand.SelectCard(null);
+		if (!card) selfHand.SelectCard(null);
+		else if (card.type != IngameCardType.Hand) selfHand.SelectCard(null, false);
 		else if (card.isMine && card.type == IngameCardType.Hand) selfHand.SelectCard(card);
 		ingameUi.SetCardInfo(card);
 	}
@@ -80,17 +145,28 @@ public class PlayerActivity : MonoBehaviour
 
 	public void UseCard(IngameCard card)
 	{
-		if(!GameStatics.isTurn) return;
-		selectedCard = null;
-		ingameUi.SetCardInfo(null);
+		if (!GameStatics.isTurn) return;
+		StartCoroutine(UseCoroutine(card));
+	}
+
+	private IEnumerator UseCoroutine(IngameCard card)
+	{
+		NetworkClient.Send(RawProtocol.of(103,
+		                                  card.type == IngameCardType.Student
+				                                  ? card.GetStudentData().id
+				                                  : card.GetCardData().id));
+
+		SetActive(false);
 		RemoveHandCard(card, true);
 
-		NetworkClient.Send(RawProtocol.of(103, card.type == IngameCardType.Student ? card.GetStudentData().id : card.GetCardData().id));	
+		yield return new WaitForSeconds(.5f);
+
+		SetActive(true);
 	}
 
 	public void UseAbility()
 	{
-		if(!GameStatics.isTurn) return;
+		if (!GameStatics.isTurn) return;
 	}
 
 	public void Sleep()

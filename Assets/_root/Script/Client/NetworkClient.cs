@@ -32,7 +32,7 @@ public class NetworkClient : SingleMono<NetworkClient>
 	private Thread                  _thread;
 
 	public static bool                           gameStarted;
-	public static Action<UpdatedData, UpdatedData> updateData;
+	public static Action onDataUpdate;
 
 	public static Action<Action> RunInMainThread;
 
@@ -146,7 +146,7 @@ public class NetworkClient : SingleMono<NetworkClient>
 				                GameStatics.other  = other;
 				                GameStatics.isTurn = rawData.turn;
 
-				                updateData.Invoke(self, other);
+				                onDataUpdate();
 			                }
 
 			                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
