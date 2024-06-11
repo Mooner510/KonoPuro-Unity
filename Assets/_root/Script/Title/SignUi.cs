@@ -10,6 +10,7 @@ public class SignUi : MonoBehaviour
 {
 	private TMP_InputField idField;
 	private TMP_InputField passwordField;
+	private TMP_InputField passwordReEnterField;
 	private TMP_InputField nameField;
 
 	private void Awake()
@@ -17,7 +18,9 @@ public class SignUi : MonoBehaviour
 		var fields = GetComponentsInChildren<TMP_InputField>();
 		idField       = fields[0];
 		passwordField = fields[1];
-		if (fields.Length > 2) nameField = fields[2];
+		if (fields.Length <= 2) return;
+		passwordReEnterField = fields[2];
+		nameField = fields[3];
 	}
 
 	private void Start()
@@ -30,6 +33,7 @@ public class SignUi : MonoBehaviour
 		idField.text       = "";
 		passwordField.text = "";
 		if (nameField) nameField.text = "";
+		if (passwordReEnterField) passwordReEnterField.text = "";
 	}
 
 	public SignInRequest GetSignInReq()
@@ -45,6 +49,7 @@ public class SignUi : MonoBehaviour
 		var post = new SignUpRequest()
 		           { id = idField.text, password = passwordField.text, name = nameField.text };
 		Init();
+		if (passwordField.text != passwordReEnterField.text) post.password = "";
 		return post;
 	}
 }
