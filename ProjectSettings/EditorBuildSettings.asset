@@ -14,4 +14,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/IngameScene.unity
     guid: 9fc105e538ed1c647bd800e946131528
+  - enabled: 1
+    path: Assets/Scenes/GachaDirectingScene.unity
+    guid: 5a72f15f5a5d0d4439d4fd90130d5a72
+  - enabled: 1
+    path: Assets/Scenes/CardGatchaSingle.unity
+    guid: ec05943327d41de41aa3c4eda1283854
+  - enabled: 1
+    path: Assets/Scenes/CardGatchaMulti.unity
+    guid: 9b1e8285c4eca2f48ad568263d7389d7
   m_configObjects: {}
