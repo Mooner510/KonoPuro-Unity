@@ -1,25 +1,26 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 public class FirstCard : MonoBehaviour {
-    public Camera camera;
-    [SerializeField] private GameObject todayscard;
-    [SerializeField] private GameObject authpanel;
-  
+    private Camera camera; 
+    private GameObject todayscard;
+    private void Awake()
+    {
+        todayscard = GameObject.Find("Todayscard");
+    }
+
     private void Start()
     {
         todayscard.SetActive(false);
+        camera = Camera.main;
     }
 
     void Update(){
-        RaycastHit hit;
         Ray ray = camera.ScreenPointToRay(Input.mousePosition);
         if (Input.GetMouseButtonDown(0))
         {
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, 1 << 6)&&!authpanel.activeSelf)
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            if (Physics.Raycast(ray, out var hit, 20, 1 << 6))
             {
                 todayscard.SetActive(true);
             }

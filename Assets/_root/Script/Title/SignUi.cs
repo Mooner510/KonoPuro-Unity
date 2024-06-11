@@ -16,11 +16,18 @@ public class SignUi : MonoBehaviour
 	private void Awake()
 	{
 		var fields = GetComponentsInChildren<TMP_InputField>();
-		idField       = fields[0];
-		passwordField = fields[1];
-		if (fields.Length <= 2) return;
-		passwordReEnterField = fields[2];
-		nameField = fields[3];
+		idField              = fields[0];
+		passwordField        = fields[1];
+		switch (fields.Length)
+		{
+			case 3:
+				nameField = fields[2];
+				break;
+			case 4:
+				passwordReEnterField = fields[2];
+				nameField            = fields[3];
+				break;
+		}
 	}
 
 	private void Start()
