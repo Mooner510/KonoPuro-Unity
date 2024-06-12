@@ -16,7 +16,6 @@ public class PlaceableObject : MonoBehaviour
 	[SerializeField] private UnityEvent interactEvent;
 	[SerializeField] private UnityEvent initEvent;
 	private Material accentMaterial;
-
 	private void Start()
 	{
 		Init();
@@ -37,7 +36,6 @@ public class PlaceableObject : MonoBehaviour
 		}
 		else
 		{
-			Debug.Log("UM");
 			gameObject.GetComponent<MeshRenderer>().materials[1].SetColor("_OutlineColor",Color.white);
 			gameObject.GetComponent<MeshRenderer>().materials[1].SetFloat("_Scale",1.01f);
 		}
