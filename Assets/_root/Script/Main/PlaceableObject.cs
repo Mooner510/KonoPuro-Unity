@@ -31,7 +31,7 @@ public class PlaceableObject : MonoBehaviour
 		if (active)
 		{
 			Debug.Log("UM");
-			gameObject.GetComponent<MeshRenderer>().materials[1].SetColor("_OutlineColor", new Color(255,128,0));
+			gameObject.GetComponent<MeshRenderer>().materials[1].SetColor("_OutlineColor", Color.green);
 			gameObject.GetComponent<MeshRenderer>().materials[1].SetFloat("_Scale",1.015f);
 		}
 		else
