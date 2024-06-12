@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.000017033923, g: 0.000000025772884, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.000017033932, g: 0.000000025772884, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1382,9 +1382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b92cbb970d7a2e74e854a6e1cb415638, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  todayscard: {fileID: 616475843}
-  authpanel: {fileID: 541766745}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2119,7 +2116,7 @@ GameObject:
   - component: {fileID: 616475845}
   - component: {fileID: 616475848}
   m_Layer: 5
-  m_Name: Todayscard
+  m_Name: Today Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5663,6 +5660,8 @@ MonoBehaviour:
   director: {fileID: 1013054863}
   start: {fileID: 11400000, guid: 7adb1759a8f20b04284318b7aa8cec9a, type: 2}
   end: {fileID: 11400000, guid: 88d4d639e0f823a409ce2b8ed70befc6, type: 2}
+  LoginFailed: {fileID: 1667634324}
+  LoginSuccess: {fileID: 837061633}
 --- !u!1 &1948130265
 GameObject:
   m_ObjectHideFlags: 0
