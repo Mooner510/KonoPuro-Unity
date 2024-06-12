@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using _root.Script.Data;
@@ -34,12 +35,16 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 
 	public static void Init() => Instance._Init();
 
+	private readonly List<Coroutine> coroutines = new();
+
 	private void _Init()
 	{
+		delegates.Clear();
+
+		foreach (var coroutine in coroutines.Where(coroutine => coroutine != null)) StopCoroutine(coroutine);
+		coroutines.Clear();
 		foreach (ClientEvent @event in Enum.GetValues(typeof(ClientEvent)))
-		{
-			StartCoroutine(ListenEvent(@event));
-		}
+			coroutines.Add(StartCoroutine(ListenEvent(@event)));
 	}
 
 	public static void Send(params object[] data)

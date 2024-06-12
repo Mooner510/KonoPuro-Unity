@@ -12,7 +12,11 @@ public partial class NetworkClient
 
 	public static void CallEvent(ClientEvent @event) => events.Add(@event);
 
-	public static void DelegateEvent(ClientEvent @event, Action action) => delegates[@event] = action;
+	public static void DelegateEvent(ClientEvent @event, Action action)
+	{
+		delegates.TryAdd(@event, null); 
+		delegates[@event] += action;
+	}
 
 	public enum ClientEvent
 	{
@@ -22,6 +26,11 @@ public partial class NetworkClient
 		OtherAbilityUse,
 		NextDay,
 		DataUpdated,
+
+		DataApplied,
+
+		//Not Networking
+		Wait,
 	}
 
 	private static IEnumerator ListenEvent(ClientEvent @event)
