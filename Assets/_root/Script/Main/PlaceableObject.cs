@@ -12,7 +12,7 @@ public class PlaceableObject : MonoBehaviour
 
 	[SerializeField] private UnityEvent interactEvent;
 	[SerializeField] private UnityEvent initEvent;
-
+	
 	private void Start()
 	{
 		Init();
@@ -25,6 +25,7 @@ public class PlaceableObject : MonoBehaviour
 
 	public void OnHover(bool active)
 	{
+
 	}
 
 	public CinemacineController.VCamName Interact()
