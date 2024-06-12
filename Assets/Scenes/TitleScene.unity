@@ -2116,7 +2116,7 @@ GameObject:
   - component: {fileID: 616475845}
   - component: {fileID: 616475848}
   m_Layer: 5
-  m_Name: Today Card
+  m_Name: Today's Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5623,6 +5623,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1833554437}
   - component: {fileID: 1833554438}
+  - component: {fileID: 1833554439}
   m_Layer: 0
   m_Name: TitleManager
   m_TagString: Untagged
@@ -5662,6 +5663,18 @@ MonoBehaviour:
   end: {fileID: 11400000, guid: 88d4d639e0f823a409ce2b8ed70befc6, type: 2}
   LoginFailed: {fileID: 1667634324}
   LoginSuccess: {fileID: 837061633}
+--- !u!114 &1833554439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833554436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab4be0d0c5534804abea3f127bc54952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1948130265
 GameObject:
   m_ObjectHideFlags: 0
