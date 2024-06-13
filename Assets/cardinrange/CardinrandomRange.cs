@@ -1,47 +1,27 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
+using _root.Script.Manager;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using UnityEngine.Serialization;
 
-public class CardinrandomRange : MonoBehaviour
+namespace cardinrange
 {
-    public GameObject[] pickupcard;
-    
-    public int cardindex;
-
-    private int cardclickcount;
-    public Vector3 startposition;
-    public Vector3 endposition;
-    
-    // Start is called before the first frame update
-    void Start()
+    public class CardinrandomRange : MonoBehaviour
     {
-        cardindex=Random.Range(1, 4);
-        cardclickcount = 0;
-        startposition.x = gameObject.transform.position.x;
-        startposition.y = gameObject.transform.position.y;
-        startposition.z = gameObject.transform.position.z;
-        gameObject.transform.position = startposition;
-    }
-    public void OnMouseDown()
-    {
-        if (cardclickcount == 0)
+        public SpriteRenderer[] pickUpCard;
+        public string cardId;
+    
+        // Start is called before the first frame update
+        private void Start()
         {
-            pickupcard[0].SetActive(false);
-            pickupcard[cardindex].SetActive(true);
-        }
-        else if (cardclickcount%2==1)
-        {
-            transform.gameObject.transform.position = Vector3.Lerp(startposition, endposition, 500f);
-        }
-        else if(cardclickcount%2==0)
-        {
-            transform.gameObject.transform.position = Vector3.Lerp(endposition, startposition, 500f);
+        
+            pickUpCard = GetComponentsInChildren<SpriteRenderer>();
+            pickUpCard[1].sprite = ResourceManager.GetSprite(cardId);
         }
 
-        cardclickcount++;
-
+        public void OnMouseDown()
+        {
+            pickUpCard[0].enabled = false;
+            pickUpCard[1].enabled = true;
+            GetComponentInChildren<Light>().enabled = false;
+        }
     }
 }

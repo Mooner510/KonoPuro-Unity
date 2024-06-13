@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using _root.Script.Card;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -31,6 +32,7 @@ namespace _root.Script.Main
                 if ((mc[0].GetComponent<Transform>().rotation.ToString().Equals(ec[0].GetComponent<Transform>().rotation.ToString()))) GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
                 if (GetComponent<Light>().intensity > 20000f)
                 {
+                    GachaMultiCardSetter.gatchaCards = gatchaCards;
                     SceneManager.LoadScene("CardGatchaMulti");
                 }
             }
@@ -41,6 +43,7 @@ namespace _root.Script.Main
                 if (singleCard.rotation.ToString().Equals(singleCardEndPos.rotation.ToString())) GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
                 if (GetComponent<Light>().intensity > 20000f)
                 {
+                    GachaSingleCardSetter.gatchaCard = gatchaCards[0];
                     SceneManager.LoadScene("CardGatchaSingle");
                 }
             }
