@@ -10,6 +10,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GachaUI : MonoBehaviour
 {
@@ -132,5 +133,10 @@ public class GachaUI : MonoBehaviour
 	private void ChangeGoldTxt(int gold)
 	{
 		goldText.text = string.Format($"{gold:N0}");
+	}
+
+	public void DoGacha()
+	{
+		SceneManager.LoadScene("GachaScene");
 	}
 }
