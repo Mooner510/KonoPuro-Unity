@@ -54,9 +54,10 @@ public class MainManager : MonoBehaviour
 		if (Physics.Raycast(ray, out var hit))
 		{
 			var placeble = hit.transform.GetComponent<PlaceableObject>();
-			if (!placeble) return;
+			
 			if (hoveredPlaceableObject)
 			{
+				if (!placeble) return;
 				if (placeble != hoveredPlaceableObject)
 				{
 					hoveredPlaceableObject.OnHover(false);
@@ -72,6 +73,11 @@ public class MainManager : MonoBehaviour
 		}
 		else
 		{
+			if (hoveredPlaceableObject)
+			{
+				hoveredPlaceableObject.OnHover(false);
+				hoveredPlaceableObject = null;
+			}
 			return;
 		}
 
