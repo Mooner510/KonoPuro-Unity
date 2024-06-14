@@ -32,7 +32,7 @@ public class IngameCardInfoUi : MonoBehaviour
 		gameObject.SetActive(active);
 	}
 
-	public void SetCard(IngameCard card)
+	public void SetInfo(IngameCard card)
 	{
 		if (card == null || card.type == IngameCardType.Deck ||
 		    (card.type is not (IngameCardType.Field or IngameCardType.Student) && !card.isMine))
@@ -41,7 +41,6 @@ public class IngameCardInfoUi : MonoBehaviour
 			return;
 		}
 
-		Init();
 		SetActive(true);
 
 		if (card.type == IngameCardType.Student)
@@ -66,5 +65,12 @@ public class IngameCardInfoUi : MonoBehaviour
 			Debug.Log(data.defaultCardType);
 			nameT.text = data.defaultCardType;
 		}
+	}
+	
+	public void SetInfo(Tiers ability)
+	{
+		SetActive(true);
+
+		nameT.text = ability.ToString();
 	}
 }

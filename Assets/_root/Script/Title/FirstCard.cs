@@ -2,8 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 public class FirstCard : MonoBehaviour {
-    private Camera camera; 
-    private GameObject todayCard;
+    private new Camera     camera; 
+    private     GameObject todayCard;
     
     private void Awake()
     {

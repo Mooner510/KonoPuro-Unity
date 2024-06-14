@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace _root.Script.Client
@@ -16,5 +17,15 @@ namespace _root.Script.Client
 
         public static RawProtocol of(int protocol, params object[] data) => new()
                                                                             { protocol = protocol, data = data };
+    }
+
+    [Serializable]
+    public class RawProtocols
+    {
+        [JsonPropertyName("data")] public List<RawProtocol> data;
+
+        private RawProtocols()
+        {
+        }
     }
 }

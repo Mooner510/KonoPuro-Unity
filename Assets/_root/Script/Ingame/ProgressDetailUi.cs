@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
+using _root.Script.Data;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
@@ -29,7 +30,7 @@ public class ProgressDetailUi : MonoBehaviour
 		canvasGroup.alpha = 0;
 	}
 
-	public void Init(List<DetailProgressInfo> infos)
+	public void Init(HashSet<Tuple<MajorType, int>> infos)
 	{
 		foreach (var progressDetailElementUi in elementUis)
 			Destroy(progressDetailElementUi.gameObject);
@@ -48,13 +49,15 @@ public class ProgressDetailUi : MonoBehaviour
 	/// <returns>total progress</returns>
 	public int SetProgresses(Dictionary<MajorType, int> projects)
 	{
+		var sum = 0;
 		foreach (var pair in projects)
 		{
 			var element = elementUis.First(x => x.type == pair.Key);
 			if(element) element.SetProgress(pair.Value);
+			sum += Mathf.Clamp(element.progress, 0, element.maxProgress);
 		}
 
-		return elementUis.Select(x => x.progress).Sum();
+		return sum;
 	}
 
 	public void Show(bool show)

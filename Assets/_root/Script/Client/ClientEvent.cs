@@ -7,15 +7,14 @@ namespace _root.Script.Client
 {
 public partial class NetworkClient
 {
-	private static readonly HashSet<ClientEvent>            events    = new();
-	private static readonly Dictionary<ClientEvent, Action> delegates = new();
+	private static readonly Queue<Action> actions = new();
+	private static readonly Action<object>[]      delegates = new Action<object>[Enum.GetValues(typeof(ClientEvent)).Length];
 
-	public static void CallEvent(ClientEvent @event) => events.Add(@event);
+	private static void CallEvent(ClientEvent @event, object obj) => actions.Enqueue(()=>delegates[(int)@event](obj));
 
-	public static void DelegateEvent(ClientEvent @event, Action action)
+	public static void DelegateEvent(ClientEvent @event, Action<object> action)
 	{
-		delegates.TryAdd(@event, null); 
-		delegates[@event] += action;
+		delegates[(int) @event] = action;
 	}
 
 	public enum ClientEvent
@@ -26,19 +25,14 @@ public partial class NetworkClient
 		OtherAbilityUse,
 		NextDay,
 		DataUpdated,
-
-		DataApplied,
-
-		//Not Networking
-		Wait,
 	}
 
-	private static IEnumerator ListenEvent(ClientEvent @event)
+	private static IEnumerator ListenEvent()
 	{
 		while (true)
 		{
-			yield return new WaitUntil(() => events.Remove(@event));
-			if (delegates.TryGetValue(@event, out var action)) action();
+			yield return new WaitUntil(() => actions.Count > 0);
+			actions.Dequeue()();
 		}
 	}
 }

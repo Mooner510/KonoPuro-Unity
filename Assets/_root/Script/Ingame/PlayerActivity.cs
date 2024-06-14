@@ -23,6 +23,8 @@ public class PlayerActivity : MonoBehaviour
 	
 	private bool interactable;
 
+	public List<GameCard> GetHandCards(bool self) => self ? selfHand.HandCards : otherHand.HandCards;
+
 	private void Awake()
 	{
 		ingameUi = FindObjectOfType<IngameUi>();
@@ -52,11 +54,6 @@ public class PlayerActivity : MonoBehaviour
 				? viewcard.transform.GetComponent<IngameCard>()
 				: null);
 		}
-		if (!interactable || !Input.GetMouseButtonDown(0)) return;
-		cardui.Out();
-		SelectCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var hit)
-				           ? hit.transform.GetComponent<IngameCard>()
-				           : null);
 	}
 
 	public void SetActive(bool active)
@@ -67,11 +64,12 @@ public class PlayerActivity : MonoBehaviour
 			SelectCard(null);
 		}
 
+		selectedCard = null;
 		selfHand.SetActive(active);
 		otherHand.SetActive(active);
 		interactable = active;
 	}
-	
+
 	private void viewCard(IngameCard card)//CardInfoUI
 	{
 		CardInfoPanel.SetActive(true);
@@ -111,24 +109,23 @@ public class PlayerActivity : MonoBehaviour
 				CardInfoPanel.SetActive(false);
 			}
 		}
-		
 	}
-	
-	public List<GameCard> GetHandCards(bool self) => self ? selfHand.HandCards : otherHand.HandCards;
 
-	private void SelectCard(IngameCard card)
+	public IngameCard SelectCard(IngameCard card)
 	{
+		if (!interactable) return null;
+		cardui.Out();
 		if (card && card == selectedCard && card.type == IngameCardType.Hand && card.isMine)
-		{
-			UseCard(selectedCard);
-			return;
-		}
+			return card;
 
 		selectedCard = card;
+		ingameUi.SetHover(!selectedCard);
+		ingameUi.SetInteract(!selectedCard && GameStatics.isTurn);
 		if (!card) selfHand.SelectCard(null);
 		else if (card.type != IngameCardType.Hand) selfHand.SelectCard(null, false);
 		else if (card.isMine && card.type == IngameCardType.Hand) selfHand.SelectCard(card);
 		ingameUi.SetCardInfo(card);
+		return null;
 	}
 
 	public void AddHandCard(IngameCard card, bool isMine)
@@ -137,28 +134,10 @@ public class PlayerActivity : MonoBehaviour
 		hand.AddCard(card);
 	}
 
-	public void RemoveHandCard(IngameCard card, bool isMine)
+	public IngameCard RemoveHandCard(IngameCard card, bool isMine)
 	{
 		var hand = isMine ? selfHand : otherHand;
-		hand.RemoveHandCard(card);
-	}
-
-	public void UseCard(IngameCard card)
-	{
-		if (!GameStatics.isTurn) return;
-		StartCoroutine(UseCoroutine(card));
-	}
-
-	private IEnumerator UseCoroutine(IngameCard card)
-	{
-		NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id));
-
-		SetActive(false);
-		RemoveHandCard(card, true);
-
-		yield return new WaitForSeconds(.5f);
-
-		SetActive(true);
+		return hand.RemoveHandCard(card);
 	}
 
 	public void UseAbility()

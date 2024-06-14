@@ -24,6 +24,7 @@ public class MainManager : MonoBehaviour
 
 	private void Awake()
 	{
+		NetworkClient.Init();
 		mainUi         = FindObjectOfType<MainUi>();
 		cineController = FindObjectOfType<CinemacineController>();
 		director       = FindObjectOfType<PlayableDirector>();
@@ -33,12 +34,11 @@ public class MainManager : MonoBehaviour
 
 	private void Start()
 	{
-		NetworkClient.Init();
 		mainCam                   =  Camera.main;
 		StartCoroutine(StartFlow());
-		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameStarted, GameStart);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameStarted, _=>GameStart());
 	}
-	
+
 	private void Update()
 	{
 		CheckPlaceable();
@@ -53,25 +53,31 @@ public class MainManager : MonoBehaviour
 
 		if (Physics.Raycast(ray, out var hit))
 		{
-			var placeble = hit.transform.GetComponent<PlaceableObject>();
-			if (!placeble) return;
+			var placeable = hit.transform.GetComponent<PlaceableObject>();
+			if (!placeable)
+			{
+				if(hoveredPlaceableObject) hoveredPlaceableObject.OnHover(false);
+				hoveredPlaceableObject = null;
+			}
 			if (hoveredPlaceableObject)
 			{
-				if (placeble != hoveredPlaceableObject)
+				if (placeable != hoveredPlaceableObject)
 				{
 					hoveredPlaceableObject.OnHover(false);
-					placeble.OnHover(true);
-					hoveredPlaceableObject = placeble;
+					placeable.OnHover(true);
+					hoveredPlaceableObject = placeable;
 				}
 			}
 			else
 			{
-				placeble.OnHover(true);
-				hoveredPlaceableObject = placeble;
+				placeable.OnHover(true);
+				hoveredPlaceableObject = placeable;
 			}
 		}
 		else
 		{
+			if(hoveredPlaceableObject) hoveredPlaceableObject.OnHover(false);
+			hoveredPlaceableObject = null;
 			return;
 		}
 
@@ -135,15 +141,14 @@ public class MainManager : MonoBehaviour
 	{
 		mainUi.SetThrobber(true);
 		yield return new WaitForSeconds(1);
-		var selfStudent  = GameStatics.self.student;
-		var otherStudent = GameStatics.other.student;
+		var selfStudent  = GameStatics.self?.student;
+		var otherStudent = GameStatics.other?.student;
 		if (selfStudent == null || otherStudent == null)
 		{
 			Debug.LogError("game start student cards data is null");
 			yield return new WaitUntil((() => selfStudent != null && otherStudent != null));
 		}
 		mainUi.SetThrobber(false);
-		Debug.Log("game started");
 		SceneManager.LoadSceneAsync("IngameScene");
 	}
 
