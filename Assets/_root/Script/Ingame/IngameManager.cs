@@ -94,13 +94,11 @@ public class IngameManager : MonoBehaviour
 			var ingameCard = hit.transform.GetComponent<IngameCard>();
 			if (abilityUsable && ingameCard && ingameCard.type == IngameCardType.Student && ingameCard.isMine)
 			{
-				Debug.LogError("ability show");
 				ui.SetCardInfo(ingameCard);
 				ShowAbilities(ingameCard);
 			}
 			else
 			{
-				Debug.LogError("card show");
 				ShowAbilities(null);
 				var card = activity.SelectCard(ingameCard);
 				if (card && GameStatics.isTurn && canUseFlow)
@@ -286,10 +284,10 @@ public class IngameManager : MonoBehaviour
 		}
 
 		if (selectedCards != null)
-			NetworkClient.Send(RawProtocol.of(103, card.GetStudentData().id, ability,
+			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
 			                                  selectedCards.Select(x => x.GetStudentData().id)));
 		else
-			NetworkClient.Send(RawProtocol.of(103, card.GetStudentData().id, ability));
+			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
 
 		yield return new WaitForSeconds(1f);
 
@@ -376,7 +374,6 @@ public class IngameManager : MonoBehaviour
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
 
-		Debug.LogError("DataUpdate");
 		if (other?.sleep != null)
 		{
 			ui.TimeChanged(0, false);
