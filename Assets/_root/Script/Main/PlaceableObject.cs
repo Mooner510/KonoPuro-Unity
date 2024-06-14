@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Rendering.BuiltIn.ShaderGraph;
 using UnityEngine;
@@ -12,39 +14,47 @@ public class PlaceableObject : MonoBehaviour
 	private bool interactable;
 
 	[SerializeField] private CinemacineController.VCamName cam;
-
+	[SerializeField] private GameObject DiscriptionText;
 	[SerializeField] private UnityEvent interactEvent;
 	[SerializeField] private UnityEvent initEvent;
 	private Material accentMaterial;
+	private TMP_Text DiscriptionText_TMP_Text;
 	private void Start()
 	{
+		StartCoroutine(ShowDiscription(2.5f));
+		accentMaterial = gameObject.GetComponent<MeshRenderer>().materials[1];
+		DiscriptionText_TMP_Text = DiscriptionText.GetComponent<TMP_Text>();
 		Init();
 	}
-
 	public void Init()
 	{
 		initEvent.Invoke();
 	}
-
 	public void OnHover(bool active)
 	{
 		if (active)
 		{
-			Debug.Log("UM");
-			gameObject.GetComponent<MeshRenderer>().materials[1].SetColor("_OutlineColor", Color.green);
-			gameObject.GetComponent<MeshRenderer>().materials[1].SetFloat("_Scale",1.015f);
+			accentMaterial.SetColor("_OutlineColor", new Color(255,128,0));
+			accentMaterial.SetFloat("_Scale",1.015f);
+			DiscriptionText_TMP_Text.color = Color.white;
 		}
 		else
 		{
-			gameObject.GetComponent<MeshRenderer>().materials[1].SetColor("_OutlineColor",Color.white);
-			gameObject.GetComponent<MeshRenderer>().materials[1].SetFloat("_Scale",1.01f);
+			 DiscriptionText_TMP_Text.color = Color.gray;
+			accentMaterial.SetFloat("_Scale",1f);
 		}
 	}
-
 	public CinemacineController.VCamName Interact()
 	{
 		if (!interactable) return CinemacineController.VCamName.None;
+		DiscriptionText_TMP_Text.color = Color.black;
 		interactEvent.Invoke();
 		return cam;
+	}
+
+	private IEnumerator ShowDiscription(float Time)
+	{
+		yield return new WaitForSeconds(Time);
+		DiscriptionText.SetActive(true);
 	}
 }
