@@ -48,6 +48,7 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 		try
 		{
 			Debug.Log($"send to {roomId} :: {data[0]}");
+			Debug.Log($"send data ::\n {JsonConvert.SerializeObject(data)}");
 			Instance._client.EmitAsync(roomId, data);
 		}
 		catch (Exception e)
