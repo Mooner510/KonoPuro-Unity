@@ -15,11 +15,7 @@ public class AbilityManager : MonoBehaviour
     private void Awake()
     {
         abilityButtons = GetComponentsInChildren<AbilityButton>();
-    }
-
-    private void Start()
-    {
-        SetAbilities(null, null, null);
+        selected       = null;
     }
 
     public void SetAbilities(GameStudentCard card, Action<AbilityButton> onSelect, Action<Tiers> onClick)

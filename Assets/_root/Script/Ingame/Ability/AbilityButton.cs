@@ -17,8 +17,11 @@ public class AbilityButton : MonoBehaviour
 
 	private void Awake()
 	{
-		icon = GetComponent<Image>();
-		button = GetComponent<Button>();
+		icon     = GetComponent<Image>();
+		button   = GetComponent<Button>();
+
+		selected = false;
+		SetButton(null, null, null);
 	}
 
 	public void SetButton(Tiers? tiers, Action<AbilityButton> onSelect, Action<Tiers> onClick)

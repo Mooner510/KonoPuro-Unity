@@ -139,7 +139,7 @@ public class IngameUi : MonoBehaviour
 	public void SetAbilities(GameStudentCard card, Action<AbilityButton> onSelect, Action<Tiers> onClick)
 	{
 		abilityManager.SetAbilities(card, onSelect, onClick);
-	}
+	}	
 
 	public void SelectAbility(AbilityButton abilityButton)
 	{
