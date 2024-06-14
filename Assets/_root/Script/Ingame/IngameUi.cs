@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Ingame;
+using _root.Script.Ingame.Ability;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
@@ -33,6 +35,12 @@ public class IngameUi : MonoBehaviour
 	private EventTrigger selfDetailHover;
 	private EventTrigger otherDetailHover;
 
+	private SelectionModeUi selectionModeUi;
+
+	private AbilityManager abilityManager;
+
+	public SelectionModeUi GetSelectionModeUi() => selectionModeUi;
+
 	private void Awake()
 	{
 		var textMeshProUis = GetComponentsInChildren<TextMeshProUGUI>();
@@ -61,35 +69,39 @@ public class IngameUi : MonoBehaviour
 		ingameCardInfoUi = FindObjectOfType<IngameCardInfoUi>();
 
 		turnDisplayUi = FindObjectOfType<TurnDisplayUi>();
+
+		selectionModeUi = FindObjectOfType<SelectionModeUi>();
+
+		abilityManager = FindObjectOfType<AbilityManager>();
 	}
 
-	public void Init(int day, GameStatus self, GameStatus other)
+	public void Init()
 	{
-		dayText.text = $"D - {(day == GameStatics.dDay ? "Day" : GameStatics.dDay - day)}";
+		dayText.text = $"D - {(1 == GameStatics.dDay ? "Day" : GameStatics.dDay - 1)}";
 
-		selfTimeText.text  = $"{self.time}";
-		otherTimeText.text = $"{other.time}";
+		selfTimeText.text  = "24";
+		otherTimeText.text = "24";
 
-		selfProgressSlider.value  = self.totalProgress;
-		otherProgressSlider.value = other.totalProgress;
+		selfProgressSlider.value  = 0;
+		otherProgressSlider.value = 0;
 
 		selfProgressText.text  = "0%";
 		otherProgressText.text = "0%";
 
-		selfProgressDetail.Init(self.detailProgresses);
-		otherProgressDetail.Init(other.detailProgresses);
+		var infos = GameStatics.stageProjects;
+		selfProgressDetail.Init(infos);
+		otherProgressDetail.Init(infos);
 	}
 
 	public void SetHover(bool active)
 	{
-		sleepButton.enabled      = active;
 		selfDetailHover.enabled  = active;
 		otherDetailHover.enabled = active;
 	}
 
 	public void DayChange(int day)
 	{
-		dayText.text = $"Day - {day}";
+		dayText.text = $"D - {(day == GameStatics.dDay ? "Day" : GameStatics.dDay - day)}";
 	}
 
 	public void TimeChanged(int time, bool self)
@@ -111,16 +123,27 @@ public class IngameUi : MonoBehaviour
 
 	public void SetCardInfo(IngameCard card)
 	{
-		ingameCardInfoUi.SetCard(card);
+		ingameCardInfoUi.SetInfo(card);
 	}
 
-	public void TurnSet(bool myTurn)
+	public void DisplayTurn(bool myTurn)
 	{
 		turnDisplayUi.TurnNotify(myTurn);
 	}
 
-	public void InteractBlock(bool active)
+	public void SetInteract(bool active)
 	{
-		sleepButton.interactable = active;
+		if(active != sleepButton.interactable) sleepButton.interactable = active;
+	}
+
+	public void SetAbilities(GameStudentCard card, Action<AbilityButton> onSelect, Action<Tiers> onClick)
+	{
+		abilityManager.SetAbilities(card, onSelect, onClick);
+	}	
+
+	public void SelectAbility(AbilityButton abilityButton)
+	{
+		ingameCardInfoUi.SetInfo(abilityButton.ability);
+		abilityManager.SelectAbility(abilityButton);
 	}
 }

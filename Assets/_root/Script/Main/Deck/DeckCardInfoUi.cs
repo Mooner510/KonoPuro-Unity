@@ -9,6 +9,21 @@ using UnityEngine.UI;
 
 public class DeckCardInfoUi : MonoBehaviour
 {
+    private DeckEditMenu deckEditMenu;
+    
+    private TextMeshProUGUI cardName;
+
+    private TextMeshProUGUI equipText;
+    private Button          equipButton;
+
+    private void Awake()
+    {
+        deckEditMenu = GetComponentInParent<DeckEditMenu>();
+        cardName = transform.GetChild(0).Find("CardName").GetComponent<TextMeshProUGUI>();
+        equipButton  = transform.GetChild(0).Find("EquipButton").GetComponent<Button>();
+        equipText    = equipButton.GetComponentInChildren<TextMeshProUGUI>();
+    }
+
     public void SetUi(PlayerCardResponse card, bool equipped)
     {
         if (card == null)
@@ -17,12 +32,7 @@ public class DeckCardInfoUi : MonoBehaviour
             return;
         }
         
-        var cardNameUi = transform.GetChild(0).Find("CardName").GetComponent<TextMeshProUGUI>();
-        cardNameUi.text = card.id;
-
-        var deckEditMenu = GetComponentInParent<DeckEditMenu>();
-        var equipButton  = transform.GetChild(0).Find("EquipButton").GetComponent<Button>();
-        var equipText    = equipButton.GetComponentInChildren<TextMeshProUGUI>();
+        cardName.text = card.cardType;
 
         equipButton.onClick.RemoveAllListeners();
         equipButton.onClick.AddListener(() => { deckEditMenu.Equip(card); });

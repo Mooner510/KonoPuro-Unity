@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using _root.Script.Data;
@@ -34,12 +35,12 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 
 	public static void Init() => Instance._Init();
 
+	private static Coroutine listenCoroutine;
+
 	private void _Init()
 	{
-		foreach (ClientEvent @event in Enum.GetValues(typeof(ClientEvent)))
-		{
-			StartCoroutine(ListenEvent(@event));
-		}
+		if(listenCoroutine != null) StopCoroutine(listenCoroutine);
+		StartCoroutine(ListenEvent());		
 	}
 
 	public static void Send(params object[] data)
@@ -47,6 +48,7 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 		try
 		{
 			Debug.Log($"send to {roomId} :: {data[0]}");
+			Debug.Log($"send data ::\n {JsonConvert.SerializeObject(data)}");
 			Instance._client.EmitAsync(roomId, data);
 		}
 		catch (Exception e)
@@ -115,43 +117,72 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 		              { Debug.Log($"{eventName}: Listened\n{response}");
 		                try
 		                {
+			                var rawProtocols = response.GetValue<RawProtocols>();
 
-			                var rawProtocol = response.GetValue<RawProtocol>();
-
-			                if (rawProtocol.protocol == 2)
+			                foreach (var rawProtocol in rawProtocols.data)
 			                {
-				                roomId = (string)rawProtocol.data[0];
+				                try
+				                {
+					                switch (rawProtocol.protocol)
+					                {
+						                case 2:
+							                roomId = (string)rawProtocol.data[0];
+							                break;
+						                case 200:
+						                {
+							                var rawData =
+									                JsonConvert
+											               .DeserializeObject<
+												                RawData>(JsonConvert.SerializeObject(rawProtocol.data
+														                         [0]));
+							                var self  = UpdatedData.ConvertUpdatedData(rawData.self);
+							                var other = UpdatedData.ConvertUpdatedData(rawData.other);
+
+							                GameStatics.self   = self;
+							                GameStatics.other  = other;
+							                GameStatics.isTurn = rawData.turn;
+
+							                CallEvent(ClientEvent.GameStarted, null);
+							                break;
+						                }
+						                case 201:
+							                CallEvent(ClientEvent.GameEnd, null);
+							                break;
+						                case 202:
+							                var useCard = JsonConvert.DeserializeObject<GameCard>(rawProtocol.data[0]
+									               .ToString());
+							                CallEvent(ClientEvent.OtherCardUse, useCard);
+							                break;
+						                case 203:
+							                
+							                CallEvent(ClientEvent.OtherAbilityUse, null);
+							                break;
+						                case 204:
+							                CallEvent(ClientEvent.NextDay, null);
+							                break;
+						                case 205:
+						                {
+							                var rawData =
+									                JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0]
+											               .ToString());
+							                var self  = UpdatedData.ConvertUpdatedData(rawData.self);
+							                var other = UpdatedData.ConvertUpdatedData(rawData.other);
+
+							                GameStatics.isTurn = rawData.turn;
+
+							                CallEvent(ClientEvent.DataUpdated, (self, other));
+							                break;
+						                }
+					                }
+
+					                Debug.Log($"Listen Success {rawProtocol.protocol}");
+				                }
+				                catch (Exception e)
+				                {
+					                Debug.LogError(e);
+					                // ignored
+				                }
 			                }
-			                else if (rawProtocol.protocol == 200)
-			                {
-				                var rawData = JsonConvert.DeserializeObject<RawData>(JsonConvert.SerializeObject(rawProtocol.data[0]));
-				                var self    = UpdatedData.ConvertUpdatedData(rawData.self);
-				                var other   = UpdatedData.ConvertUpdatedData(rawData.other);
-
-				                GameStatics.self   = self;
-				                GameStatics.other  = other;
-				                GameStatics.isTurn = rawData.turn;
-
-				                CallEvent(ClientEvent.GameStarted);
-			                }
-			                else if (rawProtocol.protocol == 206)
-			                {
-				                var rawData  = JsonConvert.DeserializeObject<RawData>(rawProtocol.data[0].ToString());
-				                var self     = UpdatedData.ConvertUpdatedData(rawData.self);
-				                var other    = UpdatedData.ConvertUpdatedData(rawData.other);
-
-				                GameStatics.self   = self;
-				                GameStatics.other  = other;
-				                GameStatics.isTurn = rawData.turn;
-
-				                CallEvent(ClientEvent.DataUpdated);
-			                }
-			                else if(rawProtocol.protocol == 204)
-			                {
-				                CallEvent(ClientEvent.NextDay);
-			                }
-
-			                Debug.Log($"{eventName}: {JsonConvert.SerializeObject(rawProtocol)}");
 		                }
 		                catch (Exception e)
 		                {

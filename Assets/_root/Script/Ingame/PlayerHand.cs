@@ -11,13 +11,9 @@ namespace _root.Script.Ingame
 {
 public class PlayerHand : MonoBehaviour
 {
-	private                  IngameUi ui;
-	[SerializeField] private GameObject heldCardPrefab;
-
 	private readonly         List<IngameCard> handCards  = new();
 	private                  List<Transform>  transforms = new();
 
-	[SerializeField] private float            cardSize      = .7f;
 	[SerializeField] private float            cardMoveSpeed = 2;
 
 	[SerializeField] private float      closedXOffset = .1f;
@@ -43,7 +39,6 @@ public class PlayerHand : MonoBehaviour
 
 	private void Awake()
 	{
-		ui       = FindObjectOfType<IngameUi>();
 		cam        = Camera.main;
 		transforms = GetComponentsInChildren<Transform>().ToList();
 		transforms.Remove(transform);
@@ -101,7 +96,7 @@ public class PlayerHand : MonoBehaviour
 		HandUpdate(false);
 	}
 
-	public void RemoveHandCard(IngameCard card)
+	public IngameCard RemoveHandCard(IngameCard card)
 	{
 		if (!isMine)
 		{
@@ -110,15 +105,14 @@ public class PlayerHand : MonoBehaviour
 		}
 		else if (handCards.Contains(card)) handCards.Remove(card);
 
-		card.DestroyCard();
 		HandUpdate(false);
+		return card;
 	}
 
-	public void HandUpdate(bool show)
+	private void HandUpdate(bool show)
 	{
-		ui.SetHover(!show);
 		handOpened = show;
-		
+
 		var handCount = handCards.Count;
 		var origin    = transforms[show ? 1 : 0];
 		var position  = origin.position;

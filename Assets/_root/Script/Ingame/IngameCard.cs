@@ -5,6 +5,7 @@ using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityEngine.Serialization;
@@ -23,6 +24,8 @@ public enum IngameCardType
 public class IngameCard : MonoBehaviour
 {
 	private static GameObject ingameCardPrefab;
+
+	private Card.Card cardFrame;
 
 	public  bool               isMine;
 	public  IngameCardType     type;
@@ -50,7 +53,7 @@ public class IngameCard : MonoBehaviour
 	public void Init(bool mine, IngameCardType cardType)
 	{
 		isMine = mine;
-		type = cardType;
+		type   = cardType;
 		var otherHand = cardType == IngameCardType.Hand && !mine;
 		if (otherHand)
 			Destroy(GetComponent<BoxCollider>());
@@ -90,11 +93,12 @@ public class IngameCard : MonoBehaviour
 			var position  = tr.position;
 			var rotation  = tr.rotation;
 			var moveAlpha = Mathf.Clamp01((moveSpeed * Time.deltaTime) / Vector3.Distance(position, pos));
-			var rotAlpha  = Mathf.Clamp01((rotSpeed * Time.deltaTime) / Mathf.Rad2Deg * Mathf.Acos(Vector3.Dot(rotation * Vector3.forward, rot * Vector3.forward)));
-			var movePos   = Vector3.Lerp(position, pos, moveAlpha);
-			var moveRot   = Quaternion.Lerp(rotation, rot, rotAlpha);
+			var rotAlpha = Mathf.Clamp01((rotSpeed * Time.deltaTime) / Mathf.Rad2Deg *
+			                             Mathf.Acos(Vector3.Dot(rotation * Vector3.forward, rot * Vector3.forward)));
+			var movePos = Vector3.Lerp(position, pos, moveAlpha);
+			var moveRot = Quaternion.Lerp(rotation, rot, rotAlpha);
 			tr.position = movePos;
-			tr.rotation = moveRot; 
+			tr.rotation = moveRot;
 			yield return null;
 		}
 
@@ -104,9 +108,9 @@ public class IngameCard : MonoBehaviour
 	public void MoveByRichTime(Vector3 pos, float moveRichTime)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
-		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 0));
+		moveCoroutine = StartCoroutine(MoveByRichTimeCoroutine(pos, transform.rotation, moveRichTime, 1));
 	}
-	
+
 	public void MoveByRichTime(Vector3 pos, Quaternion rot, float moveRichTime)
 	{
 		if (moveCoroutine != null) StopCoroutine(moveCoroutine);
@@ -121,27 +125,34 @@ public class IngameCard : MonoBehaviour
 
 	private IEnumerator MoveByRichTimeCoroutine(Vector3 pos, Quaternion rot, float moveRichTime, float rotRichTime)
 	{
-		float      timer      = 0;
-		var        tr = transform;
-		Vector3    originPos  = tr.position;
-		Quaternion originRot  = tr.rotation;
+		float      timer     = 0;
+		var        tr        = transform;
+		Vector3    originPos = tr.position;
+		Quaternion originRot = tr.rotation;
 		while (timer < Mathf.Max(moveRichTime, rotRichTime))
 		{
+			timer += Time.deltaTime;
 			var moveAlpha = Mathf.Clamp01(timer / moveRichTime);
 			var rotAlpha  = Mathf.Clamp01(timer / rotRichTime);
 			var movePos   = Vector3.Lerp(originPos, pos, moveAlpha);
 			var moveRot   = Quaternion.Lerp(originRot, rot, rotAlpha);
 			tr.position = movePos;
-			tr.rotation = moveRot; 
+			tr.rotation = moveRot;
 			yield return null;
 		}
 
 		moveCoroutine = null;
 	}
 
+	public void Show(bool show, bool destroy = false)
+	{
+		cardFrame.Show(show, ()=>
+		                     { if (destroy) DestroyCard(); });
+	}
+
 	public IngameCard LoadDisplay(GameStudentCard data)
 	{
-		type    = IngameCardType.Student;
+		type = IngameCardType.Student;
 		if (data == null) return this;
 		student = data;
 		var card                          = GetComponent<Card.Card>();
@@ -154,9 +165,8 @@ public class IngameCard : MonoBehaviour
 	{
 		if (data == null) return this;
 		cardData = data;
-		var card                                    = GetComponent<Card.Card>();
-		var sprite                                  = ResourceManager.GetSprite(data.defaultCardType);
-		if (sprite) card.frontSide.sprite           = sprite;
+		var sprite                             = ResourceManager.GetSprite(data.defaultCardType);
+		if (sprite) cardFrame.frontSide.sprite = sprite;
 		return this;
 	}
 
@@ -180,6 +190,7 @@ public class IngameCard : MonoBehaviour
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCard.cardFrame = ingameCardGO.GetComponent<Card.Card>();
 		return ingameCard;
 	}
 
@@ -188,6 +199,7 @@ public class IngameCard : MonoBehaviour
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCard.cardFrame = ingameCardGO.GetComponent<Card.Card>();
 		ingameCard.LoadDisplay(cardData);
 		return ingameCard;
 	}
@@ -197,6 +209,7 @@ public class IngameCard : MonoBehaviour
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCard.cardFrame = ingameCardGO.GetComponent<Card.Card>();
 		ingameCard.LoadDisplay(cardData);
 		return ingameCard;
 	}

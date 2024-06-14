@@ -6,6 +6,7 @@ using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class TitleManager : MonoBehaviour
 {
@@ -13,11 +14,12 @@ public class TitleManager : MonoBehaviour
 
 	[SerializeField] private PlayableAsset start;
 	[SerializeField] private PlayableAsset end;
-	[SerializeField] private GameObject LoginFaild;
-	[SerializeField] private GameObject LoginSuccess;
-	private TitleUi   titleUi;
-	private AuthPanel authPanel;
-	private bool loginsuccess;
+	[SerializeField] private GameObject    LoginFailed;
+	[SerializeField] private GameObject    LoginSuccess;
+	private                  TitleUi       titleUi;
+	private                  AuthPanel     authPanel;
+	private                  bool          loginSuccess;
+
 	private void Awake()
 	{
 		titleUi   = FindObjectOfType<TitleUi>();
@@ -52,7 +54,7 @@ public class TitleManager : MonoBehaviour
 	public void GameStart()
 	{
 		titleUi.gameObject.SetActive(false);
-		LoginFaild.SetActive(false);
+		LoginFailed.SetActive(false);
 		LoginSuccess.SetActive(false);
 		StartCoroutine(GameStartFlow());
 	}
@@ -159,7 +161,7 @@ public class TitleManager : MonoBehaviour
 		Networking.AccessToken = response.accessToken;
 		titleUi.Login(false);
 		LoginSuccess.SetActive(true);
-		loginsuccess = true;
+		loginSuccess = true;
 		StopAllCoroutines();
 		StartCoroutine(Login());
 	}
@@ -167,8 +169,8 @@ public class TitleManager : MonoBehaviour
 	private void SignInError(ErrorBody errorBody)
 	{
 		titleUi.SetThrobber(false);
-		LoginFaild.SetActive(true);
-		loginsuccess = false;
+		LoginFailed.SetActive(true);
+		loginSuccess = false;
 		StopAllCoroutines();
 		StartCoroutine(Login());
 	}
@@ -185,7 +187,7 @@ public class TitleManager : MonoBehaviour
 
 	IEnumerator Login()
 	{
-		if (loginsuccess)
+		if (loginSuccess)
 		{
 			yield return new WaitForSeconds(2f);
 			LoginSuccess.SetActive(false);
@@ -193,7 +195,7 @@ public class TitleManager : MonoBehaviour
 		else
 		{
 			yield return new WaitForSeconds(2f);
-			LoginFaild.SetActive(false);
+			LoginFailed.SetActive(false);
 		}
 	}
 }

@@ -87,25 +87,21 @@ public class GachaUI : MonoBehaviour
 		gatchaPrice = multi ? GameStatics.gatchaMultiPrice : GameStatics.gatchaOncePrice;
 		if (UserData.Instance.gold < gatchaPrice)
 		{
-			
+			//TODO: 골드 부족 표시
 			return;
 		}
 
-		if(multi)
-			API.GatchaMulti(GameStatics.gatchaList[boxIndex].id)
-			   .OnResponse(response =>
-			               { gatchaCards.AddRange(response.cards);
-			                 GatchaSuccess();
-			                 })
-			   .OnError(GatchaError)
+		if (multi)
+			API.GatchaMulti(GameStatics.gatchaList[boxIndex].id).OnResponse(response =>
+			                                                                { gatchaCards.Clear();
+			                                                                  gatchaCards.AddRange(response.cards);
+			                                                                  GatchaSuccess(); }).OnError(GatchaError)
 			   .Build();
 		else
-			API.GatchaOnce(GameStatics.gatchaList[boxIndex].id)
-			   .OnResponse(response => 
-			               { gatchaCards.Add(response); 
-			                             GatchaSuccess();
-			                             })
-			   .OnError(GatchaError)
+			API.GatchaOnce(GameStatics.gatchaList[boxIndex].id).OnResponse(response =>
+			                                                               { gatchaCards.Clear();
+			                                                                 gatchaCards.Add(response);
+			                                                                 GatchaSuccess(); }).OnError(GatchaError)
 			   .Build();
 		mainUi.SetThrobber(true);
 	}

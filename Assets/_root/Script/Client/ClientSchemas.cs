@@ -119,9 +119,7 @@ public class UpdatedData
 		for (var i = 0; i < set.Length; i++)
 		{
 			if (!Enum.TryParse<Modifier>(set[i], out var result)) continue;
-			Debug.Log($"changed : {result}");
 			var s = data[i + 1].Replace(@"\", "");
-			Debug.Log($"data : {s}");
 			try
 			{
 				switch (result)

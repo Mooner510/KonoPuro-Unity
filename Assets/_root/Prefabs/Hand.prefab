@@ -26,8 +26,8 @@ Transform:
   m_GameObject: {fileID: 38580208213271642}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.62, y: 0, z: -0}
-  m_LocalScale: {x: 6.6, y: 21.77993, z: 1.5127}
+  m_LocalPosition: {x: 2.33, y: -0.13, z: 0}
+  m_LocalScale: {x: 2.9805698, y: 16.006506, z: 1.5127}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2359475045181388962}
@@ -132,15 +132,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe1bb665e29d4b31a859cd29d073b018, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  heldCardPrefab: {fileID: 9188790419098857723, guid: d047d1fe25d6cf048b6f766efd06ce0d,
-    type: 3}
-  cardSize: 1.1
   cardMoveSpeed: 30
   closedXOffset: 0
   openedXOffset: -0.1
   maxZWidth: 7
   maxSubZWidth: 15
-  selectedPos: {x: 0.5, y: 12, z: 0}
+  selectedPos: {x: 3.5, y: 12, z: 0}
   isMine: 1
 --- !u!54 &6517894210657583044
 Rigidbody:
@@ -195,7 +192,7 @@ Transform:
   m_GameObject: {fileID: 3853188595411308238}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.92, y: -4.23, z: -0}
+  m_LocalPosition: {x: 3.78, y: -1.64, z: 0}
   m_LocalScale: {x: 2.8132, y: 11.231727, z: 1.4066}
   m_ConstrainProportionsScale: 0
   m_Children: []
