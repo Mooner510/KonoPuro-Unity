@@ -116,7 +116,7 @@ public class GachaUI : MonoBehaviour
 		ChangeGoldTxt(gold);
 		UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
 		GachaDirecting.gatchaCards = gatchaCards;
-		SceneManager.LoadScene("GachaDirectingScene");
+		SceneManager.LoadScene("GachaDirectingStartScene");
 	}
 
 	private void GatchaError(ErrorBody body)

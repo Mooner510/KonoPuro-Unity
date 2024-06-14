@@ -26,4 +26,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GachaScene.unity
     guid: 28e79250160bc2443956f6bf5fe65422
+  - enabled: 1
+    path: Assets/Scenes/GachaDirectingStartScene.unity
+    guid: f978753d27a1a2e488e227ef434fa435
+  - enabled: 1
+    path: Assets/Scenes/NewScene/GachaDirectingBuildupScene.unity
+    guid: 6eee8234be9ca66438b54c2e02576199
   m_configObjects: {}
