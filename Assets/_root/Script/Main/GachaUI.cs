@@ -2,12 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _root.Script.Data;
+using _root.Script.Main;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GachaUI : MonoBehaviour
 {
@@ -112,6 +115,8 @@ public class GachaUI : MonoBehaviour
 		var gold = UserData.Instance.gold -= gatchaPrice;
 		ChangeGoldTxt(gold);
 		UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
+		GachaDirecting.gatchaCards = gatchaCards;
+		SceneManager.LoadScene("GachaDirectingStartScene");
 	}
 
 	private void GatchaError(ErrorBody body)
@@ -128,5 +133,10 @@ public class GachaUI : MonoBehaviour
 	private void ChangeGoldTxt(int gold)
 	{
 		goldText.text = string.Format($"{gold:N0}");
+	}
+
+	public void DoGacha()
+	{
+		SceneManager.LoadScene("GachaScene");
 	}
 }

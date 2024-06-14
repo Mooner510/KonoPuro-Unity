@@ -6,6 +6,6 @@ public class ExitGatcha : MonoBehaviour
 {
     public void Exitgatcha()
     {
-        SceneManager.LoadScene("GachaUI");
+        SceneManager.LoadScene("MainScene");
     }
 }

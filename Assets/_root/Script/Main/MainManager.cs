@@ -76,8 +76,11 @@ public class MainManager : MonoBehaviour
 		}
 		else
 		{
-			if(hoveredPlaceableObject) hoveredPlaceableObject.OnHover(false);
-			hoveredPlaceableObject = null;
+			if (hoveredPlaceableObject)
+			{
+				hoveredPlaceableObject.OnHover(false);
+				hoveredPlaceableObject = null;
+			}
 			return;
 		}
 
