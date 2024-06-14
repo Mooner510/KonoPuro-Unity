@@ -19,6 +19,8 @@ public class FieldSetter : MonoBehaviour
 
 	public bool isMine = true;
 
+	public List<IngameCard> GetStudentCards() => fieldCards.Where(x => x.type == IngameCardType.Student).ToList();
+
 	private void Awake()
 	{
 		var transforms = GetComponentsInChildren<Transform>().ToList();
@@ -35,6 +37,7 @@ public class FieldSetter : MonoBehaviour
 	public void AddNewCard(IngameCard addition)
 	{
 		fieldCards.Add(addition);
+		addition.isMine = isMine;
 		if (addition.type == IngameCardType.Student) UpdateStudentPos();
 		else
 		{

@@ -5,21 +5,21 @@ using System.Linq;
 using _root.Script.Card;
 using _root.Script.Client;
 using _root.Script.Data;
+using _root.Script.Ingame;
+using _root.Script.Ingame.Ability;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
 
 public class IngameManager : MonoBehaviour
 {
+	private Camera           cam;
 	private PlayableDirector director;
 	private PlayerActivity   activity;
 
 	[SerializeField] private PlayableAsset start;
 
 	private int day;
-
-	private readonly GameStatus selfStats  = new();
-	private readonly GameStatus otherStats = new();
 
 	public List<GameStudentCard> selfStudents  = new();
 	public List<GameStudentCard> otherStudents = new();
@@ -34,6 +34,12 @@ public class IngameManager : MonoBehaviour
 
 	//TODO: 실험용 삭제필요
 	[SerializeField] private bool spriteDebug;
+
+	private readonly List<int> flowIndexes      = new();
+	private          int       currentFlowIndex = 0;
+
+	private bool abilityUsable;
+	private bool canUseFlow;
 
 	private bool preTurn;
 
@@ -65,16 +71,59 @@ public class IngameManager : MonoBehaviour
 
 		FindObjectsOfType<Canvas>().First(x => x.gameObject.name == "Field Canvas").enabled = false;
 
-		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
-		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, NextDay);
-
 		//TODO: 빌드시에 포함 고려 (커서가 화면 밖으로 안나가는 기능)
 		// Cursor.lockState = CursorLockMode.Confined;
 	}
 
 	private void Start()
 	{
+		cam = Camera.main;
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherCardUse, OtherCardUse);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		GameStart();
+	}
+
+	private void Update()
+	{
+		if (!Input.GetMouseButtonDown(0)) return;
+		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+		var hitSuccess = Physics.Raycast(cam.ScreenPointToRay(Input.mousePosition), out var hit);
+		if (hitSuccess)
+		{
+			var ingameCard = hit.transform.GetComponent<IngameCard>();
+			if (abilityUsable && ingameCard && ingameCard.type == IngameCardType.Student && ingameCard.isMine)
+			{
+				ui.SetCardInfo(ingameCard);
+				ShowAbilities(ingameCard);
+			}
+			else
+			{
+				ShowAbilities(null);
+				var card = activity.SelectCard(ingameCard);
+				if (card && GameStatics.isTurn && canUseFlow)
+					StartCoroutine(UseCardFlow(card, GetFlowIndex()));
+			}
+
+			return;
+		}
+
+		ShowAbilities(null);
+		activity.SelectCard(null);
+	}
+
+	private int GetFlowIndex()
+	{
+		var index = flowIndexes.Count > 0 ? flowIndexes.Max() + 1 : 0;
+		flowIndexes.Add(index);
+		return index;
+	}
+
+	private void EndFlow(int index)
+	{
+		flowIndexes.Remove(index);
+		if (flowIndexes.Count == 0) currentFlowIndex = 0;
+		else currentFlowIndex                        = index + 1;
 	}
 
 	private void GameStart()
@@ -83,12 +132,15 @@ public class IngameManager : MonoBehaviour
 		if (GameStatics.self == null || GameStatics.other == null)
 		{
 			List<GameStudentCard> student = new()
-			                                { new(), new(), new(), new(), new() };
+			                                { new GameStudentCard() {tiers = new List<Tiers>()
+			                                                                 { Tiers.Android, Tiers.Backend}}, new(), new(), new(), new() };
 			selfStudents  = student;
 			otherStudents = student;
 
 			StartCoroutine(StartFlow(new()
 			                         { new(), new(), new(), new(), new() }, 5));
+
+			GameStatics.isTurn = true;
 			return;
 		}
 
@@ -109,12 +161,11 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator StartFlow(List<GameCard> selfDraws, int otherDrawCount)
 	{
-		ui.InteractBlock(false);
-		day = 1;
-		selfStats.Init();
-		otherStats.Init();
+		activity.SetActive(false);
+		ui.SetInteract(false);
+		ui.SetHover(false);
 
-		ui.Init(day, selfStats, otherStats);
+		ui.Init();
 
 		yield return new WaitForSeconds(1f);
 
@@ -137,9 +188,18 @@ public class IngameManager : MonoBehaviour
 		yield return new WaitForSeconds(3f);
 
 		preTurn = GameStatics.isTurn;
-		TurnChanged(preTurn);
+		ui.DisplayTurn(preTurn);
 
+		yield return new WaitForSeconds(1f);
+
+		ui.SetHover(true);
+		ui.SetInteract(preTurn);
 		activity.SetActive(true);
+		canUseFlow    = true;
+		abilityUsable = true;
+
+		GameStatics.self  = null;
+		GameStatics.other = null;
 	}
 
 	private IEnumerator SetStudent(bool isMine)
@@ -154,29 +214,222 @@ public class IngameManager : MonoBehaviour
 		}
 	}
 
-	private void UpdateData()
+	private void ShowAbilities(IngameCard card)
 	{
-		var self  = GameStatics.self;
-		var other = GameStatics.other;
+		ui.SetAbilities(card?.GetStudentData(), ui.SelectAbility, ability=>UseAbility(ability, card));
+	}
 
-		var turn = GameStatics.isTurn;
-		if (turn != preTurn) TurnChanged(turn);
-
-		TimeChanged(self?.time, other?.time);
-
-		ProjectUpdate(self?.projects, other?.projects);
-
-		if(self?.heldCards != null) DrawCard(self.heldCards.cards, true, self.deckSize == 0);
-		if(other?.heldCards != null) DrawCard(other.heldCards.cards, false, other.deckSize == 0);;
-
-		if(other?.sleep != null) OtherSleep();
+	private void UseAbility(Tiers ability, IngameCard card)
+	{
+		if (canUseFlow && preTurn) StartCoroutine(UseAbilityFlow(ability, card, GetFlowIndex()));
+		else
+		{
+			//TODO: 플로우 진행 중 상호작용 불가 or 턴이 아님 표시
+		}
 	}
 
 	private void NextDay()
 	{
+		StartCoroutine(NextDayFlow(GetFlowIndex()));
+	}
+
+	private void UpdateData(object data)
+	{
+		UpdatedData self;
+		UpdatedData other;
+		(self, other) = ((UpdatedData, UpdatedData))data;
+
+		StartCoroutine(DataUpdateFlow(self, other, GetFlowIndex()));
+	}
+
+	private void OtherCardUse(object card)
+	{
+		StartCoroutine(OtherCardUseFlow((GameCard)card, GetFlowIndex()));
+	}
+
+	private IEnumerator UseAbilityFlow(Tiers ability, IngameCard card, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+
+		abilityUsable = false;
+		ui.SetCardInfo(null);
+		activity.SetActive(false);
+		ui.SetHover(false);
+		ui.SetInteract(false);
+		ShowAbilities(null);
+
+		//TODO: 능력 사용 유형에 따라 선택할 카드들 지정
+		// var selfStudents  = selfField.GetStudentCards();
+		// var otherStudents = otherField.GetStudentCards();
+
+		bool?            selection     = null;
+		List<IngameCard> selectedCards = new();
+
+		var selectionModeUi = ui.GetSelectionModeUi();
+		selectionModeUi.SetActive((b, cards) =>
+		                          { selection     = b;
+		                            selectedCards = cards; });
+
+		yield return new WaitUntil(() => selection != null);
+
+		if (selection == false)
+		{
+			ui.SetHover(true);
+			ui.SetInteract(preTurn);
+			activity.SetActive(true);
+			canUseFlow    = true;
+			abilityUsable = true;
+			EndFlow(index);
+			yield break;
+		}
+
+		if (selectedCards != null)
+			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
+			                                  selectedCards.Select(x => x.GetStudentData().id)));
+		else
+			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
+
+		yield return new WaitForSeconds(1f);
+
+		abilityUsable = true;
+		ui.SetHover(true);
+		activity.SetActive(true);
+
+		EndFlow(index);
+	}
+
+	private IEnumerator UseCardFlow(IngameCard card, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+
+		abilityUsable = false;
+		canUseFlow    = false;
+		activity.RemoveHandCard(card, true);
+		activity.SetActive(false);
+		ui.SetHover(false);
+		ui.SetInteract(false);
+
+		card.Show(false);
+
+		//TODO: 카드 사용 유형에 따라 선택할 카드들 지정
+		// var selfStudents  = selfField.GetStudentCards();
+		// var otherStudents = otherField.GetStudentCards();
+
+		bool?            selection     = null;
+		List<IngameCard> selectedCards = new();
+
+		var selectionModeUi = ui.GetSelectionModeUi();
+		selectionModeUi.SetActive((b, cards) =>
+		                          { selection     = b;
+		                            selectedCards = cards; });
+
+		yield return new WaitUntil(() => selection != null);
+
+		if (selection == false)
+		{
+			abilityUsable = true;
+			ui.SetHover(true);
+			ui.SetInteract(preTurn);
+			activity.SetActive(true);
+			activity.AddHandCard(card, true);
+			card.Show(true);
+			canUseFlow = true;
+			EndFlow(index);
+			yield break;
+		}
+
+		if (selectedCards != null)
+			NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id,
+			                                  selectedCards.Select(x => x.GetStudentData().id)));
+		else
+			NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id));
+
+		card.Show(false, true);
+
+		yield return new WaitForSeconds(1f);
+
+		ui.SetHover(true);
+		activity.SetActive(true);
+
+		EndFlow(index);
+	}
+
+	private IEnumerator NextDayFlow(int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+
+		ui.SetInteract(false);
+
+		Debug.LogError("NextDay");
+
 		day++;
 		ui.DayChange(day);
-		activity.SetActive(true);
+
+		yield return new WaitForSeconds(2f);
+
+		EndFlow(index);
+	}
+
+	private IEnumerator DataUpdateFlow(UpdatedData self, UpdatedData other, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+
+		if (other?.sleep != null)
+		{
+			ui.TimeChanged(0, false);
+			yield return new WaitForSeconds(1f);
+		}
+
+		if (self?.sleep != null)
+		{
+			ui.TimeChanged(0, true);
+			yield return new WaitForSeconds(1f);
+		}
+
+		if (other?.heldCards != null)
+		{
+			DrawCard(other.heldCards.cards, false, other.deckSize == 0);
+			yield return new WaitForSeconds(1f);
+		}
+
+		if (self?.heldCards != null)
+		{
+			DrawCard(self.heldCards.cards, true, self.deckSize == 0);
+			yield return new WaitForSeconds(1f);
+		}
+
+		TimeChanged(self?.time, other?.time);
+		yield return new WaitForSeconds(1f);
+
+		ProjectUpdate(self?.projects, other?.projects);
+		yield return new WaitForSeconds(1f);
+
+		var turn = GameStatics.isTurn;
+		if (turn != preTurn)
+		{
+			preTurn = turn;
+			ui.DisplayTurn(turn);
+			yield return new WaitForSeconds(1f);
+		}
+
+		ui.SetInteract(turn);
+		canUseFlow    = true;
+		abilityUsable = true;
+
+		EndFlow(index);
+	}
+
+	private IEnumerator OtherCardUseFlow(GameCard cardData, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+
+		var card = activity.RemoveHandCard(null, false);
+		card.LoadDisplay(cardData);
+		card.MoveBySpeed(new Vector3(0, 0, 0), Quaternion.Euler(-90, 0, 90), 1f, 1f);
+
+		yield return new WaitForSeconds(1f);
+
+		EndFlow(index);
 	}
 
 	private void ProjectUpdate(Dictionary<MajorType, int> self, Dictionary<MajorType, int> other)
@@ -189,10 +442,6 @@ public class IngameManager : MonoBehaviour
 	{
 	}
 
-	private void HeldUpdate()
-	{
-	}
-
 	private void DrawCard(IReadOnlyCollection<GameCard> cards, bool self, bool last)
 	{
 		var handCards = activity.GetHandCards(self);
@@ -201,10 +450,11 @@ public class IngameManager : MonoBehaviour
 			otherDeck.DrawCards(activity.AddHandCard, last, cards.Count - handCards.Count);
 			return;
 		}
-		var ids       = cards.Select(x => x.id);
-		var handIds   = handCards.Select(x => x.id);
-		var drawIds   = ids.Except(handIds);
-		selfDeck.DrawCards(activity.AddHandCard, last, cards.Where(x=>drawIds.Contains(x.id)));
+
+		var ids     = cards.Select(x => x.id);
+		var handIds = handCards.Select(x => x.id);
+		var drawIds = ids.Except(handIds);
+		selfDeck.DrawCards(activity.AddHandCard, last, cards.Where(x => drawIds.Contains(x.id)));
 	}
 
 	private void TimeChanged(int? self, int? other)
@@ -213,24 +463,18 @@ public class IngameManager : MonoBehaviour
 		{
 			ui.TimeChanged(self.Value, true);
 		}
+
 		if (other != null)
 		{
 			ui.TimeChanged(other.Value, false);
 		}
 	}
 
-	private void TurnChanged(bool myTurn)
-	{
-		preTurn = myTurn;
-		ui.TurnSet(myTurn);
-		ui.InteractBlock(myTurn);
-	}
-
 	public void Sleep()
 	{
-		if(!GameStatics.isTurn) return;
-		ui.TimeChanged(0, true);
-		ui.InteractBlock(false);
+		if (!preTurn) return;
+		ui.SetInteract(false);
+		canUseFlow = false;
 		NetworkClient.Send(RawProtocol.of(105, null));
 	}
 
@@ -238,30 +482,4 @@ public class IngameManager : MonoBehaviour
 	{
 		ui.TimeChanged(0, false);
 	}
-}
-
-public class GameStatus
-{
-	public int                      time;
-	public float                    totalProgress;
-	public List<DetailProgressInfo> detailProgresses = new();
-
-	public void Init()
-	{
-		time          = 24;
-		totalProgress = 0;
-
-		var gameMajors = ((MajorType[])Enum.GetValues(typeof(MajorType))).ToList();
-
-		detailProgresses = new List<DetailProgressInfo>();
-		foreach (var major in gameMajors)
-			detailProgresses.Add(new DetailProgressInfo
-			                     { major = major });
-	}
-}
-
-public class DetailProgressInfo
-{
-	public MajorType major;
-	public float     progress   = 0;
 }

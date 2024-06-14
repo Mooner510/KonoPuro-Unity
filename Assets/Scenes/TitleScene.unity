@@ -1382,9 +1382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b92cbb970d7a2e74e854a6e1cb415638, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 0}
-  todayscard: {fileID: 616475843}
-  authpanel: {fileID: 541766745}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2119,7 +2116,7 @@ GameObject:
   - component: {fileID: 616475845}
   - component: {fileID: 616475848}
   m_Layer: 5
-  m_Name: Todayscard
+  m_Name: Today's Card
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5624,6 +5621,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1833554437}
   - component: {fileID: 1833554438}
+  - component: {fileID: 1833554439}
   m_Layer: 0
   m_Name: TitleManager
   m_TagString: Untagged
@@ -5661,8 +5659,20 @@ MonoBehaviour:
   director: {fileID: 1013054863}
   start: {fileID: 11400000, guid: 7adb1759a8f20b04284318b7aa8cec9a, type: 2}
   end: {fileID: 11400000, guid: 88d4d639e0f823a409ce2b8ed70befc6, type: 2}
-  LoginFaild: {fileID: 1667634324}
+  LoginFailed: {fileID: 1667634324}
   LoginSuccess: {fileID: 837061633}
+--- !u!114 &1833554439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833554436}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab4be0d0c5534804abea3f127bc54952, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1948130265
 GameObject:
   m_ObjectHideFlags: 0
@@ -6358,7 +6368,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5408837959403125211}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -6441,7 +6451,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254623002812025879}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -7335,13 +7345,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9008576358233242924}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0.07315344, y: 0.056494065, z: -0.03434283, w: 0.99512696}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 2664016212292022957}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -8.147, y: 6.815, z: -4.439}
 --- !u!1 &6895021992501651260
 GameObject:
   m_ObjectHideFlags: 0
@@ -7408,7 +7418,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8867698262522177858}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -7468,7 +7478,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9008576358233242924}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -7536,7 +7546,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2407518255217482894}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -7588,7 +7598,7 @@ SpriteRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2845635019404429536}
   m_Enabled: 1
-  m_CastShadows: 0
+  m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0

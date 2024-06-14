@@ -10,7 +10,7 @@ public enum MajorType
 	Game,
 	AI,
 	Android,
-	IOS,
+	iOS,
 	Embedded,
 	DevOps,
 	Design
