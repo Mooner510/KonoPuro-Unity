@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using _root.Script.Card;
 using _root.Script.Data;
 using _root.Script.Main;
 using _root.Script.Network;
@@ -116,6 +118,7 @@ public class GachaUI : MonoBehaviour
 		ChangeGoldTxt(gold);
 		UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
 		GachaDirecting.gatchaCards = gatchaCards;
+		GachaDirectionColor.maxTier = gatchaCards.Select(card => card.tier).Max();
 		SceneManager.LoadScene("GachaDirectingStartScene");
 	}
 
