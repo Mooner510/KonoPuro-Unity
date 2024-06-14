@@ -153,10 +153,8 @@ public class IngameCard : MonoBehaviour
 	public IngameCard LoadDisplay(GameStudentCard data)
 	{
 		type = IngameCardType.Student;
-		Debug.LogError("try get");
 		if (data == null) return this;
 		student = data;
-		Debug.LogError(data);
 		var card                          = GetComponent<Card.Card>();
 		var sprite                        = ResourceManager.GetSprite(data.cardType);
 		if (sprite) card.frontSide.sprite = sprite;
