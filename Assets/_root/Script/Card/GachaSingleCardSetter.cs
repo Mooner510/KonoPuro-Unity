@@ -11,10 +11,7 @@ namespace _root.Script.Card
         private void Start()
         {
             GetComponentInChildren<CardinrandomRange>().cardId = gatchaCard.cardType;
-            var l = GetComponentInChildren<Light>();
-            if (gatchaCard.tier <= 2) return;
-            l.enabled = true;
-            l.color = GachaMultiCardSetter.GetColorByTier(gatchaCard.tier);
+            GetComponentInChildren<CardinrandomRange>().tier = gatchaCard.tier;
         }
     }
 }
