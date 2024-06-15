@@ -1,3 +1,5 @@
+using System.Linq;
+using _root.Script.Card;
 using _root.Script.Manager;
 using UnityEngine;
 
@@ -8,6 +10,7 @@ namespace cardinrange
         public SpriteRenderer[] pickUpCard;
         public string cardId;
         public int tier;
+        public GameObject skipButton;
     
         // Start is called before the first frame update
         private void Start()
@@ -24,6 +27,7 @@ namespace cardinrange
             if (tier <= 2) return;
             GetComponentInChildren<Light>().enabled = true;
             GetComponentInChildren<Light>().color = GetColorByTier(tier);
+            if (GetComponentInParent<GachaMultiCardSetter>().GetComponentsInChildren<CardinrandomRange>().All(c=>c.pickUpCard[1].enabled)) skipButton.SetActive(false);
         }
 
         public static Color GetColorByTier(int tier)
