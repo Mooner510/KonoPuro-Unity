@@ -24,10 +24,10 @@ namespace cardinrange
         {
             pickUpCard[0].enabled = false;
             pickUpCard[1].enabled = true;
+            if (GetComponentInParent<GachaMultiCardSetter>().GetComponentsInChildren<CardinrandomRange>().All(c=>c.pickUpCard[1].enabled)) skipButton.SetActive(false);
             if (tier <= 2) return;
             GetComponentInChildren<Light>().enabled = true;
             GetComponentInChildren<Light>().color = GetColorByTier(tier);
-            if (GetComponentInParent<GachaMultiCardSetter>().GetComponentsInChildren<CardinrandomRange>().All(c=>c.pickUpCard[1].enabled)) skipButton.SetActive(false);
         }
 
         public static Color GetColorByTier(int tier)
