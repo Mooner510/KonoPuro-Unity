@@ -81,6 +81,7 @@ public class IngameManager : MonoBehaviour
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherCardUse, OtherCardUse);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
 		GameStart();
 	}
 
@@ -132,8 +133,10 @@ public class IngameManager : MonoBehaviour
 		if (GameStatics.self == null || GameStatics.other == null)
 		{
 			List<GameStudentCard> student = new()
-			                                { new GameStudentCard() {tiers = new List<Tiers>()
-			                                                                 { Tiers.Android, Tiers.Backend}}, new(), new(), new(), new() };
+			                                { new GameStudentCard()
+			                                  { tiers = new List<Tiers>()
+			                                            { Tiers.Android, Tiers.Backend } },
+			                                  new(), new(), new(), new() };
 			selfStudents  = student;
 			otherStudents = student;
 
@@ -216,7 +219,7 @@ public class IngameManager : MonoBehaviour
 
 	private void ShowAbilities(IngameCard card)
 	{
-		ui.SetAbilities(card?.GetStudentData(), ui.SelectAbility, ability=>UseAbility(ability, card));
+		ui.SetAbilities(card?.GetStudentData(), ui.SelectAbility, ability => UseAbility(ability, card));
 	}
 
 	private void UseAbility(Tiers ability, IngameCard card)
@@ -245,6 +248,11 @@ public class IngameManager : MonoBehaviour
 	private void OtherCardUse(object card)
 	{
 		StartCoroutine(OtherCardUseFlow((GameCard)card, GetFlowIndex()));
+	}
+
+	private void GameEnd(object info)
+	{
+		StartCoroutine(GameEndFlow((string)info, GetFlowIndex()));
 	}
 
 	private IEnumerator UseAbilityFlow(Tiers ability, IngameCard card, int index)
@@ -386,6 +394,18 @@ public class IngameManager : MonoBehaviour
 			yield return new WaitForSeconds(1f);
 		}
 
+		if (other?.fieldCards != null)
+		{
+			otherField.UpdateField(other.fieldCards.cards);
+			yield return new WaitForSeconds(1f);
+		}
+
+		if (self?.fieldCards != null)
+		{
+			selfField.UpdateField(self.fieldCards.cards);
+			yield return new WaitForSeconds(1f);
+		}
+
 		if (other?.heldCards != null)
 		{
 			DrawCard(other.heldCards.cards, false, other.deckSize == 0);
@@ -430,6 +450,25 @@ public class IngameManager : MonoBehaviour
 		yield return new WaitForSeconds(1f);
 
 		EndFlow(index);
+	}
+
+	private IEnumerator GameEndFlow(string info, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+		
+		ui.SetInteract(false);
+		ui.SetHover(false);
+		activity.SetActive(false);
+		canUseFlow    = false;
+		abilityUsable = false;
+
+		//TODO: 승패 연출
+		yield return new WaitForSeconds(1f);
+
+		ui.SetGameEnd(true, info);
+
+		EndFlow(index);
+		currentFlowIndex = -1;
 	}
 
 	private void ProjectUpdate(Dictionary<MajorType, int> self, Dictionary<MajorType, int> other)
