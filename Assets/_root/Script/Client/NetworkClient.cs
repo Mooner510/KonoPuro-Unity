@@ -57,8 +57,15 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 		}
 	}
 
+	protected override void Awake()
+	{
+		base.Awake();
+		Debug.Log("Awake");
+	}
+
 	private void Start()
 	{
+		Debug.Log("Start");
 		if (localHost)
 		{
 			host = IPAddressor.GetLocalIP();
@@ -146,7 +153,7 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 							                break;
 						                }
 						                case 201:
-							                CallEvent(ClientEvent.GameEnd, null);
+							                CallEvent(ClientEvent.GameEnd, rawProtocol.data[0]);
 							                break;
 						                case 202:
 							                var useCard = JsonConvert.DeserializeObject<GameCard>(rawProtocol.data[0]

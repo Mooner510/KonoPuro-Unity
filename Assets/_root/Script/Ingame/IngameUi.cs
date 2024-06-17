@@ -39,7 +39,9 @@ public class IngameUi : MonoBehaviour
 
 	private AbilityManager abilityManager;
 
-	public SelectionModeUi GetSelectionModeUi() => selectionModeUi;
+	private GameEndUi      gameEndUi;
+	
+	public  SelectionModeUi GetSelectionModeUi() => selectionModeUi;
 
 	private void Awake()
 	{
@@ -73,6 +75,8 @@ public class IngameUi : MonoBehaviour
 		selectionModeUi = FindObjectOfType<SelectionModeUi>();
 
 		abilityManager = FindObjectOfType<AbilityManager>();
+
+		gameEndUi = GetComponentInChildren<GameEndUi>();
 	}
 
 	public void Init()
@@ -145,5 +149,10 @@ public class IngameUi : MonoBehaviour
 	{
 		ingameCardInfoUi.SetInfo(abilityButton.ability);
 		abilityManager.SelectAbility(abilityButton);
+	}
+
+	public void SetGameEnd(bool active, string info)
+	{
+		gameEndUi.Set(active, info);
 	}
 }
