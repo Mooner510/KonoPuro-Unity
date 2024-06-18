@@ -34,6 +34,48 @@ public class FieldSetter : MonoBehaviour
 		UpdateFieldCardPos();
 	}
 
+	public void UpdateField(List<GameCard> cards)
+	{
+		var fieldIds   = fieldCards.Select(x => x.GetData().id);
+		var updatedIds = cards.Select(x => x.id);
+		var placedIds     = fieldIds.Intersect(updatedIds);
+		var addedIds      = updatedIds.Except(placedIds);
+		var removedIds    = fieldIds.Except(placedIds).Except(addedIds);
+
+		var updatedField = fieldCards.Where(x => updatedIds.Contains(x.GetData().id)).ToList();
+
+		var              addedCards       = cards.Where(x => addedIds.Contains(x.id));
+		List<IngameCard> addedIngameCards = new List<IngameCard>();
+		foreach (var addedCard in addedCards)
+		{
+			var ingameCard = IngameCard.CreateIngameCard(addedCard);
+			ingameCard.isMine             = isMine;
+			ingameCard.type               = IngameCardType.Field;
+			ingameCard.transform.rotation = Quaternion.Euler(-90, 0, 90);
+			addedIngameCards.Add(ingameCard);
+		}
+		
+		updatedField.AddRange(addedIngameCards);
+
+		StartCoroutine(UpdateFlow(fieldCards.Where(x => removedIds.Contains(x.GetData().id)).ToList(), updatedField));
+	}
+
+	private IEnumerator UpdateFlow(List<IngameCard> removed, List<IngameCard> field)
+	{
+		foreach (var ingameCard in removed)
+		{
+			ingameCard.Show(false, true);
+		}
+
+		yield return new WaitForSeconds(0.7f);
+		
+		UpdateFieldCardPos();
+		foreach (var ingameCard in field)
+		{
+			ingameCard.Show(true);
+		}
+	}
+
 	public void AddNewCard(IngameCard addition)
 	{
 		fieldCards.Add(addition);
