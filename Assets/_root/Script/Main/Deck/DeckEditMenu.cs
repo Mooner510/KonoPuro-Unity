@@ -20,7 +20,7 @@ public class DeckEditMenu : MonoBehaviour
 	private Camera cam;
 	private Canvas canvas;
 
-	private GameObject       equipBackground;
+	private SpriteRenderer       equipBackground;
 	private List<DeckCardUi> equippedCardUis;
 	private List<DeckCardUi> inventoryCardUis;
 
@@ -51,8 +51,8 @@ public class DeckEditMenu : MonoBehaviour
 	private void Start()
 	{
 		cam = Camera.main;
-		
-		equipBackground = transform.GetChild(2).gameObject;
+
+		equipBackground = GetComponentInChildren<SpriteRenderer>();
 
 		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
@@ -86,13 +86,6 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void Update()
 	{
-		//실험용 메뉴 열고 닫기
-		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			Debug.Log("Space");
-			SetActive(!isActive);
-		}
-
 		if (Input.GetMouseButtonDown(0) && isActive) CheckSelect();
 	}
 
@@ -103,7 +96,7 @@ public class DeckEditMenu : MonoBehaviour
 		if (active) Init();
 		else if (isActive) ApplyDeck();
 		else ResourceManager.ClearAll();
-		equipBackground.SetActive(active);
+		equipBackground.gameObject.SetActive(active);
 		isActive       = active;
 		canvas.enabled = active;
 	}
