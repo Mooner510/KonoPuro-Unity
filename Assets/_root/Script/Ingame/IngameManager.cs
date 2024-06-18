@@ -141,28 +141,29 @@ public class IngameManager : MonoBehaviour
 			otherStudents = student;
 
 			StartCoroutine(StartFlow(new()
-			                         { new(), new(), new(), new(), new() }, 5));
+			                         { new(), new(), new(), new(), new() }, new()
+			                                                                { new(), new(), new(), new(), new() }));
 
 			GameStatics.isTurn = true;
 			return;
 		}
 
-		var selfStudent                         = GameStatics.self.student;
-		var otherStudent                        = GameStatics.other.student;
-		if (selfStudent != null) selfStudents   = selfStudent.cards;
-		if (otherStudent != null) otherStudents = otherStudent.cards;
-		var selfHeldCards                       = GameStatics.self.heldCards;
-		var otherHeldCards                      = GameStatics.other.heldCards;
+		var selfStudent                         = GameStatics.self?.student;
+		var otherStudent                        = GameStatics.other?.student;
+		selfStudents   = selfStudent?.cards;
+		otherStudents = otherStudent?.cards;
+		var selfHeldCards                       = GameStatics.self?.heldCards;
+		var otherHeldCards                      = GameStatics.other?.heldCards?.cards;
 		if (selfHeldCards == null || otherHeldCards == null)
 		{
 			Debug.LogError("game start held cards data is null");
 			return;
 		}
 
-		StartCoroutine(StartFlow(selfHeldCards.cards, otherHeldCards.cards.Count));
+		StartCoroutine(StartFlow(selfHeldCards.cards, otherHeldCards));
 	}
 
-	private IEnumerator StartFlow(List<GameCard> selfDraws, int otherDrawCount)
+	private IEnumerator StartFlow(List<GameCard> selfHand, List<GameCard> otherHand)
 	{
 		activity.SetActive(false);
 		ui.SetInteract(false);
@@ -185,8 +186,8 @@ public class IngameManager : MonoBehaviour
 		selfDeck.Init();
 		otherDeck.Init();
 
-		selfDeck.DrawCards(activity.AddHandCard, false, selfDraws);
-		otherDeck.DrawCards(activity.AddHandCard, false, otherDrawCount);
+		selfDeck.DrawCards(activity.AddHandCard, false, selfHand);
+		otherDeck.DrawCards(activity.AddHandCard, false, otherHand);
 
 		yield return new WaitForSeconds(3f);
 
@@ -408,6 +409,7 @@ public class IngameManager : MonoBehaviour
 
 		if (other?.heldCards != null)
 		{
+			
 			DrawCard(other.heldCards.cards, false, other.deckSize == 0);
 			yield return new WaitForSeconds(1f);
 		}
@@ -455,7 +457,7 @@ public class IngameManager : MonoBehaviour
 	private IEnumerator GameEndFlow(string info, int index)
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
-		
+
 		ui.SetInteract(false);
 		ui.SetHover(false);
 		activity.SetActive(false);
@@ -484,11 +486,6 @@ public class IngameManager : MonoBehaviour
 	private void DrawCard(IReadOnlyCollection<GameCard> cards, bool self, bool last)
 	{
 		var handCards = activity.GetHandCards(self);
-		if (!self)
-		{
-			otherDeck.DrawCards(activity.AddHandCard, last, cards.Count - handCards.Count);
-			return;
-		}
 
 		var ids     = cards.Select(x => x.id);
 		var handIds = handCards.Select(x => x.id);
