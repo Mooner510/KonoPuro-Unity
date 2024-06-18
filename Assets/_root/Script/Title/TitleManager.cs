@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using _root.Script.Data;
+using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -53,6 +54,7 @@ public class TitleManager : MonoBehaviour
 
 	public void GameStart()
 	{
+		AudioManager.PlaySoundInstance("Audio/GAME_START");
 		titleUi.gameObject.SetActive(false);
 		LoginFailed.SetActive(false);
 		LoginSuccess.SetActive(false);
