@@ -40,11 +40,11 @@ public class TitleManager : MonoBehaviour
 		bool loaded = false;
 		API.GetVersion().OnResponse(s =>
 		                            { if (s.version != Application.version)
-		                            {
-			                            //TODO: 버전 안 맞음 표시
-			                            loaded = true;
-			                            Application.Quit();
-		                            } });
+		                              {
+			                              //TODO: 버전 안 맞음 표시
+			                              Application.Quit();
+		                              }
+		                              else loaded = true; });
 		yield return new WaitUntil((() => loaded));
 		yield return new WaitForSeconds(1f);
 		bool cutSceneEnd = false;
@@ -153,12 +153,12 @@ public class TitleManager : MonoBehaviour
 				                            Debug.Log($"Description : {value.description}");
 				                            // foreach (var pair in value)
 				                            // {
-					                           //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                            //  Debug.Log($"{pair.Key} : {pair.Value}");
 				                            // }
 			                            }
 
-			                            GameStatics.tierDictionary = responses;
-			                          }).OnError((body => Debug.Log("Tiers Load Failed"))).Build();
+			                            GameStatics.tierDictionary = responses; })
+			   .OnError((body => Debug.Log("Tiers Load Failed"))).Build();
 		}
 
 		if (GameStatics.passiveDictionary == null)
@@ -172,11 +172,12 @@ public class TitleManager : MonoBehaviour
 				                               Debug.Log($"Description : {value.description}");
 				                               // foreach (var pair in value)
 				                               // {
-					                              //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                               //  Debug.Log($"{pair.Key} : {pair.Value}");
 				                               // }
 			                               }
-			                               GameStatics.passiveDictionary = responses;
-			                             }).OnError((body => Debug.Log("Passives Load Failed"))).Build();
+
+			                               GameStatics.passiveDictionary = responses; })
+			   .OnError((body => Debug.Log("Passives Load Failed"))).Build();
 		}
 
 		if (GameStatics.defaultCardDictionary == null)
@@ -191,11 +192,12 @@ public class TitleManager : MonoBehaviour
 				                                   Debug.Log($"Description : {value.description}");
 				                                   // foreach (var pair in value)
 				                                   // {
-					                                  //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                                   //  Debug.Log($"{pair.Key} : {pair.Value}");
 				                                   // }
 			                                   }
-			                                   GameStatics.defaultCardDictionary = responses;
-			                                 }).OnError((body => Debug.Log("Default Cards Load Failed"))).Build();
+
+			                                   GameStatics.defaultCardDictionary = responses; })
+			   .OnError((body => Debug.Log("Default Cards Load Failed"))).Build();
 		}
 	}
 
