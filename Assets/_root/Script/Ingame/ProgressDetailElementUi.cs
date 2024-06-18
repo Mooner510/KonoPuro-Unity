@@ -15,6 +15,7 @@ public class ProgressDetailElementUi : MonoBehaviour
     private Image           majorIcon;
     private Slider          progressBar;
     private TextMeshProUGUI progressText;
+    [SerializeField]private float ChangeTime;
 
     public int maxProgress;
     public int progress;
@@ -39,14 +40,31 @@ public class ProgressDetailElementUi : MonoBehaviour
 
     public void SetProgress(int _progress)
     {
-        progress     = _progress;
-        progressBar.value = Mathf.Clamp01((float)progress / maxProgress);
-        progressText.text = $"{progress}pt";
+        int progressTemp = progress;
+        progress = _progress;
+        StartCoroutine(ChangeProgress(progressTemp, _progress));
     }
 
     public void AddProgress(int _progress)
     {
         progress          += _progress;
         SetProgress(progress);
+    }
+
+    private IEnumerator ChangeProgress(int TempProgress, int _progress)
+    {
+        float elapsedTime = 0f;
+        int plus = _progress - TempProgress;
+        while (elapsedTime < ChangeTime)
+        {
+            float pr = TempProgress + ((plus*(elapsedTime / ChangeTime)));
+            progressBar.value = Mathf.Clamp01(pr / maxProgress);
+            progressText.text = $"{(int)pr}pt";
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        progress     = _progress;
+        progressBar.value = Mathf.Clamp01((float)progress / maxProgress);
+        progressText.text = $"{progress}pt";
     }
 }
