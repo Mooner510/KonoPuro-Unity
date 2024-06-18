@@ -46,7 +46,10 @@ public enum Passives
 	IssueCracker,
 	Destore,
 	Brocker,
-	Test
+	CleanCode,
+	Refectoring,
+	JustRealize,
+	IndustrialSpy,
 }
 
 public enum Tiers
@@ -213,6 +216,29 @@ public class ApplyDeckRequest
 	public string       activeDeckId;
 	public List<string> addition;
 	public List<string> deletion;
+}
+
+[Serializable]
+public class TierInfo
+{
+	public string name;
+	public int    time;
+	public string description;
+}
+
+[Serializable]
+public class PassiveInfo
+{
+	public string name;
+	public string description;
+}
+
+[Serializable]
+public class DefaultCardInfo
+{
+	public string name;
+	public int    time;
+	public string description;
 }
 
 [Serializable]
