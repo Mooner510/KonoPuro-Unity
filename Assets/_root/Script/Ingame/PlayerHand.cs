@@ -66,6 +66,7 @@ public class PlayerHand : MonoBehaviour
 	{
 		selectedCard = card;
 		HandUpdate(powerUpdate is null or true && (card || handOpened));
+		
 	}
 
 	private void HandShowCheck()
@@ -104,7 +105,6 @@ public class PlayerHand : MonoBehaviour
 			handCards.RemoveAt(0);
 		}
 		else if (handCards.Contains(card)) handCards.Remove(card);
-
 		HandUpdate(false);
 		return card;
 	}

@@ -34,6 +34,8 @@ public class IngameManager : MonoBehaviour
 
 	//TODO: 실험용 삭제필요
 	[SerializeField] private bool spriteDebug;
+	[SerializeField] private Light light1;
+	[SerializeField] private Light light2;
 
 	private readonly List<int> flowIndexes      = new();
 	private          int       currentFlowIndex = 0;
@@ -82,6 +84,8 @@ public class IngameManager : MonoBehaviour
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
+		light1.color = Color.white;
+		light2.color = Color.white;
 		GameStart();
 	}
 
@@ -371,6 +375,17 @@ public class IngameManager : MonoBehaviour
 		Debug.LogError("NextDay");
 
 		day++;
+		if (day == 1)
+		{
+			for (float i = 0; i < 4; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.red, 0.5f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.red, 0.5f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.red;
+			light2.color = Color.red;
+		}
 		ui.DayChange(day);
 
 		yield return new WaitForSeconds(2f);

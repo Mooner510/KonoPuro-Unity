@@ -123,7 +123,11 @@ public class PlayerActivity : MonoBehaviour
 		ingameUi.SetInteract(!selectedCard && GameStatics.isTurn);
 		if (!card) selfHand.SelectCard(null);
 		else if (card.type != IngameCardType.Hand) selfHand.SelectCard(null, false);
-		else if (card.isMine && card.type == IngameCardType.Hand) selfHand.SelectCard(card);
+		else if (card.isMine && card.type == IngameCardType.Hand)
+		{
+			Debug.Log(card.GetData().cardType);
+			selfHand.SelectCard(card);
+		}
 		ingameUi.SetCardInfo(card);
 		return null;
 	}

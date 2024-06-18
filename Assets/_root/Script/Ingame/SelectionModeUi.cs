@@ -71,10 +71,16 @@ public class SelectionModeUi : MonoBehaviour
 		accept.onClick.RemoveAllListeners();
 		cancel.onClick.RemoveAllListeners();
 		accept.onClick.AddListener(() => callback(true, selectedCards));
+		accept.onClick.AddListener(()=>SayOutLoud());
 		accept.onClick.AddListener(() => SetActive(false));
 		cancel.onClick.AddListener(() => callback(false, null));
 		cancel.onClick.AddListener(() => SetActive(false));
 
 		SetActive(true);
+	}
+
+	public void SayOutLoud()
+	{
+		
 	}
 }
