@@ -27,6 +27,12 @@ public class TitleManager : MonoBehaviour
 		authPanel = FindObjectOfType<AuthPanel>();
 		var spotLight = FindObjectsOfType<Light>();
 		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
+
+		API.GetVersion().OnResponse(s =>
+		                            { if (s.version != Application.version)
+		                            {
+			                            Application.Quit();
+		                            } });
 	}
 
 	// Start is called before the first frame update

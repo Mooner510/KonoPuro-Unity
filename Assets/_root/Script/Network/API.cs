@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace _root.Script.Network
@@ -67,5 +68,12 @@ public static class API
 	
 	public static Networking.Get<Dictionary<string, DefaultCardInfo>> GetDefaultCards() => new("/api/resource/card");
 	
+	public static Networking.Get<Version> GetVersion() => new("/api/resource/card");
+	
+	[Serializable]
+	public class Version
+	{
+		public string version;
+	}
 }
 }
