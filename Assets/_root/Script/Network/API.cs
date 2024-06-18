@@ -63,9 +63,9 @@ public static class API
 
 	public static Networking.Get<Dictionary<Tiers, TierInfo>> GetTiers() => new("/api/resource/tier");
 	
-	public static Networking.Get<Dictionary<string, Dictionary<string, object>>> GetPassives() => new("/api/resource/passive");
+	public static Networking.Get<Dictionary<Passives, PassiveInfo>> GetPassives() => new("/api/resource/passive");
 	
-	public static Networking.Get<Dictionary<string, Dictionary<string, object>>> GetDefaultCards() => new("/api/resource/card");
+	public static Networking.Get<Dictionary<string, DefaultCardInfo>> GetDefaultCards() => new("/api/resource/card");
 	
 }
 }

@@ -159,14 +159,14 @@ public class TitleManager : MonoBehaviour
 			                               foreach (var (key, value) in responses)
 			                               {
 				                               Debug.LogWarning($"Outer Key : {key}");
-				                               // Debug.Log($"Name : {value.name}");
-				                               // Debug.Log($"Description : {value.description}");
-				                               foreach (var pair in value)
-				                               {
-					                               Debug.Log($"{pair.Key} : {pair.Value}");
-				                               }
+				                               Debug.Log($"Name : {value.name}");
+				                               Debug.Log($"Description : {value.description}");
+				                               // foreach (var pair in value)
+				                               // {
+					                              //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                               // }
 			                               }
-			                               // GameStatics.passiveDictionary = responses;
+			                               GameStatics.passiveDictionary = responses;
 			                             }).OnError((body => Debug.Log("Passives Load Failed"))).Build();
 		}
 
@@ -177,15 +177,15 @@ public class TitleManager : MonoBehaviour
 			                                   foreach (var (key, value) in responses)
 			                                   {
 				                                   Debug.LogWarning($"Outer Key : {key}");
-				                                   // Debug.Log($"Name : {value.name}");
-				                                   // Debug.Log($"Time : {value.time}");
-				                                   // Debug.Log($"Description : {value.description}");
-				                                   foreach (var pair in value)
-				                                   {
-					                                   Debug.Log($"{pair.Key} : {pair.Value}");
-				                                   }
+				                                   Debug.Log($"Name : {value.name}");
+				                                   Debug.Log($"Time : {value.time}");
+				                                   Debug.Log($"Description : {value.description}");
+				                                   // foreach (var pair in value)
+				                                   // {
+					                                  //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                                   // }
 			                                   }
-			                                   // GameStatics.defaultCardDictionary = responses;
+			                                   GameStatics.defaultCardDictionary = responses;
 			                                 }).OnError((body => Debug.Log("Default Cards Load Failed"))).Build();
 		}
 	}
