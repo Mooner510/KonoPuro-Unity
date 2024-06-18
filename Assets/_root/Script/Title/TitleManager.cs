@@ -27,12 +27,6 @@ public class TitleManager : MonoBehaviour
 		authPanel = FindObjectOfType<AuthPanel>();
 		var spotLight = FindObjectsOfType<Light>();
 		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
-
-		API.GetVersion().OnResponse(s =>
-		                            { if (s.version != Application.version)
-		                            {
-			                            Application.Quit();
-		                            } });
 	}
 
 	// Start is called before the first frame update
@@ -43,6 +37,15 @@ public class TitleManager : MonoBehaviour
 
 	private IEnumerator StartFlow()
 	{
+		bool loaded = false;
+		API.GetVersion().OnResponse(s =>
+		                            { if (s.version != Application.version)
+		                            {
+			                            //TODO: 버전 안 맞음 표시
+			                            loaded = true;
+			                            Application.Quit();
+		                            } });
+		yield return new WaitUntil((() => loaded));
 		yield return new WaitForSeconds(1f);
 		bool cutSceneEnd = false;
 		director.playableAsset = start;
