@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
 using _root.Script.Data;
+using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -64,6 +65,7 @@ public class MainManager : MonoBehaviour
 				if (placeable != hoveredPlaceableObject)
 				{
 					hoveredPlaceableObject.OnHover(false);
+					AudioManager.PlaySoundInstance("Audio/SELECTED");
 					placeable.OnHover(true);
 					hoveredPlaceableObject = placeable;
 				}
@@ -71,6 +73,7 @@ public class MainManager : MonoBehaviour
 			else
 			{
 				placeable.OnHover(true);
+				AudioManager.PlaySoundInstance("Audio/SELECTED");
 				hoveredPlaceableObject = placeable;
 			}
 		}
@@ -87,6 +90,7 @@ public class MainManager : MonoBehaviour
 		if (!hoveredPlaceableObject || !Input.GetMouseButtonDown(0)) return;
 		var cam = hoveredPlaceableObject.Interact();
 		if (cam == CinemacineController.VCamName.None) return;
+		AudioManager.PlaySoundInstance("Audio/CLICKED");
 
 		isInteracting = true;
 		if (cam == CinemacineController.VCamName.Matching) Matching();
