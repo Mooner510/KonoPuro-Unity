@@ -17,6 +17,10 @@ public static class GameStatics
 	public static int deckCharacterCardRequired = 5;
 	public static int deckUseCardRequired       = 25;
 
+	public static Dictionary<Tiers, TierInfo>       tierDictionary;
+	public static Dictionary<Passives, PassiveInfo> passiveDictionary;
+	public static Dictionary<string, DefaultCardInfo> defaultCardDictionary;
+
 	public static List<GatchaResponse> gatchaList;
 
 	public static readonly HashSet<Tuple<MajorType, int>> stageProjects = new()

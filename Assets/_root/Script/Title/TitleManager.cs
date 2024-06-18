@@ -64,6 +64,33 @@ public class TitleManager : MonoBehaviour
 	private IEnumerator GameStartFlow()
 	{
 		StartCoroutine(LoadCoroutine());
+
+		// Debug.LogError("Tiers");
+		// foreach (var (key, value) in GameStatics.tierDictionary)
+		// {
+		// 	Debug.LogWarning($"Outer Key : {key}");
+		// 	Debug.Log($"Name : {value.name}");
+		// 	Debug.Log($"Time : {value.time}");
+		// 	Debug.Log($"Description : {value.description}");
+		// }
+		//
+		// Debug.LogError("Passives");
+		// foreach (var (key, value) in GameStatics.passiveDictionary)
+		// {
+		// 	Debug.LogWarning($"Outer Key : {key}");
+		// 	Debug.Log($"Name : {value.name}");
+		// 	Debug.Log($"Description : {value.description}");
+		// }
+		//
+		// Debug.LogError("Default Cards");
+		// foreach (var (key, value) in GameStatics.defaultCardDictionary)
+		// {
+		// 	Debug.LogWarning($"Outer Key : {key}");
+		// 	Debug.Log($"Name : {value.name}");
+		// 	Debug.Log($"Time : {value.time}");
+		// 	Debug.Log($"Description : {value.description}");
+		// }
+
 		yield return new WaitForSeconds(2f);
 		director.playableAsset = end;
 		director.Play();
@@ -104,26 +131,85 @@ public class TitleManager : MonoBehaviour
 			    // 		                                                                -1).ToList())
 			   .OnError((body => Debug.Log("Gatcha List Load Failed"))).Build();
 		}
+
+		if (GameStatics.tierDictionary == null)
+		{
+			API.GetTiers().OnResponse(responses =>
+			                          { Debug.LogError("Tiers");
+			                            foreach (var (key, value) in responses)
+			                            {
+				                            Debug.LogWarning($"Outer Key : {key}");
+				                            Debug.Log($"Name : {value.name}");
+				                            Debug.Log($"Time : {value.time}");
+				                            Debug.Log($"Description : {value.description}");
+				                            // foreach (var pair in value)
+				                            // {
+					                           //  Debug.Log($"{pair.Key} : {pair.Value}");
+				                            // }
+			                            }
+
+			                            GameStatics.tierDictionary = responses;
+			                          }).OnError((body => Debug.Log("Tiers Load Failed"))).Build();
+		}
+
+		if (GameStatics.passiveDictionary == null)
+		{
+			API.GetPassives().OnResponse(responses =>
+			                             { Debug.LogError("Passives");
+			                               foreach (var (key, value) in responses)
+			                               {
+				                               Debug.LogWarning($"Outer Key : {key}");
+				                               // Debug.Log($"Name : {value.name}");
+				                               // Debug.Log($"Description : {value.description}");
+				                               foreach (var pair in value)
+				                               {
+					                               Debug.Log($"{pair.Key} : {pair.Value}");
+				                               }
+			                               }
+			                               // GameStatics.passiveDictionary = responses;
+			                             }).OnError((body => Debug.Log("Passives Load Failed"))).Build();
+		}
+
+		if (GameStatics.defaultCardDictionary == null)
+		{
+			API.GetDefaultCards().OnResponse(responses =>
+			                                 { Debug.LogError("Default Cards");
+			                                   foreach (var (key, value) in responses)
+			                                   {
+				                                   Debug.LogWarning($"Outer Key : {key}");
+				                                   // Debug.Log($"Name : {value.name}");
+				                                   // Debug.Log($"Time : {value.time}");
+				                                   // Debug.Log($"Description : {value.description}");
+				                                   foreach (var pair in value)
+				                                   {
+					                                   Debug.Log($"{pair.Key} : {pair.Value}");
+				                                   }
+			                                   }
+			                                   // GameStatics.defaultCardDictionary = responses;
+			                                 }).OnError((body => Debug.Log("Default Cards Load Failed"))).Build();
+		}
 	}
 
 	private IEnumerator LoadCoroutine()
 	{
 		const float iterTime  = 3f;
-		const int   iterCount = 2;
+		const int   iterCount = 1;
 
 		for (int i = 0; i < iterCount; i++)
 		{
 			LoadData();
 			yield return new WaitForSeconds(iterTime);
 			if (UserData.Instance.ActiveDeck != null && UserData.Instance.InventoryCards != null &&
-			    GameStatics.gatchaList != null)
+			    GameStatics.gatchaList != null && GameStatics.tierDictionary != null &&
+			    GameStatics.passiveDictionary != null && GameStatics.defaultCardDictionary != null)
 			{
 				yield break;
 			}
 		}
 
 		if (UserData.Instance.ActiveDeck != null && UserData.Instance.InventoryCards != null &&
-		    GameStatics.gatchaList != null)
+		    GameStatics.gatchaList != null && GameStatics.tierDictionary != null &&
+		    GameStatics.passiveDictionary != null && GameStatics.defaultCardDictionary != null)
 		{
 			yield break;
 		}

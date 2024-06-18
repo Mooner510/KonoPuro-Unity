@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace _root.Script.Network
 {
 public static class API
@@ -58,5 +60,12 @@ public static class API
 	public static Networking.Get<DeckResponse> GetActiveDeck() => new("/api/inventory/active");
 
 	public static Networking.Post<Void> ApplyDeck(ApplyDeckRequest req) => new("/api/inventory/apply", req);
+
+	public static Networking.Get<Dictionary<Tiers, TierInfo>> GetTiers() => new("/api/resource/tier");
+	
+	public static Networking.Get<Dictionary<string, Dictionary<string, object>>> GetPassives() => new("/api/resource/passive");
+	
+	public static Networking.Get<Dictionary<string, Dictionary<string, object>>> GetDefaultCards() => new("/api/resource/card");
+	
 }
 }

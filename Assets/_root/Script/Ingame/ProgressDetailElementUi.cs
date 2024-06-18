@@ -29,7 +29,8 @@ public class ProgressDetailElementUi : MonoBehaviour
 
     public void Init(Tuple<MajorType, int> info)
     {
-        //TODO: 전공에 맞는 아이콘 불러오기 & 적용
+        var sprite                   = Resources.Load<Sprite>($"Major/Type={info.Item1.ToString()}");
+        if (sprite) majorIcon.sprite = sprite;
 
         type              = info.Item1;
         maxProgress       = info.Item2;
