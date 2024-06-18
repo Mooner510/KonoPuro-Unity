@@ -1,32 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using _root.Script.Utils.SingleTon;
 using UnityEngine;
 
 namespace _root.Script.Manager
 {
-    public class AudioManager : MonoBehaviour
+    [RequireComponent(typeof(AudioSource))] 
+    public class AudioManager : SingleMono<AudioManager>
     {
         private static readonly Dictionary<string, AudioClip> Clips = new();
-        private static AudioManager instance;
-
-        public void Start()
-        {
-            instance = this;
-        }
-
-        public static AudioManager GetInstance()
-        {
-            return instance;
-        }
 
         public static void PlaySoundInstance(string path)
         {
-            GetInstance().PlaySound(path);
+            Instance.PlaySound(path);
         }
-        
+
         public void PlaySound(string path)
         {
-            GetComponent<AudioSource>().PlayOneShot(GetClip(path));
+            var clip = GetClip(path);
+            if(clip) GetComponent<AudioSource>().PlayOneShot(clip);
         }
 
         private static AudioClip GetClip(string path)

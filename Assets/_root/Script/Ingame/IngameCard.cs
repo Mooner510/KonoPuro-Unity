@@ -35,6 +35,8 @@ public class IngameCard : MonoBehaviour
 
 	private Coroutine moveCoroutine;
 
+	private bool destroyed;
+
 	public GameStudentCard GetStudentData()
 	{
 		return student;
@@ -70,6 +72,7 @@ public class IngameCard : MonoBehaviour
 
 	public void DestroyCard()
 	{
+		destroyed = true;
 		Destroy(gameObject);
 	}
 
@@ -146,6 +149,7 @@ public class IngameCard : MonoBehaviour
 
 	public void Show(bool show, bool destroy = false)
 	{
+		if (destroyed) return;
 		cardFrame.Show(show, ()=>
 		                     { if (destroy) DestroyCard(); });
 	}

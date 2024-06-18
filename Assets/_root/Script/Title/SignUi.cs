@@ -56,7 +56,7 @@ public class SignUi : MonoBehaviour
 		var post = new SignUpRequest()
 		           { id = idField.text, password = passwordField.text, name = nameField.text };
 		Init();
-		if (passwordField.text != passwordReEnterField.text) post.password = "";
+		if (passwordReEnterField != null&& passwordField.text != passwordReEnterField.text) post.password = "";
 		return post;
 	}
 }
