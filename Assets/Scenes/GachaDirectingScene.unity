@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.000017033923, g: 0.000000025772884, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 0.000017033932, g: 0.000000025772884, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1461,6 +1461,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecd31e3da3dea3a4184cff85cad75af5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &658016367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 658016369}
+  - component: {fileID: 658016368}
+  m_Layer: 0
+  m_Name: Audio Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &658016368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658016367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cd92b9d5479944b960e570ef0c7b49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canBeDestroy: 0
+--- !u!4 &658016369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 658016367}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 902.4579, y: 833.7507, z: -0.0024084542}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &729327449
 GameObject:
   m_ObjectHideFlags: 0
@@ -5193,3 +5238,4 @@ SceneRoots:
   - {fileID: 1926032414}
   - {fileID: 1161904029}
   - {fileID: 1641095069}
+  - {fileID: 658016369}
