@@ -463,6 +463,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  ChangeTime: 1
+  maxProgress: 0
   progress: 0
 --- !u!1 &7598913565450805236
 GameObject:
