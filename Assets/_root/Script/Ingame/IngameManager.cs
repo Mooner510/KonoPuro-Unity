@@ -375,7 +375,7 @@ public class IngameManager : MonoBehaviour
 		Debug.LogError("NextDay");
 
 		day++;
-		if (day == 1)
+		if (day == GameStatics.dDay)
 		{
 			for (float i = 0; i < 4; i += Time.deltaTime)
 			{
@@ -385,6 +385,26 @@ public class IngameManager : MonoBehaviour
 			}
 			light1.color = Color.red;
 			light2.color = Color.red;
+		}
+		else
+		{
+			for (float i = 0; i < 2.5; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.black, 1f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.black, 1f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.black;
+			light2.color = Color.black;
+			yield return new WaitForSeconds(0.5f);
+			for (float i = 0; i < 2.5; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.white, 1f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.white, 1f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.white;
+			light2.color = Color.white;
 		}
 		ui.DayChange(day);
 

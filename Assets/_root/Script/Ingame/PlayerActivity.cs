@@ -10,6 +10,7 @@ using UnityEngine;
 
 public class PlayerActivity : MonoBehaviour
 {
+	public static string usingcard;
 	private IngameUi ingameUi;
 
 	private PlayerHand selfHand;
@@ -125,8 +126,11 @@ public class PlayerActivity : MonoBehaviour
 		else if (card.type != IngameCardType.Hand) selfHand.SelectCard(null, false);
 		else if (card.isMine && card.type == IngameCardType.Hand)
 		{
-			Debug.Log(card.GetData().cardType);
+
 			selfHand.SelectCard(card);
+			usingcard = card.GetCardData().defaultCardType;
+			//Debug.Log(card.GetCardData().defaultCardType);
+			
 		}
 		ingameUi.SetCardInfo(card);
 		return null;

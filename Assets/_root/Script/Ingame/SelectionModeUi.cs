@@ -81,6 +81,6 @@ public class SelectionModeUi : MonoBehaviour
 
 	public void SayOutLoud()
 	{
-		
+		Debug.Log(PlayerActivity.usingcard);
 	}
 }
