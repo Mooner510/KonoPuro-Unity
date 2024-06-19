@@ -74,7 +74,6 @@ public class SelectionModeUi : MonoBehaviour
 		accept.onClick.RemoveAllListeners();
 		cancel.onClick.RemoveAllListeners();
 		accept.onClick.AddListener(() => callback(true, selectedCards));
-		accept.onClick.AddListener(()=>SayOutLoud());
 		accept.onClick.AddListener(() => SetActive(false));
 		cancel.onClick.AddListener(() => callback(false, null));
 		cancel.onClick.AddListener(() => SetActive(false));
@@ -84,7 +83,8 @@ public class SelectionModeUi : MonoBehaviour
 
 	public void SayOutLoud()
 	{
-		turnhandcarduse.text = PlayerActivity.usingcard+"카드를 사용했습니다";
+		turnhandcarduse.text = "본인은"+PlayerActivity.usingcard+"카드를 사용했습니다";
+		Debug.Log(1);
 		Debug.Log(PlayerActivity.usingcard);
 	}
 }

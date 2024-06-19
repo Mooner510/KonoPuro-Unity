@@ -128,9 +128,9 @@ public class PlayerActivity : MonoBehaviour
 		{
 
 			selfHand.SelectCard(card);
-			usingcard = card.GetCardData().defaultCardType;
+			usingcard = GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].name;
 			//Debug.Log(card.GetCardData().defaultCardType);
-			
+
 		}
 		ingameUi.SetCardInfo(card);
 		return null;

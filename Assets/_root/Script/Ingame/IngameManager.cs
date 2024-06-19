@@ -8,6 +8,7 @@ using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Ingame.Ability;
 using _root.Script.Network;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -18,7 +19,6 @@ public class IngameManager : MonoBehaviour
 	private PlayerActivity   activity;
 
 	[SerializeField] private PlayableAsset start;
-
 	private int day;
 
 	public List<GameStudentCard> selfStudents  = new();
@@ -36,7 +36,7 @@ public class IngameManager : MonoBehaviour
 	[SerializeField] private bool spriteDebug;
 	[SerializeField] private Light light1;
 	[SerializeField] private Light light2;
-
+	[SerializeField] private TextMeshProUGUI oponentusedcard;
 	private readonly List<int> flowIndexes      = new();
 	private          int       currentFlowIndex = 0;
 
@@ -84,8 +84,10 @@ public class IngameManager : MonoBehaviour
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
-		light1.color = Color.white;
+
+		light1.color = Color.white; 
 		light2.color = Color.white;
+
 		GameStart();
 	}
 
@@ -302,6 +304,10 @@ public class IngameManager : MonoBehaviour
 		else
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
 
+		//Dictionary<int, string>
+			//dictionary[10]
+			//GameStatics.studentCardDictionary[new GameStudentCard().cardType].;
+		
 		yield return new WaitForSeconds(1f);
 
 		abilityUsable = true;
@@ -379,6 +385,7 @@ public class IngameManager : MonoBehaviour
 		Debug.LogError("NextDay");
 
 		day++;
+
 		if (day == GameStatics.dDay)
 		{
 			for (float i = 0; i < 4; i += Time.deltaTime)
@@ -410,6 +417,9 @@ public class IngameManager : MonoBehaviour
 			light1.color = Color.white;
 			light2.color = Color.white;
 		}
+
+		Debug.Log(day);
+
 		ui.DayChange(day);
 
 		yield return new WaitForSeconds(2f);
@@ -485,6 +495,7 @@ public class IngameManager : MonoBehaviour
 
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
+		oponentusedcard.text= "상대는"+card.GetCardData().defaultCardType+"카드를 사용했습니다";
 		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
 		
 		yield return new WaitForSeconds(1.5f);
