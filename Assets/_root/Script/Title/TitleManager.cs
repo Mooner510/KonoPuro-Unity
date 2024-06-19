@@ -154,18 +154,14 @@ public class TitleManager : MonoBehaviour
 		{
 			API.GetTiers()
 			   .OnResponse(responses =>
-			               { Debug.LogError("Tiers");
-			                 foreach (var (key, value) in responses)
-			                 {
-				                 Debug.LogWarning($"Outer Key : {key}");
-				                 Debug.Log($"Name : {value.name}");
-				                 Debug.Log($"Time : {value.time}");
-				                 Debug.Log($"Description : {value.description}");
-				                 // foreach (var pair in value)
-				                 // {
-				                 //  Debug.Log($"{pair.Key} : {pair.Value}");
-				                 // }
-			                 }
+			               { // Debug.LogError("Tiers");
+			                 //   foreach (var (key, value) in responses)
+			                 //   {
+			                 //    Debug.LogWarning($"Outer Key : {key}");
+			                 //    Debug.Log($"Name : {value.name}");
+			                 //    Debug.Log($"Time : {value.time}");
+			                 //    Debug.Log($"Description : {value.description}");
+			                 //   }
 
 			                 GameStatics.tierDictionary = responses; })
 			   .OnError((body => Debug.Log("Tiers Load Failed")))
@@ -176,18 +172,13 @@ public class TitleManager : MonoBehaviour
 		{
 			API.GetPassives()
 			   .OnResponse(responses =>
-			               { Debug.LogError("Passives");
-			                 foreach (var (key, value) in responses)
-			                 {
-				                 Debug.LogWarning($"Outer Key : {key}");
-				                 Debug.Log($"Name : {value.name}");
-				                 Debug.Log($"Description : {value.description}");
-				                 // foreach (var pair in value)
-				                 // {
-				                 //  Debug.Log($"{pair.Key} : {pair.Value}");
-				                 // }
-			                 }
-
+			               { // Debug.LogError("Passives");
+			                 //   foreach (var (key, value) in responses)
+			                 //   {
+			                 //    Debug.LogWarning($"Outer Key : {key}");
+			                 //    Debug.Log($"Name : {value.name}");
+			                 //    Debug.Log($"Description : {value.description}");
+			                 //   }
 			                 GameStatics.passiveDictionary = responses; })
 			   .OnError((body => Debug.Log("Passives Load Failed")))
 			   .Build();
@@ -197,45 +188,35 @@ public class TitleManager : MonoBehaviour
 		{
 			API.GetDefaultCards()
 			   .OnResponse(responses =>
-			               { Debug.LogError("Default Cards");
-			                 foreach (var (key, value) in responses)
-			                 {
-				                 Debug.LogWarning($"Outer Key : {key}");
-				                 Debug.Log($"Name : {value.name}");
-				                 Debug.Log($"Time : {value.time}");
-				                 Debug.Log($"Description : {value.description}");
-				                 // foreach (var pair in value)
-				                 // {
-				                 //  Debug.Log($"{pair.Key} : {pair.Value}");
-				                 // }
-			                 }
-
+			               { // Debug.LogError("Default Cards");
+			                 //   foreach (var (key, value) in responses)
+			                 //   {
+			                 //    Debug.LogWarning($"Outer Key : {key}");
+			                 //    Debug.Log($"Name : {value.name}");
+			                 //    Debug.Log($"Time : {value.time}");
+			                 //    Debug.Log($"Description : {value.description}");
+			                 //   }
 			                 GameStatics.defaultCardDictionary = responses; })
 			   .OnError((body => Debug.Log("Default Cards Load Failed")))
 			   .Build();
+		}
 
-			if (GameStatics.studentCardDictionary == null)
-			{
-				API.GetStudentCards()
-				   .OnResponse(responses =>
-				               { Debug.LogError("Default Cards");
-				                 foreach (var (key, value) in responses)
-				                 {
-					                 Debug.LogWarning($"Outer Key : {key}");
-					                 Debug.Log($"Name : {value.name}");
-					                 Debug.Log($"Description : {value.description}");
-					                 Debug.Log($"Idea : {value.idea}");
-					                 Debug.Log($"Motive : {value.motive}");
-					                 // foreach (var pair in value)
-					                 // {
-					                 //  Debug.Log($"{pair.Key} : {pair.Value}");
-					                 // }
-				                 }
-
-				                 GameStatics.studentCardDictionary = responses; })
-				   .OnError((body => Debug.Log("Default Cards Load Failed")))
-				   .Build();
-			}
+		if (GameStatics.studentCardDictionary == null)
+		{
+			API.GetStudentCards()
+			   .OnResponse(responses =>
+			               { // Debug.LogError("Default Cards");
+			                 //   foreach (var (key, value) in responses)
+			                 //   {
+			                 //    Debug.LogWarning($"Outer Key : {key}");
+			                 //    Debug.Log($"Name : {value.name}");
+			                 //    Debug.Log($"Description : {value.description}");
+			                 //    Debug.Log($"Idea : {value.idea}");
+			                 //    Debug.Log($"Motive : {value.motive}");
+			                 //   }
+			                 GameStatics.studentCardDictionary = responses; })
+			   .OnError((body => Debug.Log("Default Cards Load Failed")))
+			   .Build();
 		}
 	}
 
@@ -247,11 +228,11 @@ public class TitleManager : MonoBehaviour
 		LoadData();
 		for (int i = 0; i < iterCount; i++)
 		{
-			
 			yield return new WaitForSeconds(iterTime);
 			if (UserData.Instance.ActiveDeck != null && UserData.Instance.InventoryCards != null &&
 			    GameStatics.gatchaList != null && GameStatics.tierDictionary != null &&
-			    GameStatics.passiveDictionary != null && GameStatics.defaultCardDictionary != null && GameStatics.studentCardDictionary != null)
+			    GameStatics.passiveDictionary != null && GameStatics.defaultCardDictionary != null &&
+			    GameStatics.studentCardDictionary != null)
 			{
 				yield break;
 			}
