@@ -68,7 +68,7 @@ public static class API
 	
 	public static Networking.Get<Dictionary<string, DefaultCardInfo>> GetDefaultCards() => new("/api/resource/card");
 	
-	public static Networking.Get<Version> GetVersion() => new("/api/resource/card");
+	public static Networking.Get<Version> GetVersion() => new("/api/resource/version");
 	
 	[Serializable]
 	public class Version
