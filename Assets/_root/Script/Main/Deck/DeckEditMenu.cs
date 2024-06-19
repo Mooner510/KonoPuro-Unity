@@ -20,7 +20,7 @@ public class DeckEditMenu : MonoBehaviour
 	private Camera cam;
 	private Canvas canvas;
 
-	private SpriteRenderer       equipBackground;
+	private SpriteRenderer   equipBackground;
 	private List<DeckCardUi> equippedCardUis;
 	private List<DeckCardUi> inventoryCardUis;
 
@@ -45,14 +45,14 @@ public class DeckEditMenu : MonoBehaviour
 	public enum DeckType
 	{
 		Character = 0,
-		Use = 1
+		Use       = 1
 	}
 
 	private void Start()
 	{
 		cam = Camera.main;
 
-		equipBackground = GetComponentInChildren<SpriteRenderer>();
+		equipBackground = transform.Find("Equip Background").GetComponent<SpriteRenderer>();
 
 		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
@@ -96,9 +96,9 @@ public class DeckEditMenu : MonoBehaviour
 		if (active) Init();
 		else if (isActive) ApplyDeck();
 		else ResourceManager.ClearSprites();
-		equipBackground.gameObject.SetActive(active);
-		isActive       = active;
-		canvas.enabled = active;
+		equipBackground.enabled = active;
+		isActive                = active;
+		canvas.enabled          = active;
 	}
 
 	void Init()
@@ -121,7 +121,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void ApplyDeck()
 	{
-		if (equippedUseCards.Count != GameStatics.deckUseCardRequired || equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
+		if (equippedUseCards.Count != GameStatics.deckUseCardRequired ||
+		    equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
 		{
 			//TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
 			return;
@@ -182,7 +183,7 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void CheckSelect()
 	{
-		var        ray = cam.ScreenPointToRay(Input.mousePosition);
+		var ray = cam.ScreenPointToRay(Input.mousePosition);
 
 		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
@@ -209,7 +210,7 @@ public class DeckEditMenu : MonoBehaviour
 
 		Debug.Log(11111111111);
 		foreach (var playerCardResponse in inventoryCharacterCards)
-			Debug.Log(playerCardResponse);		
+			Debug.Log(playerCardResponse);
 		Debug.Log(2222222222222);
 		foreach (var playerCardResponse in inventoryUseCards)
 			Debug.Log(playerCardResponse);
@@ -234,8 +235,8 @@ public class DeckEditMenu : MonoBehaviour
 		}
 
 		var character      = currentDeckType == DeckType.Character;
-		var  equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		var  inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
+		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
 		canvas.transform.GetChild(1).Find("EquipPageCount").GetComponent<TextMeshProUGUI>().text =
 				$"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
@@ -249,9 +250,9 @@ public class DeckEditMenu : MonoBehaviour
 
 	public void FlipEquipPage(bool pre)
 	{
-		var character      = currentDeckType == DeckType.Character;
-		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		
+		var character  = currentDeckType == DeckType.Character;
+		var equipCards = character ? equippedCharacterCards : equippedUseCards;
+
 		var applyPage = equippedPage + (pre ? -1 : 1);
 		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;
 		equippedPage = applyPage;
@@ -264,7 +265,7 @@ public class DeckEditMenu : MonoBehaviour
 		var character      = currentDeckType == DeckType.Character;
 		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-		var applyPage      = inventoryPage + (pre ? -1 : 1);
+		var applyPage = inventoryPage + (pre ? -1 : 1);
 		if (applyPage < 0 || applyPage * inventoryCardUis.Count >= inventoryCards.Count) return;
 		inventoryPage = applyPage;
 
