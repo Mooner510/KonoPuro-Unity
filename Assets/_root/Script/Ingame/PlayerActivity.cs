@@ -140,6 +140,12 @@ public class PlayerActivity : MonoBehaviour
 		return hand.RemoveHandCard(card);
 	}
 
+	public IngameCard RemoveHandCard(string id, bool isMine)
+	{
+		var hand = isMine ? selfHand : otherHand;
+		return hand.RemoveHandCard(id);
+	}
+
 	public void UseAbility()
 	{
 		if (!GameStatics.isTurn) return;

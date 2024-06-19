@@ -30,7 +30,7 @@ public class DrawDeck : MonoBehaviour
 		if (!last) Init();
 		else currentCard = null;
 	}
-	
+
 	public void DrawCards(Action<IngameCard, bool> drawCallback, bool last, int count)
 	{
 		var cards = new List<GameCard>()

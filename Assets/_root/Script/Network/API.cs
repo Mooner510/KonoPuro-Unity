@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace _root.Script.Network
@@ -65,7 +66,12 @@ public static class API
 	
 	public static Networking.Get<Dictionary<Passives, PassiveInfo>> GetPassives() => new("/api/resource/passive");
 	
-	public static Networking.Get<Dictionary<string, DefaultCardInfo>> GetDefaultCards() => new("/api/resource/card");
+	public static Networking.Get<Dictionary<string, DefaultCardInfo>> GetDefaultCards() => new("/api/resource/default-card");
+
+	public static Networking.Get<Dictionary<string, StudentCardInfo>> GetStudentCards() => new("/api/resource/student-card");
+
+	public static Networking.Get<Version> GetVersion() => new("/api/resource/version");
+
 	
 }
 }
