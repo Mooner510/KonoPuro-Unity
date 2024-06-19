@@ -174,6 +174,9 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 											               .ToString());
 							                var self  = UpdatedData.ConvertUpdatedData(rawData.self);
 							                var other = UpdatedData.ConvertUpdatedData(rawData.other);
+							                if (other?.heldCards?.cards != null)
+								                other.heldCards.cards = other.heldCards.cards.Select(x => new GameCard()
+												                 { id = x.id }).ToList();
 
 							                GameStatics.isTurn = rawData.turn;
 
