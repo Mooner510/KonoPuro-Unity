@@ -11,31 +11,31 @@ namespace _root.Script.Ingame
 {
 public class PlayerHand : MonoBehaviour
 {
-	private readonly         List<IngameCard> handCards  = new();
-	private                  List<Transform>  transforms = new();
+	private readonly List<IngameCard> handCards  = new();
+	private          List<Transform>  transforms = new();
 
-	[SerializeField] private float            cardMoveSpeed = 2;
+	[SerializeField] private float cardMoveSpeed = 2;
 
-	[SerializeField] private float      closedXOffset = .1f;
-	[SerializeField] private float      openedXOffset = .2f;
+	[SerializeField] private float closedXOffset = .1f;
+	[SerializeField] private float openedXOffset = .2f;
 
-	[SerializeField] private float      maxZWidth;
-	[SerializeField] private float      maxSubZWidth;
+	[SerializeField] private float maxZWidth;
+	[SerializeField] private float maxSubZWidth;
 
-	[SerializeField] private Vector3    selectedPos = new Vector3(-1, 10, 0);
+	[SerializeField] private Vector3 selectedPos = new Vector3(-1, 10, 0);
 
-	private                  IngameCard selectedCard;
+	private IngameCard selectedCard;
 
-	private bool      heldUpdating;
-	private bool      handOpened;
+	private bool heldUpdating;
+	private bool handOpened;
 
 	public bool isMine;
 
 	private Camera cam;
 
 	private bool interactable;
-	
-	public List<GameCard> HandCards => handCards.Select(x=>x.GetCardData()).ToList();
+
+	public List<GameCard> HandCards => handCards.Select(x => x.GetCardData()).ToList();
 
 	private void Awake()
 	{
@@ -58,7 +58,7 @@ public class PlayerHand : MonoBehaviour
 
 	public void SetActive(bool active)
 	{
-		if(!active) SelectCard(null);
+		if (!active) SelectCard(null);
 		interactable = active;
 	}
 
@@ -99,12 +99,21 @@ public class PlayerHand : MonoBehaviour
 
 	public IngameCard RemoveHandCard(IngameCard card)
 	{
-		if (!isMine)
+		if (!isMine && card == null)
 		{
 			card = handCards[0];
 			handCards.RemoveAt(0);
 		}
 		else if (handCards.Contains(card)) handCards.Remove(card);
+		HandUpdate(false);
+		return card;
+	}
+
+	public IngameCard RemoveHandCard(string id)
+	{
+		var card = handCards.First(x => x.GetCardData().id == id);
+		handCards.Remove(card);
+
 		HandUpdate(false);
 		return card;
 	}
@@ -118,9 +127,9 @@ public class PlayerHand : MonoBehaviour
 		var position  = origin.position;
 		var defaultX  = position.x + (show ? openedXOffset : closedXOffset);
 		var defaultY  = position.y;
-		var multiplyZ = (show ? maxSubZWidth : maxZWidth ) / handCount;
+		var multiplyZ = (show ? maxSubZWidth : maxZWidth) / handCount;
 		var defaultZ  = position.z - ((handCount - 1) * multiplyZ * .5f);
-		
+
 		for (var i = 0; i < handCount; i++)
 		{
 			var appliedPos = new Vector3(defaultX, defaultY + i * .05f, defaultZ + multiplyZ * i);

@@ -236,9 +236,26 @@ public class PassiveInfo
 [Serializable]
 public class DefaultCardInfo
 {
-	public string name;
-	public int    time;
-	public string description;
+	public string   name;
+	public int      tier;
+	public int      time;
+	public string   description;
+	public CardType Type;
+}
+
+[Serializable]
+public class StudentCardInfo
+{
+	public  string          name;
+	public  string          description;
+	public  string          motive;
+	public  string          idea;
+	public  List<MajorType> majors;
+	private List<Passives>  defaultPassives;
+	private Tiers           defaultTier;
+	private List<Tiers>     second;
+	private List<Passives>  third;
+	private List<Tiers>     forth;
 }
 
 [Serializable]
@@ -246,5 +263,11 @@ public class ErrorBody
 {
 	public int    errorId;
 	public string message;
+}
+
+[Serializable]
+public class Version
+{
+	public string version;
 }
 }
