@@ -37,6 +37,7 @@ public class TitleManager : MonoBehaviour
 
 	private IEnumerator StartFlow()
 	{
+		yield return new WaitForSeconds(1f);
 		bool loaded = false;
 		API.GetVersion().OnResponse(s =>
 		                            { if (s.version != Application.version)
@@ -44,9 +45,8 @@ public class TitleManager : MonoBehaviour
 			                              //TODO: 버전 안 맞음 표시
 			                              Application.Quit();
 		                              }
-		                              else loaded = true; });
+		                              else loaded = true; }).OnError((body => Debug.LogError("Version Load Failed"))).Build();
 		yield return new WaitUntil((() => loaded));
-		yield return new WaitForSeconds(1f);
 		bool cutSceneEnd = false;
 		director.playableAsset = start;
 		director.Play();
