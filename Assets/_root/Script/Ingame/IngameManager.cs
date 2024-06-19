@@ -445,7 +445,7 @@ public class IngameManager : MonoBehaviour
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
 
-		var card = activity.RemoveHandCard(null, false);
+		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
 		card.MoveBySpeed(new Vector3(0, 0, 0), Quaternion.Euler(-90, 0, 90), 1f, 1f);
 
@@ -479,10 +479,6 @@ public class IngameManager : MonoBehaviour
 		if (other != null) ui.SetProgressDetail(other, false);
 	}
 
-	private void FieldUpdate()
-	{
-	}
-
 	private void DrawCard(IReadOnlyCollection<GameCard> cards, bool self, bool last)
 	{
 		var handCards = activity.GetHandCards(self);
@@ -490,7 +486,7 @@ public class IngameManager : MonoBehaviour
 		var ids     = cards.Select(x => x.id);
 		var handIds = handCards.Select(x => x.id);
 		var drawIds = ids.Except(handIds);
-		selfDeck.DrawCards(activity.AddHandCard, last, cards.Where(x => drawIds.Contains(x.id)));
+		(self ? selfDeck : otherDeck).DrawCards(activity.AddHandCard, last, cards.Where(x => drawIds.Contains(x.id)));
 	}
 
 	private void TimeChanged(int? self, int? other)
