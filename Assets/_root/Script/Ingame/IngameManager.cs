@@ -353,9 +353,12 @@ public class IngameManager : MonoBehaviour
 		else
 			NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id));
 
-		card.Show(false, true);
+		card.transform.position = new Vector3(-2, 8, 7);
+		card.Show(true);
 
-		yield return new WaitForSeconds(1f);
+		yield return new WaitForSeconds(1.5f);
+		
+		card.Show(false, true);
 
 		ui.SetHover(true);
 		activity.SetActive(true);
@@ -447,9 +450,11 @@ public class IngameManager : MonoBehaviour
 
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
-		card.MoveBySpeed(new Vector3(0, 0, 0), Quaternion.Euler(-90, 0, 90), 1f, 1f);
-
-		yield return new WaitForSeconds(1f);
+		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
+		
+		yield return new WaitForSeconds(1.5f);
+		
+		card.Show(false, true);
 
 		EndFlow(index);
 	}
