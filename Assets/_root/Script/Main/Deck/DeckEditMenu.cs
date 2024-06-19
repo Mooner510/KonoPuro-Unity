@@ -95,7 +95,7 @@ public class DeckEditMenu : MonoBehaviour
 
 		if (active) Init();
 		else if (isActive) ApplyDeck();
-		else ResourceManager.ClearAll();
+		else ResourceManager.ClearSprites();
 		equipBackground.gameObject.SetActive(active);
 		isActive       = active;
 		canvas.enabled = active;
