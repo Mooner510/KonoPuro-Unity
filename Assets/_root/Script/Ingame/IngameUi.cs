@@ -115,10 +115,25 @@ public class IngameUi : MonoBehaviour
 
 	public void SetProgress(float progress, bool self)
 	{
+		StartCoroutine(SetProgressLerp(progress, self));
+	}
+
+	private IEnumerator SetProgressLerp(float progress, bool self)
+	{
+		float progressTemp = (self ? selfProgressSlider : otherProgressSlider).value;
+		float elapsedTime = 0f;
+		float Pr_Value;
+		while (elapsedTime < 2f)
+		{
+			Pr_Value = Mathf.Lerp(progressTemp, progress, elapsedTime);
+			(self ? selfProgressSlider : otherProgressSlider).value = Pr_Value;
+			(self ? selfProgressText : otherProgressText).text      = $"{Pr_Value:P2}";
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
 		(self ? selfProgressSlider : otherProgressSlider).value = progress;
 		(self ? selfProgressText : otherProgressText).text      = $"{progress:P2}";
 	}
-
 	public void SetProgressDetail(Dictionary<MajorType, int> projects, bool self)
 	{
 		var totalProgress = GameStatics.CalcTotalProgress((self ? selfProgressDetail : otherProgressDetail).SetProgresses(projects));

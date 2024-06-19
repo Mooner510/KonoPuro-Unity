@@ -72,9 +72,7 @@ public class ProgressDetailUi : MonoBehaviour
 		while (timer <= richTime && timer >= 0)
 		{
 			timer += Time.deltaTime * destination;
-
 			canvasGroup.alpha = Mathf.Lerp(0, 1, Mathf.Clamp01(timer / richTime));
-
 			yield return null;
 		}
 	}
