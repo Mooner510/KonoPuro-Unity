@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _root.Script.Client;
 using _root.Script.Ingame;
+using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
 
@@ -82,6 +83,8 @@ public class DrawDeck : MonoBehaviour
 			tr.rotation = Quaternion.Lerp(originRot, destRot, alpha);
 			yield return null;
 		}
+		
+		AudioManager.PlaySoundInstance("Audio/CARD_SETTING");
 
 		for (int i = 0; i < 6; i++)
 		{

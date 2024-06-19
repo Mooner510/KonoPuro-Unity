@@ -22,9 +22,10 @@ namespace cardinrange
 
         public void OnMouseDown()
         {
+            if (pickUpCard[0].enabled && tier == 4) AudioManager.PlaySoundInstance("Audio/Tier 4");
             pickUpCard[0].enabled = false;
             pickUpCard[1].enabled = true;
-            if (GetComponentInParent<GachaMultiCardSetter>().GetComponentsInChildren<CardinrandomRange>().All(c=>c.pickUpCard[1].enabled)) skipButton.SetActive(false);
+            if (skipButton && GetComponentInParent<GachaMultiCardSetter>().GetComponentsInChildren<CardinrandomRange>().All(c=>c.pickUpCard[1].enabled)) skipButton.SetActive(false);
             if (tier <= 2) return;
             GetComponentInChildren<Light>().enabled = true;
             GetComponentInChildren<Light>().color = GetColorByTier(tier);

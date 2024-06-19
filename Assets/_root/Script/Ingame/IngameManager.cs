@@ -7,6 +7,7 @@ using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Ingame.Ability;
+using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
 using UnityEngine.Playables;
@@ -174,6 +175,8 @@ public class IngameManager : MonoBehaviour
 
 		director.playableAsset = start;
 		director.Play();
+		
+		AudioManager.PlaySoundInstance("Audio/INGAME_START");
 
 		yield return new WaitForSeconds(1f);
 
@@ -212,6 +215,7 @@ public class IngameManager : MonoBehaviour
 
 		foreach (var student in students)
 		{
+			AudioManager.PlaySoundInstance("Audio/CARD_SETTING");
 			field.AddNewCard(student);
 			yield return new WaitForSeconds(0.25f);
 		}
@@ -291,6 +295,8 @@ public class IngameManager : MonoBehaviour
 			yield break;
 		}
 
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
+
 		if (selectedCards != null)
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
 			                                  selectedCards.Select(x => x.GetStudentData().id)));
@@ -346,6 +352,8 @@ public class IngameManager : MonoBehaviour
 			yield break;
 		}
 
+        AudioManager.PlaySoundInstance("Audio/CARD_USED");
+        
 		if (selectedCards != null)
 			NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id,
 			                                  selectedCards.Select(x => x.GetStudentData().id)));
@@ -370,6 +378,7 @@ public class IngameManager : MonoBehaviour
 
 		Debug.LogError("NextDay");
 
+		AudioManager.PlaySoundInstance("Audio/NEXT_DAY");
 		day++;
 		ui.DayChange(day);
 
