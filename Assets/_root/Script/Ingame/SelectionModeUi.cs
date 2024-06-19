@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _root.Script.Ingame;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,8 @@ public class SelectionModeUi : MonoBehaviour
 	private List<IngameCard> selectableCards;
 	private List<IngameCard> selectedCards;
 
+	[SerializeField] private Image turnpannel;
+	[SerializeField] private TextMeshProUGUI turnhandcarduse;
 	private void Awake()
 	{
 		var buttons = GetComponentsInChildren<Button>();
@@ -81,6 +84,7 @@ public class SelectionModeUi : MonoBehaviour
 
 	public void SayOutLoud()
 	{
+		turnhandcarduse.text = PlayerActivity.usingcard+"카드를 사용했습니다";
 		Debug.Log(PlayerActivity.usingcard);
 	}
 }
