@@ -11,6 +11,7 @@ using _root.Script.Network;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Serialization;
 
 public class IngameManager : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class IngameManager : MonoBehaviour
 	[SerializeField] private bool spriteDebug;
 	[SerializeField] private Light light1;
 	[SerializeField] private Light light2;
-	[SerializeField] private TextMeshProUGUI oponentusedcard;
+	[FormerlySerializedAs("oponentusedcard")] [SerializeField] private TextMeshProUGUI usedcard;
 	private readonly List<int> flowIndexes      = new();
 	private          int       currentFlowIndex = 0;
 
@@ -269,6 +270,7 @@ public class IngameManager : MonoBehaviour
 		abilityUsable = false;
 		ui.SetCardInfo(null);
 		activity.SetActive(false);
+		usedcard.text = card.GetStudentData().cardType;
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		ShowAbilities(null);
@@ -495,7 +497,7 @@ public class IngameManager : MonoBehaviour
 
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
-		oponentusedcard.text= "상대는"+card.GetCardData().defaultCardType+"카드를 사용했습니다";
+		usedcard.text= "상대는"+card.GetCardData().defaultCardType+"카드를 사용했습니다";
 		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
 		
 		yield return new WaitForSeconds(1.5f);
