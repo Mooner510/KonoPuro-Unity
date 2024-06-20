@@ -103,6 +103,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	void Init()
 	{
+		FilterCards(true);
+		SortCards();
 		SetDeckType(true);
 		ResetPage();
 
@@ -194,6 +196,16 @@ public class DeckEditMenu : MonoBehaviour
 		selectedCard = card;
 		RefreshAll();
 		cardInfoUi.SetUi(card, card != null && equippedUseCards.Contains(card));
+	}
+
+	public void FilterCards(bool init)
+	{
+		if (init)
+		{
+			
+		}
+
+		RefreshAll();
 	}
 
 	private void SortCards()
