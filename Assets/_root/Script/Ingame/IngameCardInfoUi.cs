@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Manager;
@@ -48,21 +49,17 @@ public class IngameCardInfoUi : MonoBehaviour
 			var studentData = card.GetStudentData();
 			if (studentData != null)
 			{
-				Debug.Log(studentData.cardType);
-				nameT.text    = studentData.cardType;
+				var sInfo = GameStatics.studentCardDictionary[studentData.cardType];
+				nameT.text    = sInfo.name;
 				timeT.enabled = false;
-				var description = "";
-				foreach (var passive in studentData.passives)
-				{
-					var info = GameStatics.passiveDictionary[passive];
-					description += $"{info.name}\n{info.description}\n \n";
-				}
+				var description = studentData.passives.Select(passive => GameStatics.passiveDictionary[passive])
+				                             .Aggregate((sInfo.description is not (null and "") ? $"{sInfo.description}\n \n" : ""),
+				                                        (current, info) => $"{current}{info.name}\n{current}\n \n");
 				descriptionT.text = description;
 			}
 			else
 			{
 				var defaultData = card.GetData();
-				Debug.Log(defaultData);
 				nameT.text = defaultData.cardType;
 			}
 		}
@@ -70,7 +67,6 @@ public class IngameCardInfoUi : MonoBehaviour
 		{
 			var data = card.GetCardData();
 			if (data == null) return;
-			Debug.Log(data.defaultCardType);
 			timeT.enabled = true;
 			var info = GameStatics.defaultCardDictionary[data.defaultCardType];
 			nameT.text        = info.name;
@@ -78,7 +74,7 @@ public class IngameCardInfoUi : MonoBehaviour
 			descriptionT.text = info.description;
 		}
 	}
-	
+
 	public void SetInfo(Tiers ability)
 	{
 		SetActive(true);

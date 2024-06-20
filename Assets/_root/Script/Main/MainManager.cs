@@ -92,6 +92,8 @@ public class MainManager : MonoBehaviour
 		if (cam == CinemacineController.VCamName.None) return;
 		AudioManager.PlaySoundInstance("Audio/CLICKED");
 
+		mainUi.SetExitButton(false);
+		mainUi.SetTitleButton(false);
 		isInteracting = true;
 		if (cam == CinemacineController.VCamName.Matching) Matching();
 		else mainUi.SetInteractQuitButton(true);
@@ -101,6 +103,8 @@ public class MainManager : MonoBehaviour
 	public void QuitInteract()
 	{
 		if (!isInteracting) return;
+		mainUi.SetExitButton(true);
+		mainUi.SetTitleButton(true);
 		isInteracting = false;
 		mainUi.SetInteractQuitButton(false);
 		hoveredPlaceableObject.Init();
@@ -111,8 +115,6 @@ public class MainManager : MonoBehaviour
 	{
 		mainUi.SetThrobber(true);
 		mainUi.SetMatchingCancelButton(true);
-		mainUi.SetExitButton(false);
-		mainUi.SetTitleButton(false);
 
 		API.Match().OnSuccess((() => mainUi.SetThrobber(false))).OnError((body => MatchingExit(true))).Build();
 	}
