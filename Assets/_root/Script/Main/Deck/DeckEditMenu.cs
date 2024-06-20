@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Data;
@@ -9,12 +10,6 @@ using UnityEngine.UI;
 
 namespace _root.Script.Deck
 {
-public class OriginDeckInfo
-{
-	public DeckResponse       activeDeck;
-	public List<DeckResponse> decks;
-}
-
 public class DeckEditMenu : MonoBehaviour
 {
 	private Camera cam;
@@ -42,44 +37,56 @@ public class DeckEditMenu : MonoBehaviour
 	private List<PlayerCardResponse> equippedUseCards;
 	private List<PlayerCardResponse> inventoryUseCards;
 
-	public enum DeckType
+	private TextMeshProUGUI[] pageCounts;
+
+	private DeckCardFilterMenu filterMenu;
+
+	private enum DeckType
 	{
 		Character = 0,
 		Use       = 1
 	}
 
-	private void Start()
+	private void Awake()
 	{
-		cam = Camera.main;
-
 		equipBackground = transform.Find("Equip Background").GetComponent<SpriteRenderer>();
 
-		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
+		equippedCardUis = transform.Find("EquippedCards").GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
 			equippedCardUi.isEquippedDeckUi = true;
 
-		inventoryCardUis = transform.GetChild(1).GetComponentsInChildren<DeckCardUi>().ToList();
+		inventoryCardUis = transform.Find("InventoryCards").GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var inventoryCardUi in inventoryCardUis)
 			inventoryCardUi.isEquippedDeckUi = false;
 
 		cardInfoUi = GetComponentInChildren<DeckCardInfoUi>();
 		canvas     = GetComponentInChildren<Canvas>();
 
-		var characterDeckButton = canvas.transform.Find("CharacterDeck").GetComponent<Button>();
+		var cardTypeSelection   = canvas.transform.Find("Card Type Selection");
+		var characterDeckButton = cardTypeSelection.Find("CharacterDeck").GetComponent<Button>();
+		var skillDeckButton     = cardTypeSelection.Find("SkillDeck").GetComponent<Button>();
+
 		characterDeckButton.onClick.RemoveAllListeners();
 		characterDeckButton.onClick.AddListener(() =>
 		                                        { if (currentDeckType == DeckType.Character) return;
 		                                          SetDeckType(true);
 		                                          ResetPage();
 		                                          RefreshAll(); });
-
-		var skillDeckButton = canvas.transform.Find("SkillDeck").GetComponent<Button>();
 		skillDeckButton.onClick.RemoveAllListeners();
 		skillDeckButton.onClick.AddListener(() =>
 		                                    { if (currentDeckType == DeckType.Use) return;
 		                                      SetDeckType(false);
 		                                      ResetPage();
 		                                      RefreshAll(); });
+
+		pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
+
+		filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
+	}
+
+	private void Start()
+	{
+		cam = Camera.main;
 
 		SetActive(false);
 	}
@@ -116,6 +123,7 @@ public class DeckEditMenu : MonoBehaviour
 			modifyingDeck = new();
 		}
 
+		ShowFilter(false);
 		RefreshAll();
 	}
 
@@ -189,11 +197,16 @@ public class DeckEditMenu : MonoBehaviour
 		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
 	}
 
-	public void SelectCard(PlayerCardResponse card)
+	private void SelectCard(PlayerCardResponse card)
 	{
 		selectedCard = card;
 		RefreshAll();
-		cardInfoUi.SetUi(card, card != null && equippedUseCards.Contains(card));
+		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
+	}
+
+	private void ShowFilter(bool show)
+	{
+		filterMenu.Show(show);
 	}
 
 	private void SortCards()
@@ -208,19 +221,12 @@ public class DeckEditMenu : MonoBehaviour
 		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
 		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
 
-		Debug.Log(11111111111);
-		foreach (var playerCardResponse in inventoryCharacterCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(2222222222222);
-		foreach (var playerCardResponse in inventoryUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(33333333333333);
-		foreach (var playerCardResponse in equippedCharacterCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(444444444444444);
-		foreach (var playerCardResponse in equippedUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(55555555555555555);
+		FilterCards();
+	}
+
+	private void FilterCards()
+	{
+		
 	}
 
 	public void RefreshAll()
@@ -238,10 +244,8 @@ public class DeckEditMenu : MonoBehaviour
 		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
 		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-		canvas.transform.GetChild(1).Find("EquipPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
-		canvas.transform.GetChild(1).Find("InventoryPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
+		pageCounts[0].text = $"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
+		pageCounts[1].text = $"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
 
 		SortCards();
 		RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
