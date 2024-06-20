@@ -41,6 +41,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	private DeckCardFilterMenu filterMenu;
 
+	private TMP_InputField searchField;
+
 	private enum DeckType
 	{
 		Character = 0,
@@ -82,6 +84,8 @@ public class DeckEditMenu : MonoBehaviour
 		pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
 
 		filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
+
+		searchField = canvas.GetComponentInChildren<TMP_InputField>();
 	}
 
 	private void Start()
@@ -123,6 +127,7 @@ public class DeckEditMenu : MonoBehaviour
 			modifyingDeck = new();
 		}
 
+		searchField.text = "";
 		filterMenu.Init();
 		ShowFilter(false);
 		RefreshAll();
@@ -222,7 +227,7 @@ public class DeckEditMenu : MonoBehaviour
 
 	public void ShowFilter(bool show)
 	{
-		if(!show) RefreshAll();
+		if (!show) RefreshAll();
 		filterMenu.SetType(currentDeckType == DeckType.Character);
 		filterMenu.Show(show);
 	}
@@ -232,14 +237,24 @@ public class DeckEditMenu : MonoBehaviour
 		if (currentDeckType == DeckType.Character)
 		{
 			var selectedMajors = filterMenu.SelectedMajors();
-			inventoryCharacterCards = inventoryCharacterCards.Where(x=>x.cardGroups.Any(majorType=>selectedMajors.Contains(majorType))).ToList();
-			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
-			inventoryCharacterCards = inventoryCharacterCards.Where(x=>selectedTiers.Contains(x.tier)).ToList();
+			var selectedTiers  = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+			inventoryCharacterCards = inventoryCharacterCards
+			                         .Where(x => x.cardGroups.Any(majorType =>
+					                                                      selectedMajors.Contains(majorType) &&
+					                                                      selectedTiers.Contains(x.tier)) &&
+			                                     GameStatics.studentCardDictionary[x.cardType]
+			                                                .name.Contains(searchField.text))
+			                         .ToList();
 		}
 		else
 		{
 			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
-			inventoryUseCards = inventoryUseCards.Where(x=>selectedTiers.Contains(x.tier)).ToList();
+			inventoryUseCards = inventoryUseCards
+			                   .Where(x => selectedTiers.Contains(x.tier) && GameStatics
+			                                                                .defaultCardDictionary[x.cardType]
+			                                                                .name.ToLower()
+			                                                                .Contains(searchField.text.ToLower()))
+			                   .ToList();
 		}
 	}
 
