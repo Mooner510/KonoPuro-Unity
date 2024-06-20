@@ -15,9 +15,9 @@ public class SelectionModeUi : MonoBehaviour
 
 	private List<IngameCard> selectableCards;
 	private List<IngameCard> selectedCards;
-
-	[SerializeField] private Image turnpannel;
+	
 	[SerializeField] private TextMeshProUGUI turnhandcarduse;
+	[SerializeField] private GameObject textpannel;
 	private void Awake()
 	{
 		var buttons = GetComponentsInChildren<Button>();
@@ -28,6 +28,7 @@ public class SelectionModeUi : MonoBehaviour
 	private void Start()
 	{
 		SetActive(false);
+		textpannel.SetActive(false);
 	}
 
 	private void Update()
@@ -83,9 +84,17 @@ public class SelectionModeUi : MonoBehaviour
 
 	public void SayOutLoud()
 	{
-		turnhandcarduse.text = "본인은"+PlayerActivity.usingcard+"카드를 사용했습니다";
+		turnhandcarduse.text = PlayerActivity.usingcard;
+		textpannel.SetActive(true);
+		Invoke(nameof(ShowMineCard),2f);
 		//card.GetCardData().defaultCardType
-		Debug.Log(1);
 		Debug.Log(PlayerActivity.usingcard);
 	}
+
+	void ShowMineCard()
+	{
+		textpannel.SetActive(false);
+	}
+
+
 }
