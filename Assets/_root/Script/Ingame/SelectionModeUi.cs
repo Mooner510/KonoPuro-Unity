@@ -84,6 +84,7 @@ public class SelectionModeUi : MonoBehaviour
 	public void SayOutLoud()
 	{
 		turnhandcarduse.text = "본인은"+PlayerActivity.usingcard+"카드를 사용했습니다";
+		//card.GetCardData().defaultCardType
 		Debug.Log(1);
 		Debug.Log(PlayerActivity.usingcard);
 	}

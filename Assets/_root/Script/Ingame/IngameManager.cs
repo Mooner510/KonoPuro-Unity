@@ -270,7 +270,8 @@ public class IngameManager : MonoBehaviour
 		abilityUsable = false;
 		ui.SetCardInfo(null);
 		activity.SetActive(false);
-		usedcard.text = card.GetStudentData().cardType;
+		PlayerActivity.usingcard = card.GetStudentData().cardType+card.GetStudentData().tiers+card.GetCardData().id;
+		//usedcard.text = card.GetStudentData().cardType;
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		ShowAbilities(null);
@@ -301,8 +302,12 @@ public class IngameManager : MonoBehaviour
 		}
 
 		if (selectedCards != null)
+		{
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
-			                                  selectedCards.Select(x => x.GetStudentData().id)));
+				selectedCards.Select(x => x.GetStudentData().id)));
+
+		}
+
 		else
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
 
