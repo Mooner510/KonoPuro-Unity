@@ -39,6 +39,8 @@ public class DeckEditMenu : MonoBehaviour
 
 	private TextMeshProUGUI[] pageCounts;
 
+	private DeckCardFilterMenu filterMenu;
+
 	private enum DeckType
 	{
 		Character = 0,
@@ -78,6 +80,8 @@ public class DeckEditMenu : MonoBehaviour
 		                                      RefreshAll(); });
 
 		pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
+
+		filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
 	}
 
 	private void Start()
@@ -119,7 +123,7 @@ public class DeckEditMenu : MonoBehaviour
 			modifyingDeck = new();
 		}
 
-		SetFilter(true);
+		ShowFilter(false);
 		RefreshAll();
 	}
 
@@ -193,19 +197,16 @@ public class DeckEditMenu : MonoBehaviour
 		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
 	}
 
-	public void SelectCard(PlayerCardResponse card)
+	private void SelectCard(PlayerCardResponse card)
 	{
 		selectedCard = card;
 		RefreshAll();
 		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
 	}
 
-	public void SetFilter(bool init = false)
+	private void ShowFilter(bool show)
 	{
-	}
-
-	private void FilterCards()
-	{
+		filterMenu.Show(show);
 	}
 
 	private void SortCards()
@@ -220,19 +221,12 @@ public class DeckEditMenu : MonoBehaviour
 		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
 		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
 
-		Debug.Log(11111111111);
-		foreach (var playerCardResponse in inventoryCharacterCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(2222222222222);
-		foreach (var playerCardResponse in inventoryUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(33333333333333);
-		foreach (var playerCardResponse in equippedCharacterCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(444444444444444);
-		foreach (var playerCardResponse in equippedUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(55555555555555555);
+		FilterCards();
+	}
+
+	private void FilterCards()
+	{
+		
 	}
 
 	public void RefreshAll()
@@ -253,7 +247,6 @@ public class DeckEditMenu : MonoBehaviour
 		pageCounts[0].text = $"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
 		pageCounts[1].text = $"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
 
-		FilterCards();
 		SortCards();
 		RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
 		RefreshWithListAndPage(inventoryPage, inventoryCards, inventoryCardUis, modifyingDeck);
