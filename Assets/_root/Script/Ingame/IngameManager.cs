@@ -82,6 +82,7 @@ public class IngameManager : MonoBehaviour
 	{
 		cam = Camera.main;
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherCardUse, OtherCardUse);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherAbilityUse, OtherAbilityUse);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
@@ -504,7 +505,7 @@ public class IngameManager : MonoBehaviour
 	private IEnumerator OtherAbilityUseFlow(Tiers ability, int index)
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
-		
+		usedcard.text= "상대는"+ability+"카드를 사용했습니다";	 
 		//TODO: 능력 사용 연출
 		yield return new WaitForSeconds(1f);
 		
