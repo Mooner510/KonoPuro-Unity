@@ -216,7 +216,7 @@ public class IngameManager : MonoBehaviour
 	private IEnumerator SetStudent(bool isMine)
 	{
 		var students = isMine ? selfStudents : otherStudents;
-		var field    = isMine ? otherField : selfField;
+		var field    = isMine ? selfField : otherField;
 
 		foreach (var student in students)
 		{
@@ -256,6 +256,11 @@ public class IngameManager : MonoBehaviour
 	private void OtherCardUse(object card)
 	{
 		StartCoroutine(OtherCardUseFlow((GameCard)card, GetFlowIndex()));
+	}
+
+	private void OtherAbilityUse(object tier)
+	{
+		StartCoroutine(OtherAbilityUseFlow((Tiers)tier, GetFlowIndex()));
 	}
 
 	private void GameEnd(object info)
@@ -493,6 +498,16 @@ public class IngameManager : MonoBehaviour
 		canUseFlow    = true;
 		abilityUsable = true;
 
+		EndFlow(index);
+	}
+
+	private IEnumerator OtherAbilityUseFlow(Tiers ability, int index)
+	{
+		yield return new WaitUntil(() => currentFlowIndex == index);
+		
+		//TODO: 능력 사용 연출
+		yield return new WaitForSeconds(1f);
+		
 		EndFlow(index);
 	}
 
