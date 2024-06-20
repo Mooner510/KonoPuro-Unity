@@ -197,7 +197,7 @@ public class DeckEditMenu : MonoBehaviour
 	{
 		selectedCard = card;
 		RefreshAll();
-		cardInfoUi.SetUi(card, card != null && equippedUseCards.Contains(card));
+		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
 	}
 
 	public void SetFilter(bool init = false)
@@ -215,7 +215,6 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void SetCards(List<PlayerCardResponse> cards, List<string> deck)
 	{
-		Debug.LogError(equippedCharacterCards);
 		inventoryCharacterCards = cards.Where(response => response.type == CardType.Student).ToList();
 		inventoryUseCards       = cards.Except(inventoryCharacterCards).ToList();
 		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
