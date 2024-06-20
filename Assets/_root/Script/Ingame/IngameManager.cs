@@ -79,6 +79,7 @@ public class IngameManager : MonoBehaviour
 	{
 		cam = Camera.main;
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherCardUse, OtherCardUse);
+		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.OtherAbilityUse, OtherAbilityUse);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
@@ -251,9 +252,12 @@ public class IngameManager : MonoBehaviour
 		StartCoroutine(OtherCardUseFlow((GameCard)card, GetFlowIndex()));
 	}
 
-	private void OtherAbilityUse(object tier)
+	private void OtherAbilityUse(object data)
 	{
-		StartCoroutine(OtherAbilityUseFlow((Tiers)tier, GetFlowIndex()));
+		Tiers           tier;
+		GameStudentCard activeStudent;
+		(tier, activeStudent) = ((Tiers, GameStudentCard))data;
+		StartCoroutine(OtherAbilityUseFlow(tier, activeStudent, GetFlowIndex()));
 	}
 
 	private void GameEnd(object info)
@@ -449,13 +453,14 @@ public class IngameManager : MonoBehaviour
 		EndFlow(index);
 	}
 
-	private IEnumerator OtherAbilityUseFlow(Tiers ability, int index)
+	private IEnumerator OtherAbilityUseFlow(Tiers ability, GameStudentCard activeStudent, int index)
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
-		
+
+		Debug.LogError(ability);
 		//TODO: 능력 사용 연출
 		yield return new WaitForSeconds(1f);
-		
+
 		EndFlow(index);
 	}
 
