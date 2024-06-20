@@ -260,9 +260,12 @@ public class IngameManager : MonoBehaviour
 		StartCoroutine(OtherCardUseFlow((GameCard)card, GetFlowIndex()));
 	}
 
-	private void OtherAbilityUse(object tier)
+	private void OtherAbilityUse(object data)
 	{
-		StartCoroutine(OtherAbilityUseFlow((Tiers)tier, GetFlowIndex()));
+		Tiers           tier;
+		GameStudentCard activeStudent;
+		(tier, activeStudent) = ((Tiers, GameStudentCard))data;
+		StartCoroutine(OtherAbilityUseFlow(tier, activeStudent, GetFlowIndex()));
 	}
 
 	private void GameEnd(object info)
@@ -502,15 +505,19 @@ public class IngameManager : MonoBehaviour
 		EndFlow(index);
 	}
 
-	private IEnumerator OtherAbilityUseFlow(Tiers ability, int index)
+	private IEnumerator OtherAbilityUseFlow(Tiers ability, GameStudentCard activeStudent, int index)
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);
 		usedcard.text= "상대는 <"+GameStatics.tierDictionary[ability].name+"> 학생능력을 사용했습니다..";
 		textpannel.SetActive(true);
 		Invoke(nameof(ShowOtherCard),2f);
+
+
+		Debug.LogError(ability);
+
 		//TODO: 능력 사용 연출
 		yield return new WaitForSeconds(1f);
-		
+
 		EndFlow(index);
 	}
 

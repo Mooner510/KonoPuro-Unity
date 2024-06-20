@@ -123,6 +123,7 @@ public class DeckEditMenu : MonoBehaviour
 			modifyingDeck = new();
 		}
 
+		filterMenu.Init();
 		ShowFilter(false);
 		RefreshAll();
 	}
@@ -204,11 +205,6 @@ public class DeckEditMenu : MonoBehaviour
 		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
 	}
 
-	private void ShowFilter(bool show)
-	{
-		filterMenu.Show(show);
-	}
-
 	private void SortCards()
 	{
 		//ToDo: 카드들 정렬하기
@@ -224,9 +220,27 @@ public class DeckEditMenu : MonoBehaviour
 		FilterCards();
 	}
 
+	public void ShowFilter(bool show)
+	{
+		if(!show) RefreshAll();
+		filterMenu.SetType(currentDeckType == DeckType.Character);
+		filterMenu.Show(show);
+	}
+
 	private void FilterCards()
 	{
-		
+		if (currentDeckType == DeckType.Character)
+		{
+			var selectedMajors = filterMenu.SelectedMajors();
+			inventoryCharacterCards = inventoryCharacterCards.Where(x=>x.cardGroups.Any(majorType=>selectedMajors.Contains(majorType))).ToList();
+			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+			inventoryCharacterCards = inventoryCharacterCards.Where(x=>selectedTiers.Contains(x.tier)).ToList();
+		}
+		else
+		{
+			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+			inventoryUseCards = inventoryUseCards.Where(x=>selectedTiers.Contains(x.tier)).ToList();
+		}
 	}
 
 	public void RefreshAll()
