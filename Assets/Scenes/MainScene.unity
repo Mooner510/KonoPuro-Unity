@@ -236,6 +236,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -243,7 +273,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &30969628 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 30969627}
   m_PrefabAsset: {fileID: 0}
@@ -260,7 +290,7 @@ GameObject:
   - component: {fileID: 48722422}
   - component: {fileID: 48722421}
   m_Layer: 0
-  m_Name: Major Toggles
+  m_Name: Toggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -340,14 +370,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 60
+    m_Left: 50
     m_Right: 0
-    m_Top: 0
+    m_Top: 45
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 460, y: 150}
+  m_CellSize: {x: 450, y: 150}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 2
@@ -385,7 +415,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -25}
+  m_AnchoredPosition: {x: 107, y: -25}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &68735719
@@ -435,14 +465,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -598,6 +628,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -605,7 +665,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &110390810 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 110390809}
   m_PrefabAsset: {fileID: 0}
@@ -722,6 +782,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -729,7 +819,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &126408455 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 126408454}
   m_PrefabAsset: {fileID: 0}
@@ -1126,7 +1216,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &187735514
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1484,6 +1574,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1491,7 +1611,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &248206327 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 248206326}
   m_PrefabAsset: {fileID: 0}
@@ -1508,7 +1628,7 @@ GameObject:
   - component: {fileID: 305438492}
   - component: {fileID: 305438491}
   m_Layer: 0
-  m_Name: Major Toggles
+  m_Name: Toggles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1588,14 +1708,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 60
+    m_Left: 50
     m_Right: 0
-    m_Top: 0
+    m_Top: 45
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 460, y: 150}
+  m_CellSize: {x: 450, y: 150}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 2
@@ -2085,6 +2205,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2092,7 +2242,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &384675068 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 384675067}
   m_PrefabAsset: {fileID: 0}
@@ -2675,6 +2825,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2682,7 +2862,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &603052583 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 603052582}
   m_PrefabAsset: {fileID: 0}
@@ -3333,6 +3513,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3340,7 +3550,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &759616822 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 759616821}
   m_PrefabAsset: {fileID: 0}
@@ -3672,6 +3882,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3679,7 +3919,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &875460709 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 875460708}
   m_PrefabAsset: {fileID: 0}
@@ -4110,12 +4350,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!224 &954359112 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
-    type: 3}
-  m_PrefabInstance: {fileID: 8661777832355566280}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &957760012
 GameObject:
   m_ObjectHideFlags: 0
@@ -4310,7 +4544,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 954359112}
+  - {fileID: 8661777832355566281}
   - {fileID: 759616822}
   - {fileID: 1446457725}
   - {fileID: 30969628}
@@ -4339,14 +4573,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Padding:
-    m_Left: 60
+    m_Left: 50
     m_Right: 0
-    m_Top: 0
+    m_Top: 45
     m_Bottom: 0
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 460, y: 150}
+  m_CellSize: {x: 450, y: 150}
   m_Spacing: {x: 0, y: 0}
   m_Constraint: 1
   m_ConstraintCount: 3
@@ -4683,7 +4917,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -25}
+  m_AnchoredPosition: {x: 107, y: -25}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1162730600
@@ -4733,14 +4967,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -5187,6 +5421,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5194,7 +5458,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1318745385 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1318745384}
   m_PrefabAsset: {fileID: 0}
@@ -5379,6 +5643,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5386,7 +5680,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1346524210 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1346524209}
   m_PrefabAsset: {fileID: 0}
@@ -5540,6 +5834,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5547,7 +5871,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1369382158 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1369382157}
   m_PrefabAsset: {fileID: 0}
@@ -5722,7 +6046,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 80, y: -25}
+  m_AnchoredPosition: {x: 107, y: -25}
   m_SizeDelta: {x: 300, y: 100}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1397047954
@@ -5772,14 +6096,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 40
+  m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
-  m_HorizontalAlignment: 2
+  m_fontStyle: 1
+  m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -6068,6 +6392,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6075,7 +6429,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1417564402 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1417564401}
   m_PrefabAsset: {fileID: 0}
@@ -6551,6 +6905,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -6558,7 +6942,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1446457725 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1446457724}
   m_PrefabAsset: {fileID: 0}
@@ -8882,6 +9266,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -8889,7 +9303,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &1962931298 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 1962931297}
   m_PrefabAsset: {fileID: 0}
@@ -9387,6 +9801,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9394,7 +9838,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &2090510776 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 2090510775}
   m_PrefabAsset: {fileID: 0}
@@ -9672,6 +10116,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: Custom Togle
       objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9679,7 +10153,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
 --- !u!224 &2127075206 stripped
 RectTransform:
-  m_CorrespondingSourceObject: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
     type: 3}
   m_PrefabInstance: {fileID: 2127075205}
   m_PrefabAsset: {fileID: 0}
@@ -10760,116 +11234,122 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1003220221}
     m_Modifications:
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 5959536185281498890, guid: b1df1d162f740a24aa7c2058963ce863,
+        type: 3}
+      propertyPath: m_Name
+      value: Custom Togle
+      objectReference: {fileID: 0}
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_Pivot.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_Pivot.y
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchorMax.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchorMin.y
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_SizeDelta.x
-      value: 460
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 60
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4185700730051273595, guid: b1df1d162f740a24aa7c2058963ce863,
+    - target: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8535993008493207983, guid: b1df1d162f740a24aa7c2058963ce863,
-        type: 3}
-      propertyPath: m_Name
-      value: Custom Togle
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b1df1d162f740a24aa7c2058963ce863, type: 3}
+--- !u!224 &8661777832355566281 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8996022595651257743, guid: b1df1d162f740a24aa7c2058963ce863,
+    type: 3}
+  m_PrefabInstance: {fileID: 8661777832355566280}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8804355158946366658
 Transform:
   m_ObjectHideFlags: 0
