@@ -1779,12 +1779,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   turnhandcarduse: {fileID: 1773609169}
   textpannel: {fileID: 612828346}
+  carduseageAnim: {fileID: 612828350}
 --- !u!1 &612828346 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1037863738319667683, guid: 15c34032701c65c4886481b06958aeca,
     type: 3}
   m_PrefabInstance: {fileID: 6510214269890780771}
   m_PrefabAsset: {fileID: 0}
+--- !u!95 &612828350
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612828346}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9c209bf7898d3514989ed16fa932f42f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &648005253
 GameObject:
   m_ObjectHideFlags: 0
@@ -4714,7 +4736,7 @@ MonoBehaviour:
   spriteDebug: 0
   light1: {fileID: 1952580869}
   light2: {fileID: 998773238}
-  textpannel: {fileID: 612828346}
+  textpannel: {fileID: 0}
   usedcard: {fileID: 1773609169}
 --- !u!4 &1914164732
 Transform:
@@ -4773,7 +4795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectedCard: {fileID: 0}
-  CardInfoPanel: {fileID: 0}
+  CardInfoPanel: {fileID: 2026562826}
 --- !u!1 &1931959350
 GameObject:
   m_ObjectHideFlags: 0
@@ -5786,6 +5808,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2021096906}
   m_CullTransparentMesh: 1
+--- !u!1 &2026562826 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5733896415661159078, guid: b49cddc199f3a5840a0cb250023db9df,
+    type: 3}
+  m_PrefabInstance: {fileID: 1326229765}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2029769303
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6246,23 +6274,99 @@ PrefabInstance:
     - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
         type: 3}
       propertyPath: m_text
-      value: 
+      value: meto anfonn fodn corte mage desukka
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_margin.x
+      value: -13.997133
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_margin.z
+      value: -12.06407
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_fontStyle
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
         type: 3}
       propertyPath: m_fontColor.a
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_fontSizeMin
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_fontSizeBase
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744446431965529575, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 131.257
+      objectReference: {fileID: 0}
+    - target: {fileID: 5744446431965529575, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 14.634
+      objectReference: {fileID: 0}
     - target: {fileID: 5744446431965529575, guid: 15c34032701c65c4886481b06958aeca,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -806.9
+      value: -1126.5
       objectReference: {fileID: 0}
     - target: {fileID: 5744446431965529575, guid: 15c34032701c65c4886481b06958aeca,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 75.5
+      value: 207.152
       objectReference: {fileID: 0}
+    - target: {fileID: 5744446431965529575, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -21.021
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894183606456488161, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5894183606456488161, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0a397f5933e8dba48a790f097bc53da2,
+        type: 3}
     - target: {fileID: 5894183606456488161, guid: 15c34032701c65c4886481b06958aeca,
         type: 3}
       propertyPath: m_Color.a
@@ -6386,7 +6490,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1037863738319667683, guid: 15c34032701c65c4886481b06958aeca,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 612828350}
   m_SourcePrefab: {fileID: 100100000, guid: 15c34032701c65c4886481b06958aeca, type: 3}
 --- !u!1001 &6539888709462535193
 PrefabInstance:
