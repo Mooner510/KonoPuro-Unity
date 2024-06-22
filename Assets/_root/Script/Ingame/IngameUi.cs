@@ -148,7 +148,7 @@ public class IngameUi : MonoBehaviour
 	public void DisplayTurn(bool myTurn)
 	{
 		turnDisplayUi.TurnNotify(myTurn);
-		TurnDisplayDefault.getInstance().TurnChange(myTurn);
+		TurnDisplayDefault.TurnChange(myTurn);
 	}
 
 	public void SetInteract(bool active)

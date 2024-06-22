@@ -1777,9 +1777,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1720f1de1ef8c0c44ad412e691ad7b7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turnhandcarduse: {fileID: 1773609169}
-  textpannel: {fileID: 612828346}
-  carduseageAnim: {fileID: 612828350}
+  turnhandcarduse: {fileID: 0}
+  textpannel: {fileID: 0}
+  carduseageAnim: {fileID: 0}
 --- !u!1 &612828346 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1037863738319667683, guid: 15c34032701c65c4886481b06958aeca,
@@ -3516,6 +3516,7 @@ GameObject:
   - component: {fileID: 1299138319}
   - component: {fileID: 1299138321}
   - component: {fileID: 1299138320}
+  - component: {fileID: 1299138322}
   m_Layer: 5
   m_Name: Current Turn
   m_TagString: Untagged
@@ -3640,6 +3641,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1299138318}
   m_CullTransparentMesh: 1
+--- !u!114 &1299138322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299138318}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52dee73aaf9989146b1751c71e81ff81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1322851317
 GameObject:
   m_ObjectHideFlags: 0
@@ -4393,18 +4406,6 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1773609169 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4645987754954104383, guid: 15c34032701c65c4886481b06958aeca,
-    type: 3}
-  m_PrefabInstance: {fileID: 6510214269890780771}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1831118994
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4872,7 +4873,7 @@ MonoBehaviour:
   light1: {fileID: 1952580869}
   light2: {fileID: 998773238}
   textpannel: {fileID: 0}
-  usedcard: {fileID: 1773609169}
+  usedcard: {fileID: 0}
 --- !u!4 &1914164732
 Transform:
   m_ObjectHideFlags: 0
@@ -6042,7 +6043,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2073962257}
   - component: {fileID: 2073962261}
-  - component: {fileID: 2073962262}
   - component: {fileID: 2073962260}
   - component: {fileID: 2073962259}
   - component: {fileID: 2073962258}
@@ -6144,19 +6144,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2073962256}
   m_CullTransparentMesh: 1
---- !u!114 &2073962262
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2073962256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 52dee73aaf9989146b1751c71e81ff81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TurnText: {fileID: 1299138320}
 --- !u!1 &2079323447
 GameObject:
   m_ObjectHideFlags: 0

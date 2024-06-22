@@ -1,24 +1,20 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class TurnDisplayDefault : MonoBehaviour
+namespace _root.Script.Ingame
 {
-    public TextMeshProUGUI TurnText;
-    private static TurnDisplayDefault Instance;
-    
-    public void Start() {
-        Instance = this;
-    }
-    
-    public static TurnDisplayDefault getInstance() {
-        return Instance;
-    }
-    
-    public void TurnChange(bool isTurn)
+    public class TurnDisplayDefault : MonoBehaviour
     {
-        TurnText.text = isTurn ? "My Turn" : "Other Turn";
+        private static TextMeshProUGUI turnText;
+    
+        public void Start()
+        {
+            turnText = GetComponent<TextMeshProUGUI>();
+        }
+    
+        public static void TurnChange(bool isTurn)
+        {
+            turnText.text = isTurn ? "My Turn" : "Other Turn";
+        }
     }
 }
