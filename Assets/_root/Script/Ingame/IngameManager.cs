@@ -387,7 +387,7 @@ public class IngameManager : MonoBehaviour
 		card.Show(true);
 
 		yield return new WaitForSeconds(1.5f);
-		
+			
 		card.Show(false, true);
 
 		ui.SetHover(true);
