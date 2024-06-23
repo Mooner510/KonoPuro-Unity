@@ -53,8 +53,9 @@ public class IngameCardInfoUi : MonoBehaviour
 				nameT.text    = sInfo.name;
 				timeT.enabled = false;
 				var description = studentData.passives.Select(passive => GameStatics.passiveDictionary[passive])
-				                             .Aggregate((sInfo.description is not (null and "") ? $"{sInfo.description}\n \n" : ""),
-				                                        (current, info) => $"{current}{info.name}\n{current}\n \n");
+				                      .Aggregate(sInfo.description,
+				                                 (current, pInfo) =>
+						                                 $"{current}{pInfo.name}\n{pInfo.description}\n \n");
 				descriptionT.text = description;
 			}
 			else

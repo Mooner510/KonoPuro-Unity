@@ -29,12 +29,12 @@ public class DeckCardFilterMenu : MonoBehaviour
 		if(character)
 		{
 			for (var i = 0; i < studentTiers.Length; i++)
-				if (studentTiers[i].isOn) selected.Add(i);
+				if (studentTiers[i].isOn) selected.Add(i+1);
 		}
 		else
 		{
 			for (var i = 0; i < useCardTiers.Length; i++)
-				if(useCardTiers[i].isOn) selected.Add(i);
+				if(useCardTiers[i].isOn) selected.Add(i+1);
 		}
 		return selected;
 	}
@@ -54,13 +54,13 @@ public class DeckCardFilterMenu : MonoBehaviour
 		studentTiers = studentFilter.transform.GetChild(1).GetComponentsInChildren<Toggle>();
 		for (var i = 3; i > -1; i--)
 		{
-			studentTiers[i].transform.GetComponentInChildren<TextMeshProUGUI>().text = $"티어 {i}";
+			studentTiers[i].transform.GetComponentInChildren<TextMeshProUGUI>().text = $"티어 {i+1}";
 		}
 
 		useCardTiers = useCardFilter.transform.GetChild(0).GetComponentsInChildren<Toggle>();
 		for (var i = 3; i > -1; i--)
 		{
-			useCardTiers[i].GetComponentInChildren<TextMeshProUGUI>().text = $"티어 {i}";
+			useCardTiers[i].GetComponentInChildren<TextMeshProUGUI>().text = $"티어 {i+1}";
 		}
 	}
 
@@ -79,7 +79,6 @@ public class DeckCardFilterMenu : MonoBehaviour
 
 	public void SetType(bool character)
 	{
-		Init();
 		studentFilter.SetActive(character);
 		useCardFilter.SetActive(!character);
 	}
