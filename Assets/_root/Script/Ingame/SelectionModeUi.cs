@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _root.Script.Ingame;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +15,9 @@ public class SelectionModeUi : MonoBehaviour
 
 	private List<IngameCard> selectableCards;
 	private List<IngameCard> selectedCards;
-
+	
+	[SerializeField] private TextMeshProUGUI turnhandcarduse;
+	[SerializeField] private GameObject textpannel;
 	private void Awake()
 	{
 		var buttons = GetComponentsInChildren<Button>();
@@ -25,6 +28,7 @@ public class SelectionModeUi : MonoBehaviour
 	private void Start()
 	{
 		SetActive(false);
+		textpannel.SetActive(false);
 	}
 
 	private void Update()
@@ -77,4 +81,20 @@ public class SelectionModeUi : MonoBehaviour
 
 		SetActive(true);
 	}
+
+	public void SayOutLoud()
+	{
+		turnhandcarduse.text = PlayerActivity.usingcard;
+		textpannel.SetActive(true);
+		Invoke(nameof(ShowMineCard),2f);
+		//card.GetCardData().defaultCardType
+		Debug.Log(PlayerActivity.usingcard);
+	}
+
+	void ShowMineCard()
+	{
+		textpannel.SetActive(false);
+	}
+
+
 }

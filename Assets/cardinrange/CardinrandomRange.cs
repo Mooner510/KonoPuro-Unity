@@ -22,6 +22,7 @@ namespace cardinrange
 
         public void OnMouseDown()
         {
+            if (pickUpCard[0].enabled && tier == 4) AudioManager.PlaySoundInstance("Audio/Tier 4");
             pickUpCard[0].enabled = false;
             pickUpCard[1].enabled = true;
             if (GetComponent<GachaSingleCardSetter>()) exitButton.SetActive(true);
