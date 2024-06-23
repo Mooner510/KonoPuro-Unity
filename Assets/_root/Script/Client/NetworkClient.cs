@@ -39,8 +39,8 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 
 	private void _Init()
 	{
-		if(listenCoroutine != null) StopCoroutine(listenCoroutine);
-		StartCoroutine(ListenEvent());		
+		if (listenCoroutine != null) StopCoroutine(listenCoroutine);
+		StartCoroutine(ListenEvent());
 	}
 
 	public static void Send(params object[] data)
@@ -156,13 +156,17 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 							                CallEvent(ClientEvent.GameEnd, rawProtocol.data[0]);
 							                break;
 						                case 202:
-							                var useCard = JsonConvert.DeserializeObject<GameCard>(rawProtocol.data[0]
-									               .ToString());
+							                var useCard =
+									                JsonConvert.DeserializeObject<GameCard>(rawProtocol.data[0]
+											               .ToString());
 							                CallEvent(ClientEvent.OtherCardUse, useCard);
 							                break;
 						                case 203:
-							                
-							                CallEvent(ClientEvent.OtherAbilityUse, null);
+							                var tier = Enum.Parse<Tiers>(rawProtocol.data[0].ToString());
+							                var student =
+									                JsonConvert.DeserializeObject<GameStudentCard>(rawProtocol.data[1]
+											               .ToString());
+							                CallEvent(ClientEvent.OtherAbilityUse, (tier, student));
 							                break;
 						                case 204:
 							                CallEvent(ClientEvent.NextDay, null);
@@ -174,6 +178,10 @@ public partial class NetworkClient : SingleMono<NetworkClient>
 											               .ToString());
 							                var self  = UpdatedData.ConvertUpdatedData(rawData.self);
 							                var other = UpdatedData.ConvertUpdatedData(rawData.other);
+							                if (other?.heldCards?.cards != null)
+								                other.heldCards.cards = other.heldCards.cards.Select(x => new GameCard()
+								                                              { id = x.id })
+								                                             .ToList();
 
 							                GameStatics.isTurn = rawData.turn;
 

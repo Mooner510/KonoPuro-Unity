@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Manager;
 using _root.Script.Network;
@@ -10,21 +12,20 @@ using UnityEngine;
 public class IngameCardInfoUi : MonoBehaviour
 {
 	private TextMeshProUGUI nameT;
+	private TextMeshProUGUI timeT;
+	private TextMeshProUGUI descriptionT;
 
 	private void Awake()
 	{
 		var tmps = GetComponentsInChildren<TextMeshProUGUI>();
-		nameT = tmps[0];
+		nameT        = tmps[0];
+		timeT        = tmps[1];
+		descriptionT = tmps[2];
 	}
 
 	private void Start()
 	{
 		SetActive(false);
-	}
-
-	private void Init()
-	{
-		nameT.text = "Name";
 	}
 
 	public void SetActive(bool active)
@@ -48,13 +49,18 @@ public class IngameCardInfoUi : MonoBehaviour
 			var studentData = card.GetStudentData();
 			if (studentData != null)
 			{
-				Debug.Log(studentData.cardType);
-				nameT.text = studentData.cardType;
+				var sInfo = GameStatics.studentCardDictionary[studentData.cardType];
+				nameT.text    = sInfo.name;
+				timeT.enabled = false;
+				var description = studentData.passives.Select(passive => GameStatics.passiveDictionary[passive])
+				                      .Aggregate(sInfo.description,
+				                                 (current, pInfo) =>
+						                                 $"{current}{pInfo.name}\n{pInfo.description}\n \n");
+				descriptionT.text = description;
 			}
 			else
 			{
 				var defaultData = card.GetData();
-				Debug.Log(defaultData);
 				nameT.text = defaultData.cardType;
 			}
 		}
@@ -62,15 +68,22 @@ public class IngameCardInfoUi : MonoBehaviour
 		{
 			var data = card.GetCardData();
 			if (data == null) return;
-			Debug.Log(data.defaultCardType);
-			nameT.text = data.defaultCardType;
+			timeT.enabled = true;
+			var info = GameStatics.defaultCardDictionary[data.defaultCardType];
+			nameT.text        = info.name;
+			timeT.text        = $"Usage : {info.time}";
+			descriptionT.text = info.description;
 		}
 	}
-	
+
 	public void SetInfo(Tiers ability)
 	{
 		SetActive(true);
 
-		nameT.text = ability.ToString();
+		timeT.enabled = true;
+		var info = GameStatics.tierDictionary[ability];
+		nameT.text        = info.name;
+		timeT.text        = $"Usage : {info.time}";
+		descriptionT.text = info.description;
 	}
 }

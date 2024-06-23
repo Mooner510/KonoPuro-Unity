@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Data;
@@ -9,18 +10,12 @@ using UnityEngine.UI;
 
 namespace _root.Script.Deck
 {
-public class OriginDeckInfo
-{
-	public DeckResponse       activeDeck;
-	public List<DeckResponse> decks;
-}
-
 public class DeckEditMenu : MonoBehaviour
 {
 	private Camera cam;
 	private Canvas canvas;
 
-	private SpriteRenderer       equipBackground;
+	private SpriteRenderer   equipBackground;
 	private List<DeckCardUi> equippedCardUis;
 	private List<DeckCardUi> inventoryCardUis;
 
@@ -42,44 +37,60 @@ public class DeckEditMenu : MonoBehaviour
 	private List<PlayerCardResponse> equippedUseCards;
 	private List<PlayerCardResponse> inventoryUseCards;
 
-	public enum DeckType
+	private TextMeshProUGUI[] pageCounts;
+
+	private DeckCardFilterMenu filterMenu;
+
+	private TMP_InputField searchField;
+
+	private enum DeckType
 	{
 		Character = 0,
-		Use = 1
+		Use       = 1
 	}
 
-	private void Start()
+	private void Awake()
 	{
-		cam = Camera.main;
+		equipBackground = transform.Find("Equip Background").GetComponent<SpriteRenderer>();
 
-		equipBackground = GetComponentInChildren<SpriteRenderer>();
-
-		equippedCardUis = transform.GetChild(0).GetComponentsInChildren<DeckCardUi>().ToList();
+		equippedCardUis = transform.Find("EquippedCards").GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var equippedCardUi in equippedCardUis)
 			equippedCardUi.isEquippedDeckUi = true;
 
-		inventoryCardUis = transform.GetChild(1).GetComponentsInChildren<DeckCardUi>().ToList();
+		inventoryCardUis = transform.Find("InventoryCards").GetComponentsInChildren<DeckCardUi>().ToList();
 		foreach (var inventoryCardUi in inventoryCardUis)
 			inventoryCardUi.isEquippedDeckUi = false;
 
 		cardInfoUi = GetComponentInChildren<DeckCardInfoUi>();
 		canvas     = GetComponentInChildren<Canvas>();
 
-		var characterDeckButton = canvas.transform.Find("CharacterDeck").GetComponent<Button>();
+		var cardTypeSelection   = canvas.transform.Find("Card Type Selection");
+		var characterDeckButton = cardTypeSelection.Find("CharacterDeck").GetComponent<Button>();
+		var skillDeckButton     = cardTypeSelection.Find("SkillDeck").GetComponent<Button>();
+
 		characterDeckButton.onClick.RemoveAllListeners();
 		characterDeckButton.onClick.AddListener(() =>
 		                                        { if (currentDeckType == DeckType.Character) return;
 		                                          SetDeckType(true);
 		                                          ResetPage();
 		                                          RefreshAll(); });
-
-		var skillDeckButton = canvas.transform.Find("SkillDeck").GetComponent<Button>();
 		skillDeckButton.onClick.RemoveAllListeners();
 		skillDeckButton.onClick.AddListener(() =>
 		                                    { if (currentDeckType == DeckType.Use) return;
 		                                      SetDeckType(false);
 		                                      ResetPage();
 		                                      RefreshAll(); });
+
+		pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
+
+		filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
+
+		searchField = canvas.GetComponentInChildren<TMP_InputField>();
+	}
+
+	private void Start()
+	{
+		cam = Camera.main;
 
 		SetActive(false);
 	}
@@ -96,9 +107,9 @@ public class DeckEditMenu : MonoBehaviour
 		if (active) Init();
 		else if (isActive) ApplyDeck();
 		else ResourceManager.ClearSprites();
-		equipBackground.gameObject.SetActive(active);
-		isActive       = active;
-		canvas.enabled = active;
+		equipBackground.enabled = active;
+		isActive                = active;
+		canvas.enabled          = active;
 	}
 
 	void Init()
@@ -116,12 +127,16 @@ public class DeckEditMenu : MonoBehaviour
 			modifyingDeck = new();
 		}
 
+		searchField.text = "";
+		filterMenu.Init();
+		ShowFilter(false);
 		RefreshAll();
 	}
 
 	private void ApplyDeck()
 	{
-		if (equippedUseCards.Count != GameStatics.deckUseCardRequired || equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
+		if (equippedUseCards.Count != GameStatics.deckUseCardRequired ||
+		    equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
 		{
 			//TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
 			return;
@@ -182,17 +197,17 @@ public class DeckEditMenu : MonoBehaviour
 
 	private void CheckSelect()
 	{
-		var        ray = cam.ScreenPointToRay(Input.mousePosition);
+		var ray = cam.ScreenPointToRay(Input.mousePosition);
 
 		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
 		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
 	}
 
-	public void SelectCard(PlayerCardResponse card)
+	private void SelectCard(PlayerCardResponse card)
 	{
 		selectedCard = card;
 		RefreshAll();
-		cardInfoUi.SetUi(card, card != null && equippedUseCards.Contains(card));
+		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
 	}
 
 	private void SortCards()
@@ -207,19 +222,40 @@ public class DeckEditMenu : MonoBehaviour
 		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
 		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
 
-		Debug.Log(11111111111);
-		foreach (var playerCardResponse in inventoryCharacterCards)
-			Debug.Log(playerCardResponse);		
-		Debug.Log(2222222222222);
-		foreach (var playerCardResponse in inventoryUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(33333333333333);
-		foreach (var playerCardResponse in equippedCharacterCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(444444444444444);
-		foreach (var playerCardResponse in equippedUseCards)
-			Debug.Log(playerCardResponse);
-		Debug.Log(55555555555555555);
+		FilterCards();
+	}
+
+	public void ShowFilter(bool show)
+	{
+		if (!show) RefreshAll();
+		filterMenu.SetType(currentDeckType == DeckType.Character);
+		filterMenu.Show(show);
+	}
+
+	private void FilterCards()
+	{
+		if (currentDeckType == DeckType.Character)
+		{
+			var selectedMajors = filterMenu.SelectedMajors();
+			var selectedTiers  = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+			inventoryCharacterCards = inventoryCharacterCards
+			                         .Where(x => x.cardGroups.Any(majorType =>
+					                                                      selectedMajors.Contains(majorType) &&
+					                                                      selectedTiers.Contains(x.tier)) &&
+			                                     GameStatics.studentCardDictionary[x.cardType]
+			                                                .name.Contains(searchField.text))
+			                         .ToList();
+		}
+		else
+		{
+			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+			inventoryUseCards = inventoryUseCards
+			                   .Where(x => selectedTiers.Contains(x.tier) && GameStatics
+			                                                                .defaultCardDictionary[x.cardType]
+			                                                                .name.ToLower()
+			                                                                .Contains(searchField.text.ToLower()))
+			                   .ToList();
+		}
 	}
 
 	public void RefreshAll()
@@ -234,13 +270,11 @@ public class DeckEditMenu : MonoBehaviour
 		}
 
 		var character      = currentDeckType == DeckType.Character;
-		var  equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		var  inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
+		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-		canvas.transform.GetChild(1).Find("EquipPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
-		canvas.transform.GetChild(1).Find("InventoryPageCount").GetComponent<TextMeshProUGUI>().text =
-				$"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
+		pageCounts[0].text = $"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
+		pageCounts[1].text = $"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
 
 		SortCards();
 		RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
@@ -249,9 +283,9 @@ public class DeckEditMenu : MonoBehaviour
 
 	public void FlipEquipPage(bool pre)
 	{
-		var character      = currentDeckType == DeckType.Character;
-		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		
+		var character  = currentDeckType == DeckType.Character;
+		var equipCards = character ? equippedCharacterCards : equippedUseCards;
+
 		var applyPage = equippedPage + (pre ? -1 : 1);
 		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;
 		equippedPage = applyPage;
@@ -264,7 +298,7 @@ public class DeckEditMenu : MonoBehaviour
 		var character      = currentDeckType == DeckType.Character;
 		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-		var applyPage      = inventoryPage + (pre ? -1 : 1);
+		var applyPage = inventoryPage + (pre ? -1 : 1);
 		if (applyPage < 0 || applyPage * inventoryCardUis.Count >= inventoryCards.Count) return;
 		inventoryPage = applyPage;
 

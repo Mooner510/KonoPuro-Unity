@@ -20,6 +20,7 @@ public static class GameStatics
 	public static Dictionary<Tiers, TierInfo>       tierDictionary;
 	public static Dictionary<Passives, PassiveInfo> passiveDictionary;
 	public static Dictionary<string, DefaultCardInfo> defaultCardDictionary;
+	public static Dictionary<string, StudentCardInfo> studentCardDictionary;
 
 	public static List<GatchaResponse> gatchaList;
 
