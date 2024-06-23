@@ -7,6 +7,7 @@ using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Ingame;
 using _root.Script.Ingame.Ability;
+using _root.Script.Manager;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
@@ -184,6 +185,8 @@ public class IngameManager : MonoBehaviour
 
 		director.playableAsset = start;
 		director.Play();
+		
+		AudioManager.PlaySoundInstance("Audio/INGAME_START");
 
 		yield return new WaitForSeconds(1f);
 
@@ -222,6 +225,7 @@ public class IngameManager : MonoBehaviour
 
 		foreach (var student in students)
 		{
+			AudioManager.PlaySoundInstance("Audio/CARD_SETTING");
 			field.AddNewCard(student);
 			yield return new WaitForSeconds(0.25f);
 		}
@@ -310,6 +314,8 @@ public class IngameManager : MonoBehaviour
 			yield break;
 		}
 
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
+
 		if (selectedCards != null)
 		{
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
@@ -373,6 +379,8 @@ public class IngameManager : MonoBehaviour
 			yield break;
 		}
 
+        AudioManager.PlaySoundInstance("Audio/CARD_USED");
+        
 		if (selectedCards != null)
 			NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id,
 			                                  selectedCards.Select(x => x.GetStudentData().id)));
@@ -400,6 +408,7 @@ public class IngameManager : MonoBehaviour
 
 		Debug.LogError("NextDay");
 
+		AudioManager.PlaySoundInstance("Audio/NEXT_DAY");
 		day++;
 
 		if (day == GameStatics.dDay)
@@ -507,6 +516,7 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator OtherAbilityUseFlow(Tiers ability, GameStudentCard activeStudent, int index)
 	{
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
 		usedcard.text= "상대는 <"+GameStatics.tierDictionary[ability].name+"> 학생능력을 사용했습니다..";
 		textpannel.SetActive(true);
@@ -523,6 +533,7 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator OtherCardUseFlow(GameCard cardData, int index)
 	{
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
 
 		var card = activity.RemoveHandCard(cardData.id, false);
