@@ -11,7 +11,6 @@ using UnityEngine;
 public class PlayerActivity : MonoBehaviour
 {
 	public static string usingcard;
-	public static bool isMyActive;
 	private IngameUi ingameUi;
 
 	private PlayerHand selfHand;

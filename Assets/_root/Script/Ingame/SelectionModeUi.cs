@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Data;
 using _root.Script.Ingame;
 using TMPro;
 using UnityEngine;
@@ -16,11 +17,14 @@ public class SelectionModeUi : MonoBehaviour
 	private List<IngameCard> selectableCards;
 	private List<IngameCard> selectedCards;
 	
-	[SerializeField] private TextMeshProUGUI turnhandcarduse;
-	[SerializeField] private GameObject textpannel;
-	[SerializeField] private Animator carduseageAnim;
+	private TextMeshProUGUI turnhandcarduse;
+	private GameObject textpannel;
+	private Animator carduseageAnim;
 	private void Awake()
 	{
+		textpannel = GameObject.FindGameObjectWithTag("CardUseage");
+		carduseageAnim = textpannel.GetComponent<Animator>();
+		turnhandcarduse = textpannel.GetComponentInChildren<TextMeshProUGUI>();
 		var buttons = GetComponentsInChildren<Button>();
 		accept = buttons[0];
 		cancel = buttons[1];
@@ -86,7 +90,7 @@ public class SelectionModeUi : MonoBehaviour
 	{
 		turnhandcarduse.text = PlayerActivity.usingcard;
 		carduseageAnim.Play("CardUseage");
-		if (PlayerActivity.isMyActive == true)
+		if (GameStatics.isTurn == true)
 		{
 			textpannel.GetComponent<Image>().color = new Color(0.34f, 0.73f, 1f, 1f);
 		}

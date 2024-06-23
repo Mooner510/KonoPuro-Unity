@@ -283,7 +283,6 @@ public class IngameManager : MonoBehaviour
 		ui.SetCardInfo(null);
 		activity.SetActive(false);
 		PlayerActivity.usingcard = $"{GameStatics.tierDictionary[ability].name}";
-		PlayerActivity.isMyActive = true;
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		ShowAbilities(null);
@@ -347,7 +346,6 @@ public class IngameManager : MonoBehaviour
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		PlayerActivity.usingcard = card.GetCardData().defaultCardType;
-		PlayerActivity.isMyActive = true;
 		card.Show(false);
 
 		//TODO: 카드 사용 유형에 따라 선택할 카드들 지정
@@ -530,7 +528,6 @@ public class IngameManager : MonoBehaviour
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
 		PlayerActivity.usingcard = card.GetCardData().defaultCardType;
-		PlayerActivity.isMyActive = false; 
 		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
 		
 		yield return new WaitForSeconds(1.5f);
