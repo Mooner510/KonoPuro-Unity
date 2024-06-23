@@ -9,8 +9,10 @@ using _root.Script.Ingame;
 using _root.Script.Ingame.Ability;
 using _root.Script.Manager;
 using _root.Script.Network;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Playables;
+using UnityEngine.Serialization;
 
 public class IngameManager : MonoBehaviour
 {
@@ -19,7 +21,6 @@ public class IngameManager : MonoBehaviour
 	private PlayerActivity   activity;
 
 	[SerializeField] private PlayableAsset start;
-
 	private int day;
 
 	public List<GameStudentCard> selfStudents  = new();
@@ -35,7 +36,10 @@ public class IngameManager : MonoBehaviour
 
 	//TODO: 실험용 삭제필요
 	[SerializeField] private bool spriteDebug;
-
+	[SerializeField] private Light light1;
+	[SerializeField] private Light light2;
+	[SerializeField] private GameObject textpannel;
+	[FormerlySerializedAs("oponentusedcard")] [SerializeField] private TextMeshProUGUI usedcard;
 	private readonly List<int> flowIndexes      = new();
 	private          int       currentFlowIndex = 0;
 
@@ -84,6 +88,10 @@ public class IngameManager : MonoBehaviour
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
 		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
+
+		light1.color = Color.white; 
+		light2.color = Color.white;
+
 		GameStart();
 	}
 
@@ -276,6 +284,7 @@ public class IngameManager : MonoBehaviour
 		abilityUsable = false;
 		ui.SetCardInfo(null);
 		activity.SetActive(false);
+		PlayerActivity.usingcard = "본인은 <" + GameStatics.tierDictionary[ability].name + "> 학생능력을 사용했습니다.. ";
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		ShowAbilities(null);
@@ -308,11 +317,19 @@ public class IngameManager : MonoBehaviour
 		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 
 		if (selectedCards != null)
+		{
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
-			                                  selectedCards.Select(x => x.GetStudentData().id)));
+				selectedCards.Select(x => x.GetStudentData().id)));
+
+		}
+
 		else
 			NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
 
+		//Dictionary<int, string>
+			//dictionary[10]
+			//GameStatics.studentCardDictionary[new GameStudentCard().cardType].;
+		
 		yield return new WaitForSeconds(1f);
 
 		abilityUsable = true;
@@ -332,7 +349,7 @@ public class IngameManager : MonoBehaviour
 		activity.SetActive(false);
 		ui.SetHover(false);
 		ui.SetInteract(false);
-
+		PlayerActivity.usingcard = "본인은 "+card.GetCardData().defaultCardType+"카드를 사용했다";
 		card.Show(false);
 
 		//TODO: 카드 사용 유형에 따라 선택할 카드들 지정
@@ -393,6 +410,41 @@ public class IngameManager : MonoBehaviour
 
 		AudioManager.PlaySoundInstance("Audio/NEXT_DAY");
 		day++;
+
+		if (day == GameStatics.dDay)
+		{
+			for (float i = 0; i < 4; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.red, 0.5f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.red, 0.5f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.red;
+			light2.color = Color.red;
+		}
+		else
+		{
+			for (float i = 0; i < 2.5; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.black, 1f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.black, 1f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.black;
+			light2.color = Color.black;
+			yield return new WaitForSeconds(0.5f);
+			for (float i = 0; i < 2.5; i += Time.deltaTime)
+			{
+				light1.color = Color.Lerp(light1.color, Color.white, 1f * Time.deltaTime);
+				light2.color = Color.Lerp(light2.color, Color.white, 1f * Time.deltaTime);
+				yield return null;
+			}
+			light1.color = Color.white;
+			light2.color = Color.white;
+		}
+
+		Debug.Log(day);
+
 		ui.DayChange(day);
 
 		yield return new WaitForSeconds(2f);
@@ -466,8 +518,13 @@ public class IngameManager : MonoBehaviour
 	{
 		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
+		usedcard.text= "상대는 <"+GameStatics.tierDictionary[ability].name+"> 학생능력을 사용했습니다..";
+		textpannel.SetActive(true);
+		Invoke(nameof(ShowOtherCard),2f);
+
 
 		Debug.LogError(ability);
+
 		//TODO: 능력 사용 연출
 		yield return new WaitForSeconds(1f);
 
@@ -481,6 +538,9 @@ public class IngameManager : MonoBehaviour
 
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
+		usedcard.text= "상대는"+card.GetCardData().defaultCardType+"카드를 사용했습니다";
+		textpannel.SetActive(true);
+		Invoke(nameof(ShowOtherCard),2f);
 		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
 		
 		yield return new WaitForSeconds(1.5f);
@@ -488,6 +548,11 @@ public class IngameManager : MonoBehaviour
 		card.Show(false, true);
 
 		EndFlow(index);
+	}
+
+	void ShowOtherCard()
+	{
+		textpannel.SetActive(false);
 	}
 
 	private IEnumerator GameEndFlow(string info, int index)
