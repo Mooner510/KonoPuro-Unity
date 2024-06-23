@@ -464,6 +464,7 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator OtherAbilityUseFlow(Tiers ability, GameStudentCard activeStudent, int index)
 	{
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
 
 		Debug.LogError(ability);
@@ -475,6 +476,7 @@ public class IngameManager : MonoBehaviour
 
 	private IEnumerator OtherCardUseFlow(GameCard cardData, int index)
 	{
+		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
 
 		var card = activity.RemoveHandCard(cardData.id, false);
