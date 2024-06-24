@@ -6,8 +6,8 @@ namespace _root.Script.Utils.SingleTon
     {
         private static T _instance;
 
-        [Header("SingleMono")]
-        [SerializeField] private bool canBeDestroy;
+        [Header("SingleMono")] [SerializeField]
+        private bool canBeDestroy;
 
         public static T Instance
         {

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using _root.Script.Network;
 using cardinrange;
@@ -9,6 +8,7 @@ namespace _root.Script.Card
     public class GachaMultiCardSetter : MonoBehaviour
     {
         public static List<PlayerCardResponse> gatchaCards = new();
+
         private void Start()
         {
             var a = GetComponentsInChildren<CardinrandomRange>();

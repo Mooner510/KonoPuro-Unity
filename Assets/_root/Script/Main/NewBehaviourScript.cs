@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class NewBehaviourScript : MonoBehaviour
+namespace _root.Script.Main
 {
-    public void doGacha()
+    public class NewBehaviourScript : MonoBehaviour
     {
-        SceneManager.LoadScene("GachaScene");
+        public void doGacha()
+        {
+            SceneManager.LoadScene("GachaScene");
+        }
     }
 }
