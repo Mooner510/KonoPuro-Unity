@@ -290,6 +290,7 @@ public class TitleManager : MonoBehaviour
 	private void SignUpSuccess()
 	{
 		titleUi.SetThrobber(false);
+		AuthPanel.instance.ShowSignUp(false);
 	}
 
 	private void SignUpError(ErrorBody errorBody)

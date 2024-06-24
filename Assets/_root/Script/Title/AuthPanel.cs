@@ -8,6 +8,7 @@ using Void = _root.Script.Network.Void;
 
 public class AuthPanel : MonoBehaviour
 {
+    public static AuthPanel instance;
     private SignUi login;
     private SignUi signUp;
 
@@ -16,6 +17,7 @@ public class AuthPanel : MonoBehaviour
         var signUis = GetComponentsInChildren<SignUi>();
         login  = signUis[0];
         signUp = signUis[1];
+        instance = this;
     }
 
     private void Start()
