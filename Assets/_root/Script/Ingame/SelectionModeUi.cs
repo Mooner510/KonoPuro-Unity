@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Data;
 using _root.Script.Ingame;
 using TMPro;
 using UnityEngine;
@@ -16,10 +17,14 @@ public class SelectionModeUi : MonoBehaviour
 	private List<IngameCard> selectableCards;
 	private List<IngameCard> selectedCards;
 	
-	[SerializeField] private TextMeshProUGUI turnhandcarduse;
-	[SerializeField] private GameObject textpannel;
+	private TextMeshProUGUI turnhandcarduse;
+	private GameObject textpannel;
+	private Animator carduseageAnim;
 	private void Awake()
 	{
+		textpannel = GameObject.FindGameObjectWithTag("CardUseage");
+		carduseageAnim = textpannel.GetComponent<Animator>();
+		turnhandcarduse = textpannel.GetComponentInChildren<TextMeshProUGUI>();
 		var buttons = GetComponentsInChildren<Button>();
 		accept = buttons[0];
 		cancel = buttons[1];
@@ -28,7 +33,6 @@ public class SelectionModeUi : MonoBehaviour
 	private void Start()
 	{
 		SetActive(false);
-		textpannel.SetActive(false);
 	}
 
 	private void Update()
@@ -85,16 +89,16 @@ public class SelectionModeUi : MonoBehaviour
 	public void SayOutLoud()
 	{
 		turnhandcarduse.text = PlayerActivity.usingcard;
-		textpannel.SetActive(true);
-		Invoke(nameof(ShowMineCard),2f);
-		//card.GetCardData().defaultCardType
-		Debug.Log(PlayerActivity.usingcard);
+		carduseageAnim.Play("CardUseage");
+		if (GameStatics.isTurn == true)
+		{
+			textpannel.GetComponent<Image>().color = new Color(0.34f, 0.73f, 1f, 1f);
+		}
+		else
+		{
+			textpannel.GetComponent<Image>().color = new Color(1f, 0.42f, 0.34f, 1f);
+		}
 	}
-
-	void ShowMineCard()
-	{
-		textpannel.SetActive(false);
-	}
-
+	
 
 }

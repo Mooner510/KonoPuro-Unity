@@ -33,6 +33,8 @@ public class IngameManager : MonoBehaviour
 	private FieldSetter otherField;
 
 	private IngameUi ui;
+	private TextMeshProUGUI turnhandcarduse;
+	private Animator carduseageAnim;
 
 	//TODO: 실험용 삭제필요
 	[SerializeField] private bool spriteDebug;
@@ -284,7 +286,7 @@ public class IngameManager : MonoBehaviour
 		abilityUsable = false;
 		ui.SetCardInfo(null);
 		activity.SetActive(false);
-		PlayerActivity.usingcard = "본인은 <" + GameStatics.tierDictionary[ability].name + "> 학생능력을 사용했습니다.. ";
+		PlayerActivity.usingcard = $"{GameStatics.tierDictionary[ability].name}";
 		ui.SetHover(false);
 		ui.SetInteract(false);
 		ShowAbilities(null);
@@ -349,7 +351,7 @@ public class IngameManager : MonoBehaviour
 		activity.SetActive(false);
 		ui.SetHover(false);
 		ui.SetInteract(false);
-		PlayerActivity.usingcard = "본인은 "+card.GetCardData().defaultCardType+"카드를 사용했다";
+		PlayerActivity.usingcard = card.GetCardData().defaultCardType;
 		card.Show(false);
 
 		//TODO: 카드 사용 유형에 따라 선택할 카드들 지정
@@ -391,7 +393,7 @@ public class IngameManager : MonoBehaviour
 		card.Show(true);
 
 		yield return new WaitForSeconds(1.5f);
-		
+			
 		card.Show(false, true);
 
 		ui.SetHover(true);
@@ -518,10 +520,8 @@ public class IngameManager : MonoBehaviour
 	{
 		AudioManager.PlaySoundInstance("Audio/CARD_USED");
 		yield return new WaitUntil(() => currentFlowIndex == index);
-		usedcard.text= "상대는 <"+GameStatics.tierDictionary[ability].name+"> 학생능력을 사용했습니다..";
+		usedcard.text= GameStatics.tierDictionary[ability].name;
 		textpannel.SetActive(true);
-		Invoke(nameof(ShowOtherCard),2f);
-
 
 		Debug.LogError(ability);
 
@@ -538,9 +538,7 @@ public class IngameManager : MonoBehaviour
 
 		var card = activity.RemoveHandCard(cardData.id, false);
 		card.LoadDisplay(cardData);
-		usedcard.text= "상대는"+card.GetCardData().defaultCardType+"카드를 사용했습니다";
-		textpannel.SetActive(true);
-		Invoke(nameof(ShowOtherCard),2f);
+		PlayerActivity.usingcard = card.GetCardData().defaultCardType;
 		card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
 		
 		yield return new WaitForSeconds(1.5f);
@@ -549,12 +547,6 @@ public class IngameManager : MonoBehaviour
 
 		EndFlow(index);
 	}
-
-	void ShowOtherCard()
-	{
-		textpannel.SetActive(false);
-	}
-
 	private IEnumerator GameEndFlow(string info, int index)
 	{
 		yield return new WaitUntil(() => currentFlowIndex == index);

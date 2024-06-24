@@ -107,7 +107,7 @@ public class IngameUi : MonoBehaviour
 	{
 		dayText.text = $"D - {(day == GameStatics.dDay ? "Day" : GameStatics.dDay - day)}";
 	}
-
+	
 	public void TimeChanged(int time, bool self)
 	{
 		(self ? selfTimeText : otherTimeText).text  = $"{time}";
@@ -148,6 +148,7 @@ public class IngameUi : MonoBehaviour
 	public void DisplayTurn(bool myTurn)
 	{
 		turnDisplayUi.TurnNotify(myTurn);
+		TurnDisplayDefault.TurnChange(myTurn);
 	}
 
 	public void SetInteract(bool active)

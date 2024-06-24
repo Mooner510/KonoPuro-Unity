@@ -128,8 +128,6 @@ public class PlayerActivity : MonoBehaviour
 		{
 
 			selfHand.SelectCard(card);
-			//usingcard = "본인은 "+card.GetCardData().defaultCardType+"카드를 사용했다"; //GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].name;
-			//Debug.Log(card.GetCardData().defaultCardType);
 
 		}
 		ingameUi.SetCardInfo(card);
