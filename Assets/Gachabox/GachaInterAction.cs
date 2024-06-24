@@ -1,25 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
-public class GachaInterAction : MonoBehaviour
+namespace Gachabox
 {
-    [SerializeField] private GameObject open;
-    [SerializeField] private Animator boxani;
-    [SerializeField] private GameObject uis;
-    // Start is called before the first frame update
-    void Start()
+    public class GachaInterAction : MonoBehaviour
     {
-        uis.SetActive(true);
-        open.SetActive(false);
-    }
+        [SerializeField] private GameObject open;
+        [SerializeField] private Animator boxani;
+        [SerializeField] private GameObject uis;
+        // Start is called before the first frame update
+        private void Start()
+        {
+            uis.SetActive(true);
+            open.SetActive(false);
+        }
 
-    // Update is called once per frame
-    public void Gacha1()
-    {
-        boxani.SetBool("gacha",true);
-        uis.SetActive(false);
-        open.SetActive(true);
+        // Update is called once per frame
+        public void Gacha1()
+        {
+            boxani.SetBool("gacha",true);
+            uis.SetActive(false);
+            open.SetActive(true);
+        }
     }
 }

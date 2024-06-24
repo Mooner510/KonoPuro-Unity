@@ -1,71 +1,73 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class QuestUi : MonoBehaviour
+namespace _root.Script.Ingame
 {
-    [SerializeField] private Vector3 GetOnPos;
-    [SerializeField] private Vector3 GetOffPos;
-    [SerializeField] private float Speed;
-    [SerializeField] private float WaitTime;
-    private bool GettingOn;
-    public void GetON()
+    public class QuestUi : MonoBehaviour
     {
-        GettingOn = true;
-        StartCoroutine(ToGetOn());
-    }
-    public void GetOff()
-    {
-        GettingOn = false;
-        StartCoroutine(ToGetOff());
-    }
+        [SerializeField] private Vector3 GetOnPos;
+        [SerializeField] private Vector3 GetOffPos;
+        [SerializeField] private float Speed;
+        [SerializeField] private float WaitTime;
+        private bool GettingOn;
 
-    IEnumerator ToGetOn()
-    {
-        Vector3 NowPos = gameObject.GetComponent<RectTransform>().anchoredPosition3D;
-        float elapsedtime = 0f;
-        while (elapsedtime < WaitTime)
+        public void GetON()
         {
-            elapsedtime += Time.deltaTime;
-            yield return null;
+            GettingOn = true;
+            StartCoroutine(ToGetOn());
         }
 
-        elapsedtime = 0f;
-        while (elapsedtime < Speed)
+        public void GetOff()
         {
-            if (GettingOn)
+            GettingOn = false;
+            StartCoroutine(ToGetOff());
+        }
+
+        private IEnumerator ToGetOn()
+        {
+            var NowPos = gameObject.GetComponent<RectTransform>().anchoredPosition3D;
+            var elapsedtime = 0f;
+            while (elapsedtime < WaitTime)
             {
-                gameObject.GetComponent<RectTransform>().anchoredPosition3D =
-                    Vector3.Lerp(NowPos, GetOnPos, elapsedtime / Speed);
                 elapsedtime += Time.deltaTime;
                 yield return null;
             }
-            else
-            {
-                yield break;
-            }
+
+            elapsedtime = 0f;
+            while (elapsedtime < Speed)
+                if (GettingOn)
+                {
+                    gameObject.GetComponent<RectTransform>().anchoredPosition3D =
+                        Vector3.Lerp(NowPos, GetOnPos, elapsedtime / Speed);
+                    elapsedtime += Time.deltaTime;
+                    yield return null;
+                }
+                else
+                {
+                    yield break;
+                }
+
+            gameObject.GetComponent<RectTransform>().anchoredPosition3D = GetOnPos;
         }
-        gameObject.GetComponent<RectTransform>().anchoredPosition3D = GetOnPos;
-    }
-    
-    IEnumerator ToGetOff()
-    {
-        Vector3 NowPos = gameObject.GetComponent<RectTransform>().anchoredPosition3D;
-        float elapsedtime = 0f;
-        while (elapsedtime < Speed)
+
+        private IEnumerator ToGetOff()
         {
-            if (!GettingOn)
-            {
-                gameObject.GetComponent<RectTransform>().anchoredPosition3D =
-                    Vector3.Lerp(NowPos, GetOffPos, elapsedtime / Speed);
-                elapsedtime += Time.deltaTime;
-                yield return null;
-            }
-            else
-            {
-                yield break;
-            }
+            var NowPos = gameObject.GetComponent<RectTransform>().anchoredPosition3D;
+            var elapsedtime = 0f;
+            while (elapsedtime < Speed)
+                if (!GettingOn)
+                {
+                    gameObject.GetComponent<RectTransform>().anchoredPosition3D =
+                        Vector3.Lerp(NowPos, GetOffPos, elapsedtime / Speed);
+                    elapsedtime += Time.deltaTime;
+                    yield return null;
+                }
+                else
+                {
+                    yield break;
+                }
+
+            gameObject.GetComponent<RectTransform>().anchoredPosition3D = GetOffPos;
         }
-        gameObject.GetComponent<RectTransform>().anchoredPosition3D = GetOffPos;
     }
 }

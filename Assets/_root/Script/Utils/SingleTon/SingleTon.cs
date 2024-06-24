@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace _root.Script.Utils.SingleTon
+﻿namespace _root.Script.Utils.SingleTon
 {
     public class SingleTon<T> where T : class, new()
     {

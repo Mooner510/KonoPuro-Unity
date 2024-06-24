@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _root.Script.Utils.SingleTon;
 using UnityEngine;
 
 namespace _root.Script.Manager
 {
-    [RequireComponent(typeof(AudioSource))] 
+    [RequireComponent(typeof(AudioSource))]
     public class AudioManager : SingleMono<AudioManager>
     {
         private static readonly Dictionary<string, AudioClip> Clips = new();
@@ -18,7 +17,7 @@ namespace _root.Script.Manager
         public void PlaySound(string path)
         {
             var clip = GetClip(path);
-            if(clip) GetComponent<AudioSource>().PlayOneShot(clip);
+            if (clip) GetComponent<AudioSource>().PlayOneShot(clip);
         }
 
         private static AudioClip GetClip(string path)
