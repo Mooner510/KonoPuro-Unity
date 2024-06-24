@@ -1,4 +1,3 @@
-using System;
 using _root.Script.Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,6 +10,7 @@ namespace _root.Script.Card
         {
             AudioManager.PlaySoundInstance("Audio/GACHA-1");
         }
+
         public void GachaBuildup2Audio(string path)
         {
             AudioManager.PlaySoundInstance(path);
@@ -20,6 +20,7 @@ namespace _root.Script.Card
         {
             SceneManager.LoadScene("GachaDirectingBuildupScene");
         }
+
         public void GachaBuildup2Ended()
         {
             SceneManager.LoadScene("GachaDirectingScene");

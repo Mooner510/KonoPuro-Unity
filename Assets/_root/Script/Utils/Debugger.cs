@@ -22,6 +22,9 @@ namespace _root.Script.Utils
             if (Instance.debug) Debug.unityLogger.LogError(tag, msg);
         }
 
-        public static bool IsDebug() => Instance.debug;
+        public static bool IsDebug()
+        {
+            return Instance.debug;
+        }
     }
 }

@@ -1,15 +1,19 @@
 using UnityEngine;
 
-public class BackButton : MonoBehaviour
+namespace _root.Script.UI
 {
-    private GameObject obj;
-    private void Awake()
+    public class BackButton : MonoBehaviour
     {
-        obj = transform.GetChild(0).gameObject;
-    }
+        private GameObject obj;
 
-    public void OnOff(bool active)
-    {
-        obj.SetActive(active);
+        private void Awake()
+        {
+            obj = transform.GetChild(0).gameObject;
+        }
+
+        public void OnOff(bool active)
+        {
+            obj.SetActive(active);
+        }
     }
 }

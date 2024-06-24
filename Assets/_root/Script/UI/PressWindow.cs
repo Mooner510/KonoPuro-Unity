@@ -1,29 +1,28 @@
 using UnityEngine;
 
-public class PressWindow : MonoBehaviour
-{ 
-    private string input = "";
-    private new Animation animation;
-    private TimelineManager timelineManager;
-    private bool OnPress = false;
-    private void Awake()
+namespace _root.Script.UI
+{
+    public class PressWindow : MonoBehaviour
     {
-        timelineManager = FindObjectOfType<TimelineManager>();
-    }
+        private new Animation animation;
+        private string input = "";
+        private readonly bool OnPress = false;
+        private TimelineManager timelineManager;
 
-    private void Update()
-    {
-        input = Input.inputString;
-        if (input == "")
+        private void Awake()
         {
-            input = Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2) ? "mouse" : "";
+            timelineManager = FindObjectOfType<TimelineManager>();
         }
 
-        if (input == "" || OnPress)
+        private void Update()
         {
-            return;
+            input = Input.inputString;
+            if (input == "")
+                input = Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2) ? "mouse" : "";
+
+            if (input == "" || OnPress) return;
+
+            timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.Lobby);
         }
-        
-        timelineManager.PlayTimeline(timelineManager.stateStack.Peek(), Scenestate.Lobby);
     }
 }
