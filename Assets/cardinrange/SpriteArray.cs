@@ -19,17 +19,8 @@ namespace cardinrange
         }
         public void SpriteRandom()
         {
-            if (ConfigManager.ConfigData.LastLogin.Date.Day != DateTime.Now.Day)
-            {
-                randomindex = Random.Range(0, Sprites.Length);
-                ConfigManager.ConfigData.TodayCard = randomindex;
-                ConfigManager.ConfigData.LastLogin = DateTime.Now;
-                Settings.Save();
-            }
-            else
-            {
-                randomindex = ConfigManager.ConfigData.TodayCard;
-            }
+            Random.InitState(DateTime.Now.Day);
+            randomindex = Random.Range(0, Sprites.Length);
             _spriteRenderer.sprite = Sprites[randomindex];
         }
 

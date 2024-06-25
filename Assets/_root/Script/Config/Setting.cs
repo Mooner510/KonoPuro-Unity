@@ -15,8 +15,6 @@ namespace Config_Manager
             public float SoundVolume = 1f;
             public float Light = 1f;
             public int FPS_Limit = 60;
-            public DateTime LastLogin = new DateTime(1982, 9, 11);
-            public int TodayCard = 1;
         }
         public static void Save()
         {
