@@ -9,7 +9,7 @@ namespace _root.Script.Card
     {
         public static List<PlayerCardResponse> gatchaCards = new();
 
-        private void Start()
+        private void Awake()
         {
             var a = GetComponentsInChildren<CardinrandomRange>();
             for (var i = 0; i < gatchaCards.Count; i++)

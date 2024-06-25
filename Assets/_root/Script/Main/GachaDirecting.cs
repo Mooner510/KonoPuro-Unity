@@ -35,11 +35,9 @@ namespace _root.Script.Main
                 if (mc[0].GetComponent<Transform>().rotation.ToString()
                     .Equals(ec[0].GetComponent<Transform>().rotation.ToString()))
                     GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
-                if (GetComponent<Light>().intensity > 20000f)
-                {
-                    GachaMultiCardSetter.gatchaCards = gatchaCards;
-                    SceneManager.LoadScene("CardGatchaMulti");
-                }
+                if (!(GetComponent<Light>().intensity > 20000f)) return;
+                GachaMultiCardSetter.gatchaCards = gatchaCards;
+                SceneManager.LoadScene("CardGatchaMulti");
             }
             else
             {
@@ -47,11 +45,9 @@ namespace _root.Script.Main
                 singleCard.rotation = Quaternion.Lerp(singleCard.rotation, singleCardEndPos.rotation, 0.1f);
                 if (singleCard.rotation.ToString().Equals(singleCardEndPos.rotation.ToString()))
                     GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
-                if (GetComponent<Light>().intensity > 20000f)
-                {
-                    GachaSingleCardSetter.gatchaCard = gatchaCards[0];
-                    SceneManager.LoadScene("CardGatchaSingle");
-                }
+                if (!(GetComponent<Light>().intensity > 20000f)) return;
+                GachaSingleCardSetter.gatchaCard = gatchaCards[0];
+                SceneManager.LoadScene("CardGatchaSingle");
             }
         }
     }
