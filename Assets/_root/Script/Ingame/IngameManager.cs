@@ -413,6 +413,7 @@ namespace _root.Script.Ingame
 
             if (day == GameStatics.dDay)
             {
+                AudioManager.SetAsBackgroundMusicInstance("Audio/LAST_DAY", true);
                 for (float i = 0; i < 4; i += Time.deltaTime)
                 {
                     light1.color = Color.Lerp(light1.color, Color.red, 0.5f * Time.deltaTime);
