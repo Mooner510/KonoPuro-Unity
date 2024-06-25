@@ -7687,12 +7687,17 @@ PrefabInstance:
     - target: {fileID: 4960402742937365096, guid: dc94456511490b143b5cdb3465939ffa,
         type: 3}
       propertyPath: m_SortingOrder
-      value: -1
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6645186007272341625, guid: dc94456511490b143b5cdb3465939ffa,
         type: 3}
       propertyPath: m_Name
       value: ConfigMenu
+      objectReference: {fileID: 0}
+    - target: {fileID: 6645186007272341625, guid: dc94456511490b143b5cdb3465939ffa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7649680825473422167, guid: dc94456511490b143b5cdb3465939ffa,
         type: 3}
@@ -7725,7 +7730,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 5120090598896158479, guid: dc94456511490b143b5cdb3465939ffa, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc94456511490b143b5cdb3465939ffa, type: 3}
@@ -9307,10 +9313,10 @@ SceneRoots:
   - {fileID: 1968051638}
   - {fileID: 1013054864}
   - {fileID: 1833554437}
+  - {fileID: 2227839136473645745}
   - {fileID: 1660975229}
   - {fileID: 5129648775674503634}
   - {fileID: 922243805}
   - {fileID: 529301516}
   - {fileID: 972361572}
   - {fileID: 1914070344}
-  - {fileID: 2227839136473645745}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Manager;
 using Config_Manager;
 using TMPro;
 using UnityEngine;
@@ -35,29 +36,23 @@ public class ConfigInUI : MonoBehaviour
         LightSlider.value = ConfigManager.ConfigData.Light;
         FPS_Slider.value = ConfigManager.ConfigData.FPS_Limit;
         FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
+        isChange = false;
     }
-
     public void GetOff()
     {
+        ConfigManager.ConfigData.SoundVolume = VolumeSlider.value;
+        ConfigManager.ConfigData.Light = LightSlider.value;
+        ConfigManager.ConfigData.FPS_Limit = (int)FPS_Slider.value;
+        AudioManager.VolumeInitInstance();
+        Settings.Save();
         if (isChange)
         {
-            //Todo: 저장 창 띄우기
-            AcceptChange();
+            gameObject.SetActive(false);
         }
         else
         {
             gameObject.SetActive(false);
         }
-    }
-
-    //값 저장..
-    public void AcceptChange()
-    {
-        ConfigManager.ConfigData.SoundVolume = VolumeSlider.value;
-        ConfigManager.ConfigData.Light = LightSlider.value;
-        ConfigManager.ConfigData.FPS_Limit = (int)FPS_Slider.value;
-        Settings.Save();
-        gameObject.SetActive(false);
     }
     //값 안저장
     public void DisAcceptChange()
@@ -73,7 +68,6 @@ public class ConfigInUI : MonoBehaviour
 
     public void ChangeVolume()
     {
-        //VolumeManager.Init();
         isChange = true;
     }
 

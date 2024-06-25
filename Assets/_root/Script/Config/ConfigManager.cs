@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Manager;
 using UnityEngine;
 
 namespace Config_Manager
@@ -10,8 +11,10 @@ namespace Config_Manager
         public static Settings.Data ConfigData;
         private void Awake()
         {
+            ConfigData = new Settings.Data();
             DontDestroyOnLoad(gameObject);
-            ConfigData = Settings.Load();
+            Settings.Load();
+            AudioManager.VolumeInitInstance();
             Screen.brightness = ConfigData.Light;
             if (ConfigData.FPS_Limit > 0)
             {

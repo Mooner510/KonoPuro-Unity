@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using _root.Script.Utils.SingleTon;
+using Config_Manager;
 using UnityEngine;
 
 namespace _root.Script.Manager
@@ -43,11 +44,15 @@ namespace _root.Script.Manager
             Instance.StopAllSounds();
         }
 
+        public static void VolumeInitInstance()
+        {
+            Instance.VolumeInit();
+        }
+
         public static void PlaySoundInstance(string path)
         {
             Instance.PlaySound(path);
         }
-
         public void PlaySound(string path)
         {
             var clip = GetClip(path);
@@ -76,6 +81,11 @@ namespace _root.Script.Manager
         public void StopAllSounds()
         {
             _audioSource.Stop();
+        }
+
+        public void VolumeInit()
+        {
+            _audioSource.volume = ConfigManager.ConfigData.SoundVolume;
         }
 
         private static AudioClip GetClip(string path)
