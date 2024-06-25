@@ -5,49 +5,50 @@ using UnityEngine.UI;
 
 namespace _root.Script.Ingame.Ability
 {
-public class AbilityButton : MonoBehaviour
-{
-	private Image  icon;
-	private Button button;
+    public class AbilityButton : MonoBehaviour
+    {
+        [HideInInspector] public Tiers ability;
 
-	[HideInInspector]
-	public Tiers ability;
-	[HideInInspector]
-	public bool  selected;
+        [HideInInspector] public bool selected;
 
-	private void Awake()
-	{
-		icon     = GetComponent<Image>();
-		button   = GetComponent<Button>();
+        private Button button;
+        private Image icon;
 
-		selected = false;
-		SetButton(null, null, null);
-	}
+        private void Awake()
+        {
+            icon = GetComponent<Image>();
+            button = GetComponent<Button>();
 
-	public void SetButton(Tiers? tiers, Action<AbilityButton> onSelect, Action<Tiers> onClick)
-	{
-		if(tiers == null)
-		{
-			gameObject.SetActive(false);
-			return;
-		}
+            selected = false;
+            SetButton(null, null, null);
+        }
 
-		selected = false;
-		ability  = tiers.Value;
-		button.onClick.RemoveAllListeners();
-		button.onClick.AddListener(() =>
-		                           { if (selected) onClick(tiers.Value);
-		                             else onSelect(this); });
+        public void SetButton(Tiers? tiers, Action<AbilityButton> onSelect, Action<Tiers> onClick)
+        {
+            if (tiers == null)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
 
-		//TODO: Tiers 이미지 로드
-		// icon
+            selected = false;
+            ability = tiers.Value;
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() =>
+            {
+                if (selected) onClick(tiers.Value);
+                else onSelect(this);
+            });
 
-		gameObject.SetActive(true);
-	}
+            //TODO: Tiers 이미지 로드
+            // icon
 
-	public void SetSelect(bool active)
-	{
-		selected = active;
-	}
-}
+            gameObject.SetActive(true);
+        }
+
+        public void SetSelect(bool active)
+        {
+            selected = active;
+        }
+    }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Data;
@@ -6,321 +5,331 @@ using _root.Script.Manager;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace _root.Script.Deck
+namespace _root.Script.Main.Deck
 {
-public class DeckEditMenu : MonoBehaviour
-{
-	private Camera cam;
-	private Canvas canvas;
+    public class DeckEditMenu : MonoBehaviour
+    {
+        private Camera cam;
+        private Canvas canvas;
 
-	private SpriteRenderer   equipBackground;
-	private List<DeckCardUi> equippedCardUis;
-	private List<DeckCardUi> inventoryCardUis;
+        private DeckCardInfoUi cardInfoUi;
 
-	private DeckCardInfoUi cardInfoUi;
+        private DeckType currentDeckType = DeckType.Character;
 
-	private int equippedPage;
-	private int inventoryPage;
+        private SpriteRenderer equipBackground;
+        private List<DeckCardUi> equippedCardUis;
 
-	private List<string>       modifyingDeck;
-	private PlayerCardResponse selectedCard;
+        private List<PlayerCardResponse> equippedCharacterCards;
 
-	private DeckType currentDeckType = DeckType.Character;
+        private int equippedPage;
 
-	private bool isActive;
+        private List<PlayerCardResponse> equippedUseCards;
 
-	private List<PlayerCardResponse> equippedCharacterCards;
-	private List<PlayerCardResponse> inventoryCharacterCards;
+        private DeckCardFilterMenu filterMenu;
+        private List<DeckCardUi> inventoryCardUis;
+        private List<PlayerCardResponse> inventoryCharacterCards;
+        private int inventoryPage;
+        private List<PlayerCardResponse> inventoryUseCards;
 
-	private List<PlayerCardResponse> equippedUseCards;
-	private List<PlayerCardResponse> inventoryUseCards;
+        private bool isActive;
 
-	private TextMeshProUGUI[] pageCounts;
+        private List<string> modifyingDeck;
 
-	private DeckCardFilterMenu filterMenu;
+        private TextMeshProUGUI[] pageCounts;
 
-	private TMP_InputField searchField;
+        private TMP_InputField searchField;
+        private PlayerCardResponse selectedCard;
 
-	private enum DeckType
-	{
-		Character = 0,
-		Use       = 1
-	}
+        private void Awake()
+        {
+            equipBackground = transform.Find("Equip Background").GetComponent<SpriteRenderer>();
 
-	private void Awake()
-	{
-		equipBackground = transform.Find("Equip Background").GetComponent<SpriteRenderer>();
+            equippedCardUis = transform.Find("EquippedCards").GetComponentsInChildren<DeckCardUi>().ToList();
+            foreach (var equippedCardUi in equippedCardUis)
+                equippedCardUi.isEquippedDeckUi = true;
 
-		equippedCardUis = transform.Find("EquippedCards").GetComponentsInChildren<DeckCardUi>().ToList();
-		foreach (var equippedCardUi in equippedCardUis)
-			equippedCardUi.isEquippedDeckUi = true;
+            inventoryCardUis = transform.Find("InventoryCards").GetComponentsInChildren<DeckCardUi>().ToList();
+            foreach (var inventoryCardUi in inventoryCardUis)
+                inventoryCardUi.isEquippedDeckUi = false;
 
-		inventoryCardUis = transform.Find("InventoryCards").GetComponentsInChildren<DeckCardUi>().ToList();
-		foreach (var inventoryCardUi in inventoryCardUis)
-			inventoryCardUi.isEquippedDeckUi = false;
+            cardInfoUi = GetComponentInChildren<DeckCardInfoUi>();
+            canvas = GetComponentInChildren<Canvas>();
 
-		cardInfoUi = GetComponentInChildren<DeckCardInfoUi>();
-		canvas     = GetComponentInChildren<Canvas>();
+            var cardTypeSelection = canvas.transform.Find("Card Type Selection");
+            var characterDeckButton = cardTypeSelection.Find("CharacterDeck").GetComponent<Button>();
+            var skillDeckButton = cardTypeSelection.Find("SkillDeck").GetComponent<Button>();
 
-		var cardTypeSelection   = canvas.transform.Find("Card Type Selection");
-		var characterDeckButton = cardTypeSelection.Find("CharacterDeck").GetComponent<Button>();
-		var skillDeckButton     = cardTypeSelection.Find("SkillDeck").GetComponent<Button>();
+            characterDeckButton.onClick.RemoveAllListeners();
+            characterDeckButton.onClick.AddListener(() =>
+            {
+                if (currentDeckType == DeckType.Character) return;
+                SetDeckType(true);
+                ResetPage();
+                RefreshAll();
+            });
+            skillDeckButton.onClick.RemoveAllListeners();
+            skillDeckButton.onClick.AddListener(() =>
+            {
+                if (currentDeckType == DeckType.Use) return;
+                SetDeckType(false);
+                ResetPage();
+                RefreshAll();
+            });
 
-		characterDeckButton.onClick.RemoveAllListeners();
-		characterDeckButton.onClick.AddListener(() =>
-		                                        { if (currentDeckType == DeckType.Character) return;
-		                                          SetDeckType(true);
-		                                          ResetPage();
-		                                          RefreshAll(); });
-		skillDeckButton.onClick.RemoveAllListeners();
-		skillDeckButton.onClick.AddListener(() =>
-		                                    { if (currentDeckType == DeckType.Use) return;
-		                                      SetDeckType(false);
-		                                      ResetPage();
-		                                      RefreshAll(); });
+            pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
 
-		pageCounts = canvas.transform.Find("PageButtons").GetComponentsInChildren<TextMeshProUGUI>();
+            filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
 
-		filterMenu = canvas.GetComponentInChildren<DeckCardFilterMenu>();
+            searchField = canvas.GetComponentInChildren<TMP_InputField>();
+        }
 
-		searchField = canvas.GetComponentInChildren<TMP_InputField>();
-	}
+        private void Start()
+        {
+            cam = Camera.main;
 
-	private void Start()
-	{
-		cam = Camera.main;
+            SetActive(false);
+        }
 
-		SetActive(false);
-	}
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0) && isActive) CheckSelect();
+        }
 
-	private void Update()
-	{
-		if (Input.GetMouseButtonDown(0) && isActive) CheckSelect();
-	}
+        public void SetActive(bool active)
+        {
+            ResetUis();
 
-	public void SetActive(bool active)
-	{
-		ResetUis();
+            if (active) Init();
+            else if (isActive) ApplyDeck();
+            else ResourceManager.ClearSprites();
+            equipBackground.enabled = active;
+            isActive = active;
+            canvas.enabled = active;
+        }
 
-		if (active) Init();
-		else if (isActive) ApplyDeck();
-		else ResourceManager.ClearSprites();
-		equipBackground.enabled = active;
-		isActive                = active;
-		canvas.enabled          = active;
-	}
+        private void Init()
+        {
+            SetDeckType(true);
+            ResetPage();
 
-	void Init()
-	{
-		SetDeckType(true);
-		ResetPage();
+            if (UserData.Instance.ActiveDeck.deck != null)
+            {
+                modifyingDeck = new List<string>(UserData.Instance.ActiveDeck.deck);
+            }
+            else
+            {
+                Debug.LogError("Deck Not Loaded");
 
-		if (UserData.Instance.ActiveDeck.deck != null)
-			modifyingDeck = new List<string>(UserData.Instance.ActiveDeck.deck);
-		else
-		{
-			Debug.LogError("Deck Not Loaded");
+                //TODO: 실험용 삭제 필요
+                modifyingDeck = new List<string>();
+            }
 
-			//TODO: 실험용 삭제 필요
-			modifyingDeck = new();
-		}
+            searchField.text = "";
+            filterMenu.Init();
+            ShowFilter(false);
+            RefreshAll();
+        }
 
-		searchField.text = "";
-		filterMenu.Init();
-		ShowFilter(false);
-		RefreshAll();
-	}
+        private void ApplyDeck()
+        {
+            if (equippedUseCards.Count != GameStatics.deckUseCardRequired ||
+                equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
+                //TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
+                return;
 
-	private void ApplyDeck()
-	{
-		if (equippedUseCards.Count != GameStatics.deckUseCardRequired ||
-		    equippedCharacterCards.Count != GameStatics.deckCharacterCardRequired)
-		{
-			//TODO: 덱이 형식에 맞지 않음 (카드 갯수가 모자라거나 초과함) 일 때 적용 안됨 표시
-			return;
-		}
+            var originDeck = UserData.Instance.ActiveDeck.deck;
 
-		var originDeck = UserData.Instance.ActiveDeck.deck;
+            var deckId = UserData.Instance.ActiveDeck.deckId;
+            var addedDeck = modifyingDeck.Except(originDeck).ToList();
+            var removedDeck = originDeck.Except(modifyingDeck).ToList();
 
-		var deckId      = UserData.Instance.ActiveDeck.deckId;
-		var addedDeck   = modifyingDeck.Except(originDeck).ToList();
-		var removedDeck = originDeck.Except(modifyingDeck).ToList();
+            var applyDeckRequest = new ApplyDeckRequest
+            {
+                activeDeckId = deckId,
+                addition = addedDeck,
+                deletion = removedDeck
+            };
 
-		var applyDeckRequest = new ApplyDeckRequest
-		                       { activeDeckId = deckId,
-		                         addition     = addedDeck,
-		                         deletion     = removedDeck };
+            var req = API.ApplyDeck(applyDeckRequest);
+            req.OnSuccess(() => { UserData.Instance.ActiveDeck.deck = modifyingDeck; });
+            req.OnError(_ => { Debug.LogWarning("Error : Deck Apply Failed"); });
+            req.Build();
+        }
 
-		var req = API.ApplyDeck(applyDeckRequest);
-		req.OnSuccess((() => { UserData.Instance.ActiveDeck.deck = modifyingDeck; }));
-		req.OnError((_ => { Debug.LogWarning("Error : Deck Apply Failed"); }));
-		req.Build();
-	}
+        public void Equip(PlayerCardResponse card)
+        {
+            var equipped = modifyingDeck.Contains(card.id);
+            if (equipped)
+            {
+                modifyingDeck.Remove(card.id);
+                RefreshAll();
+            }
+            else
+            {
+                modifyingDeck.Add(card.id);
+                RefreshAll();
+            }
 
-	public void Equip(PlayerCardResponse card)
-	{
-		var equipped = modifyingDeck.Contains(card.id);
-		if (equipped)
-		{
-			modifyingDeck.Remove(card.id);
-			RefreshAll();
-		}
-		else
-		{
-			modifyingDeck.Add(card.id);
-			RefreshAll();
-		}
+            cardInfoUi.SetUi(card, !equipped);
+        }
 
-		cardInfoUi.SetUi(card, !equipped);
-	}
+        private void ResetUis()
+        {
+            foreach (var equippedCardUi in equippedCardUis) equippedCardUi.ResetUi();
+            foreach (var inventoryCardUi in inventoryCardUis) inventoryCardUi.ResetUi();
+            selectedCard = null;
+            cardInfoUi.ResetUi();
+        }
 
-	private void ResetUis()
-	{
-		foreach (var equippedCardUi in equippedCardUis) equippedCardUi.ResetUi();
-		foreach (var inventoryCardUi in inventoryCardUis) inventoryCardUi.ResetUi();
-		selectedCard = null;
-		cardInfoUi.ResetUi();
-	}
+        public void ResetPage()
+        {
+            equippedPage = 0;
+            inventoryPage = 0;
+        }
 
-	public void ResetPage()
-	{
-		equippedPage  = 0;
-		inventoryPage = 0;
-	}
+        public void SetDeckType(bool character)
+        {
+            currentDeckType = character ? DeckType.Character : DeckType.Use;
+        }
 
-	public void SetDeckType(bool character)
-	{
-		currentDeckType = character ? DeckType.Character : DeckType.Use;
-	}
+        private void CheckSelect()
+        {
+            var ray = cam.ScreenPointToRay(Input.mousePosition);
 
-	private void CheckSelect()
-	{
-		var ray = cam.ScreenPointToRay(Input.mousePosition);
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+            SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
+        }
 
-		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
-		SelectCard(Physics.Raycast(ray, out var hit) ? hit.transform.GetComponent<DeckCardUi>()?.cardData : null);
-	}
+        private void SelectCard(PlayerCardResponse card)
+        {
+            selectedCard = card;
+            RefreshAll();
+            cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
+        }
 
-	private void SelectCard(PlayerCardResponse card)
-	{
-		selectedCard = card;
-		RefreshAll();
-		cardInfoUi.SetUi(card, card != null && modifyingDeck.Contains(card.id));
-	}
+        private void SortCards()
+        {
+            //ToDo: 카드들 정렬하기
+        }
 
-	private void SortCards()
-	{
-		//ToDo: 카드들 정렬하기
-	}
+        private void SetCards(List<PlayerCardResponse> cards, List<string> deck)
+        {
+            inventoryCharacterCards = cards.Where(response => response.type == CardType.Student).ToList();
+            inventoryUseCards = cards.Except(inventoryCharacterCards).ToList();
+            equippedCharacterCards = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
+            equippedUseCards = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
 
-	private void SetCards(List<PlayerCardResponse> cards, List<string> deck)
-	{
-		inventoryCharacterCards = cards.Where(response => response.type == CardType.Student).ToList();
-		inventoryUseCards       = cards.Except(inventoryCharacterCards).ToList();
-		equippedCharacterCards  = inventoryCharacterCards.Where(response => deck.Contains(response.id)).ToList();
-		equippedUseCards        = inventoryUseCards.Where(response => deck.Contains(response.id)).ToList();
+            FilterCards();
+        }
 
-		FilterCards();
-	}
+        public void ShowFilter(bool show)
+        {
+            if (!show) RefreshAll();
+            filterMenu.SetType(currentDeckType == DeckType.Character);
+            filterMenu.Show(show);
+        }
 
-	public void ShowFilter(bool show)
-	{
-		if (!show) RefreshAll();
-		filterMenu.SetType(currentDeckType == DeckType.Character);
-		filterMenu.Show(show);
-	}
+        private void FilterCards()
+        {
+            if (currentDeckType == DeckType.Character)
+            {
+                var selectedMajors = filterMenu.SelectedMajors();
+                var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+                inventoryCharacterCards = inventoryCharacterCards
+                    .Where(x => x.cardGroups.Any(majorType =>
+                                    selectedMajors.Contains(majorType) &&
+                                    selectedTiers.Contains(x.tier)) &&
+                                GameStatics.studentCardDictionary[x.cardType]
+                                    .name.Contains(searchField.text))
+                    .ToList();
+            }
+            else
+            {
+                var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+                inventoryUseCards = inventoryUseCards
+                    .Where(x => selectedTiers.Contains(x.tier) && GameStatics
+                        .defaultCardDictionary[x.cardType]
+                        .name.ToLower()
+                        .Contains(searchField.text.ToLower()))
+                    .ToList();
+            }
+        }
 
-	private void FilterCards()
-	{
-		if (currentDeckType == DeckType.Character)
-		{
-			var selectedMajors = filterMenu.SelectedMajors();
-			var selectedTiers  = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
-			inventoryCharacterCards = inventoryCharacterCards
-			                         .Where(x => x.cardGroups.Any(majorType =>
-					                                                      selectedMajors.Contains(majorType) &&
-					                                                      selectedTiers.Contains(x.tier)) &&
-			                                     GameStatics.studentCardDictionary[x.cardType]
-			                                                .name.Contains(searchField.text))
-			                         .ToList();
-		}
-		else
-		{
-			var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
-			inventoryUseCards = inventoryUseCards
-			                   .Where(x => selectedTiers.Contains(x.tier) && GameStatics
-			                                                                .defaultCardDictionary[x.cardType]
-			                                                                .name.ToLower()
-			                                                                .Contains(searchField.text.ToLower()))
-			                   .ToList();
-		}
-	}
+        public void RefreshAll()
+        {
+            if (UserData.Instance.InventoryCards != null)
+            {
+                SetCards(UserData.Instance.InventoryCards.cards, modifyingDeck);
+            }
+            else
+            {
+                Debug.LogError("Inventory Cards Not Loaded");
 
-	public void RefreshAll()
-	{
-		if (UserData.Instance.InventoryCards != null) SetCards(UserData.Instance.InventoryCards.cards, modifyingDeck);
-		else
-		{
-			Debug.LogError("Inventory Cards Not Loaded");
+                //TODO: 실험용 삭제 필요
+                modifyingDeck = new List<string>();
+            }
 
-			//TODO: 실험용 삭제 필요
-			modifyingDeck = new();
-		}
+            var character = currentDeckType == DeckType.Character;
+            var equipCards = character ? equippedCharacterCards : equippedUseCards;
+            var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-		var character      = currentDeckType == DeckType.Character;
-		var equipCards     = character ? equippedCharacterCards : equippedUseCards;
-		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+            pageCounts[0].text = $"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
+            pageCounts[1].text = $"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
 
-		pageCounts[0].text = $"{equippedPage + 1} / {(equipCards.Count - 1) / equippedCardUis.Count + 1}";
-		pageCounts[1].text = $"{inventoryPage + 1} / {(inventoryCards.Count - 1) / inventoryCardUis.Count + 1}";
+            SortCards();
+            RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
+            RefreshWithListAndPage(inventoryPage, inventoryCards, inventoryCardUis, modifyingDeck);
+        }
 
-		SortCards();
-		RefreshWithListAndPage(equippedPage, equipCards, equippedCardUis, modifyingDeck);
-		RefreshWithListAndPage(inventoryPage, inventoryCards, inventoryCardUis, modifyingDeck);
-	}
+        public void FlipEquipPage(bool pre)
+        {
+            var character = currentDeckType == DeckType.Character;
+            var equipCards = character ? equippedCharacterCards : equippedUseCards;
 
-	public void FlipEquipPage(bool pre)
-	{
-		var character  = currentDeckType == DeckType.Character;
-		var equipCards = character ? equippedCharacterCards : equippedUseCards;
+            var applyPage = equippedPage + (pre ? -1 : 1);
+            if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;
+            equippedPage = applyPage;
 
-		var applyPage = equippedPage + (pre ? -1 : 1);
-		if (applyPage < 0 || applyPage * equippedCardUis.Count >= equipCards.Count) return;
-		equippedPage = applyPage;
+            RefreshAll();
+        }
 
-		RefreshAll();
-	}
+        public void FlipInventoryPage(bool pre)
+        {
+            var character = currentDeckType == DeckType.Character;
+            var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
 
-	public void FlipInventoryPage(bool pre)
-	{
-		var character      = currentDeckType == DeckType.Character;
-		var inventoryCards = character ? inventoryCharacterCards : inventoryUseCards;
+            var applyPage = inventoryPage + (pre ? -1 : 1);
+            if (applyPage < 0 || applyPage * inventoryCardUis.Count >= inventoryCards.Count) return;
+            inventoryPage = applyPage;
 
-		var applyPage = inventoryPage + (pre ? -1 : 1);
-		if (applyPage < 0 || applyPage * inventoryCardUis.Count >= inventoryCards.Count) return;
-		inventoryPage = applyPage;
+            RefreshAll();
+        }
 
-		RefreshAll();
-	}
+        private void RefreshWithListAndPage(int currentPage, IReadOnlyList<PlayerCardResponse> cards,
+            IReadOnlyList<DeckCardUi> cardUis, ICollection<string> deck)
+        {
+            var pageCardCount = cardUis.Count;
+            for (var i = 0; i < pageCardCount; i++)
+            {
+                var selectedIndex = pageCardCount * currentPage + i;
+                if (cards.Count <= selectedIndex)
+                {
+                    cardUis[i].ResetUi();
+                    continue;
+                }
 
-	private void RefreshWithListAndPage(int currentPage, IReadOnlyList<PlayerCardResponse> cards,
-		IReadOnlyList<DeckCardUi>           cardUis,     ICollection<string>               deck)
-	{
-		var pageCardCount = cardUis.Count;
-		for (int i = 0; i < pageCardCount; i++)
-		{
-			var selectedIndex = pageCardCount * currentPage + i;
-			if (cards.Count <= selectedIndex)
-			{
-				cardUis[i].ResetUi();
-				continue;
-			}
+                var card = cards[selectedIndex];
+                cardUis[i].SetUi(card, deck.Contains(cards[selectedIndex].id), selectedCard == card);
+            }
+        }
 
-			var card = cards[selectedIndex];
-			cardUis[i].SetUi(card, deck.Contains(cards[selectedIndex].id), selectedCard == card);
-		}
-	}
-}
+        private enum DeckType
+        {
+            Character = 0,
+            Use = 1
+        }
+    }
 }

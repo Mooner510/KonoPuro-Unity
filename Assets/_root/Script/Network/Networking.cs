@@ -13,12 +13,12 @@ namespace _root.Script.Network
     public class Void
     {
     }
-    
+
     public class Networking : MonoBehaviour
     {
-        private const             string     BaseUrl = "https://konopuro.dsm-dongpo.com";
-        private static            Networking _networking;
-        [CanBeNull] public static string     AccessToken;
+        private const string BaseUrl = "https://konopuro.dsm-dongpo.com";
+        private static Networking _networking;
+        [CanBeNull] public static string AccessToken;
 
         private string _password;
 
@@ -37,7 +37,7 @@ namespace _root.Script.Network
         private void Awake()
         {
             Application.runInBackground = true;
-            
+
             // _baseUrl = baseUrl;
             if (_networking != null)
                 Destroy(_networking);
@@ -52,8 +52,8 @@ namespace _root.Script.Network
             private readonly string _path;
 
             [CanBeNull] private Action<ErrorBody> _errorAction;
-            [CanBeNull] private Action            _successAction;
-            [CanBeNull] private Action<T>         _responseAction;
+            [CanBeNull] private Action<T> _responseAction;
+            [CanBeNull] private Action _successAction;
 
             protected Request(string path)
             {
@@ -99,49 +99,36 @@ namespace _root.Script.Network
                 Debugger.Log($"Sending Request to {url}");
                 using var webRequest = WebRequest(url);
                 webRequest.timeout = 15;
-                foreach ((string key, string value) in _headers)
+                foreach ((var key, var value) in _headers)
                     webRequest.SetRequestHeader(key, value);
-                if (AccessToken != null)
-                {
-                    webRequest.SetRequestHeader("Authorization", AccessToken);
-                }
+                if (AccessToken != null) webRequest.SetRequestHeader("Authorization", AccessToken);
                 yield return webRequest.SendWebRequest();
 
                 Debugger.Log($"ResponseCode: {webRequest.responseCode}");
-                if (webRequest.downloadHandler == null)
-                {
-                    webRequest.downloadHandler = new DownloadHandlerBuffer();
-                }
-                string bodyText = webRequest.downloadHandler.text;
+                if (webRequest.downloadHandler == null) webRequest.downloadHandler = new DownloadHandlerBuffer();
+                var bodyText = webRequest.downloadHandler.text;
                 if (webRequest.result == UnityWebRequest.Result.Success)
-                {
                     if (webRequest.responseCode is >= 200 and <= 299)
                     {
                         Debugger.Log($"Response for {url}: {webRequest.responseCode}");
                         if (typeof(T) == typeof(void))
-                        {
                             _responseAction?.Invoke(null);
-                        }
                         else if (typeof(T) == typeof(string))
-                        {
                             _responseAction?.Invoke(bodyText as T);
-                        }
                         else
-                        {
                             _responseAction?.Invoke(JsonConvert.DeserializeObject<T>(bodyText));
-                        }
                         _successAction?.Invoke();
 
                         yield break;
                     }
-                }
+
                 Debugger.Log($"Error Handled: {bodyText}");
                 _errorAction?.Invoke(JsonConvert.DeserializeObject<ErrorBody>(bodyText));
             }
 
             public void Build()
             {
-                string parameters = _params.Count > 0 ? $"?{string.Join("&", _params)}" : "";
+                var parameters = _params.Count > 0 ? $"?{string.Join("&", _params)}" : "";
                 _networking.StartCoroutine(_Request(BaseUrl + _path + parameters));
             }
         }
@@ -152,7 +139,10 @@ namespace _root.Script.Network
             {
             }
 
-            protected override UnityWebRequest WebRequest(string url) => UnityWebRequest.Get(url);
+            protected override UnityWebRequest WebRequest(string url)
+            {
+                return UnityWebRequest.Get(url);
+            }
         }
 
         public class Post<T> : Request<T> where T : class
@@ -165,7 +155,10 @@ namespace _root.Script.Network
                 Debugger.Log($"Added to body: {_body}");
             }
 
-            protected override UnityWebRequest WebRequest(string url) => UnityWebRequest.Post(url, _body, "application/json");
+            protected override UnityWebRequest WebRequest(string url)
+            {
+                return UnityWebRequest.Post(url, _body, "application/json");
+            }
         }
 
         public class Put<T> : Request<T> where T : class
@@ -192,7 +185,10 @@ namespace _root.Script.Network
             {
             }
 
-            protected override UnityWebRequest WebRequest(string url) => new(url, "DELETE", new DownloadHandlerBuffer(), null);
+            protected override UnityWebRequest WebRequest(string url)
+            {
+                return new UnityWebRequest(url, "DELETE", new DownloadHandlerBuffer(), null);
+            }
         }
     }
 }
