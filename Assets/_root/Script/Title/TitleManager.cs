@@ -37,6 +37,12 @@ namespace _root.Script.Title
 
         private IEnumerator StartFlow()
         {
+            AudioManager.SetAsBackgroundMusicInstance("Audio/PURO_BUILDUP");
+            AudioManager.AddEventHandlerInstance((_) =>
+            {
+                AudioManager.SetAsBackgroundMusicInstance("Audio/PURO_LOOP", true);
+                AudioManager.ClearEventHandlerInstance();
+            });
             yield return new WaitForSeconds(1f);
             var loaded = false;
             API.GetVersion()
@@ -66,6 +72,8 @@ namespace _root.Script.Title
 
         public void GameStart()
         {
+            AudioManager.ClearEventHandlerInstance();
+            AudioManager.StopAllSoundsInstance();
             AudioManager.PlaySoundInstance("Audio/GAME_START");
             titleUi.gameObject.SetActive(false);
             LoginFailed.SetActive(false);
