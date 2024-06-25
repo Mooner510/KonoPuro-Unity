@@ -14,12 +14,16 @@ namespace Config_Manager
             ConfigData = new Settings.Data();
             DontDestroyOnLoad(gameObject);
             Settings.Load();
-            AudioManager.VolumeInitInstance();
+        }
+
+        private void Start()
+        {
             Screen.brightness = ConfigData.Light;
             if (ConfigData.FPS_Limit > 0)
             {
                 Application.targetFrameRate = ConfigData.FPS_Limit;
             }
+            AudioManager.VolumeInitInstance();
         }
     }
 }

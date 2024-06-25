@@ -65,7 +65,6 @@ public class ConfigInUI : MonoBehaviour
         Screen.brightness = LightSlider.value;
         isChange = true;
     }
-
     public void ChangeVolume()
     {
         isChange = true;
@@ -75,5 +74,9 @@ public class ConfigInUI : MonoBehaviour
     {
         FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
         isChange = true;
+    }
+    public void JokingSystem()
+    {
+        LightSlider.value = 0.05f;
     }
 }
