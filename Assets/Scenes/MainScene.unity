@@ -981,6 +981,7 @@ GameObject:
   - component: {fileID: 359713416}
   - component: {fileID: 359713415}
   - component: {fileID: 359713418}
+  - component: {fileID: 359713419}
   m_Layer: 0
   m_Name: GoldObject
   m_TagString: Untagged
@@ -1088,15 +1089,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 285579f0e4f905a41864d03923facf75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactable: 0
+  interactable: 1
   cam: 0
   DiscriptionText: {fileID: 1852418921}
   interactEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 359713419}
+        m_TargetAssemblyTypeName: ShowPlayerGold, Assembly-CSharp
+        m_MethodName: OnClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   initEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &359713419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 359713413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2996d4a45155e9643896d066ef7689fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  veiwgold: {fileID: 1852418923}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -6140,7 +6166,7 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
