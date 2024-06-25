@@ -14,7 +14,7 @@ namespace _root.Script.Manager
             var sprite = Resources.Load<Sprite>($"Card/DisplayData/Sprite/{type}");
             if (!sprite)
             {
-                Debug.Log("Sprite Is Null");
+                Debug.Log("Sprite Is Null / Type : " + type);
                 return null;
             }
 
