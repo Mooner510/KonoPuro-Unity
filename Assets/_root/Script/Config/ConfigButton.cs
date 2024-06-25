@@ -10,7 +10,7 @@ public class ConfigButton : MonoBehaviour
     private UserInfoPanel InfoScript;
     private void Start()
     {
-        Configs = transform.GetChild(0).GetChild(0).gameObject;
+        Configs = FindObjectOfType<ConfigInUI>().gameObject;
         UserInfoPanel = FindObjectOfType<UserInfoPanel>().gameObject;
         InfoScript = UserInfoPanel.GetComponent<UserInfoPanel>();
         UserInfoPanel.SetActive(false);

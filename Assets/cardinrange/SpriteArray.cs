@@ -1,5 +1,8 @@
+using System;
+using Config_Manager;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace cardinrange
 {
@@ -16,7 +19,17 @@ namespace cardinrange
         }
         public void SpriteRandom()
         {
-            randomindex = Random.Range(0, Sprites.Length);
+            if (ConfigManager.ConfigData.LastLogin.Date.Day != DateTime.Now.Day)
+            {
+                randomindex = Random.Range(0, Sprites.Length);
+                ConfigManager.ConfigData.TodayCard = randomindex;
+                ConfigManager.ConfigData.LastLogin = DateTime.Now;
+                Settings.Save();
+            }
+            else
+            {
+                randomindex = ConfigManager.ConfigData.TodayCard;
+            }
             _spriteRenderer.sprite = Sprites[randomindex];
         }
 

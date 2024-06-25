@@ -12,7 +12,7 @@ namespace Config_Manager
         {
             DontDestroyOnLoad(gameObject);
             ConfigData = Settings.Load();
-            RenderSettings.ambientLight = new Color(ConfigData.Light, ConfigData.Light, ConfigData.Light);
+            Screen.brightness = ConfigData.Light;
             if (ConfigData.FPS_Limit > 0)
             {
                 Application.targetFrameRate = ConfigData.FPS_Limit;
