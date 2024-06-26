@@ -8,8 +8,6 @@ namespace _root.Script.Ingame
 {
     public class PlayerActivity : MonoBehaviour
     {
-        public static string usingcard;
-
         public IngameCard selectedCard;
         [SerializeField] private GameObject CardInfoPanel;
         private Animator CardAnim;

@@ -234,28 +234,34 @@ namespace _root.Script.Main.Deck
 
         private void FilterCards()
         {
+            var lowerText = searchField.text.ToLower();
             if (currentDeckType == DeckType.Character)
             {
                 var selectedMajors = filterMenu.SelectedMajors();
-                var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+                var selectedTiers = filterMenu.SelectedTier(true);
                 inventoryCharacterCards = inventoryCharacterCards
-                    .Where(x => x.cardGroups.Any(majorType =>
-                                    selectedMajors.Contains(majorType) &&
-                                    selectedTiers.Contains(x.tier)) &&
-                                GameStatics.studentCardDictionary[x.cardType]
-                                    .name.Contains(searchField.text))
+                    .Where(x =>
+                    {
+                        var info = GameStatics.studentCardDictionary[x.cardType];
+                        return x.cardGroups.Any(majorType =>
+                                selectedMajors.Contains(majorType) &&
+                                selectedTiers.Contains(x.tier)) &&
+                            (info.name != null && info.name.ToLower().Contains(lowerText) || info.description != null && info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
+                    })
                     .ToList();
             }
             else
             {
-                var selectedTiers = filterMenu.SelectedTier(currentDeckType == DeckType.Character);
+                var selectedTiers = filterMenu.SelectedTier(false);
                 inventoryUseCards = inventoryUseCards
-                    .Where(x => selectedTiers.Contains(x.tier) && GameStatics
-                        .defaultCardDictionary[x.cardType]
-                        .name.ToLower()
-                        .Contains(searchField.text.ToLower()))
+                    .Where(x =>
+                    {
+                        var info = GameStatics.defaultCardDictionary[x.cardType];
+                        return selectedTiers.Contains(x.tier) && (info.name != null && info.name.ToLower().Contains(lowerText) || info.description != null && info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
+                    })
                     .ToList();
             }
+            Debug.Log(searchField.text.ToLower());
         }
 
         public void RefreshAll()
