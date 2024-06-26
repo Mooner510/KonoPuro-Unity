@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Runtime.CompilerServices;
+﻿using System.Collections;
 using _root.Script.Client;
-using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
 
 namespace _root.Script.Ingame
 {
@@ -25,17 +18,17 @@ public class IngameCard : MonoBehaviour
 {
 	private static GameObject ingameCardPrefab;
 
-	private Card.Card cardFrame;
+	public  bool           isMine;
+	public  IngameCardType type;
+	private GameCard       cardData;
 
-	public  bool               isMine;
-	public  IngameCardType     type;
-	private GameStudentCard    student;
-	private GameCard           cardData;
+	private Card.Card          cardFrame;
 	private PlayerCardResponse defaultData;
 
-	private Coroutine moveCoroutine;
-
 	private bool destroyed;
+
+	private Coroutine       moveCoroutine;
+	private GameStudentCard student;
 
 	public GameStudentCard GetStudentData()
 	{
@@ -95,8 +88,8 @@ public class IngameCard : MonoBehaviour
 			var tr        = transform;
 			var position  = tr.position;
 			var rotation  = tr.rotation;
-			var moveAlpha = Mathf.Clamp01((moveSpeed * Time.deltaTime) / Vector3.Distance(position, pos));
-			var rotAlpha = Mathf.Clamp01((rotSpeed * Time.deltaTime) / Mathf.Rad2Deg *
+			var moveAlpha = Mathf.Clamp01(moveSpeed * Time.deltaTime / Vector3.Distance(position, pos));
+			var rotAlpha = Mathf.Clamp01(rotSpeed * Time.deltaTime / Mathf.Rad2Deg *
 			                             Mathf.Acos(Vector3.Dot(rotation * Vector3.forward, rot * Vector3.forward)));
 			var movePos = Vector3.Lerp(position, pos, moveAlpha);
 			var moveRot = Quaternion.Lerp(rotation, rot, rotAlpha);
@@ -128,10 +121,10 @@ public class IngameCard : MonoBehaviour
 
 	private IEnumerator MoveByRichTimeCoroutine(Vector3 pos, Quaternion rot, float moveRichTime, float rotRichTime)
 	{
-		float      timer     = 0;
-		var        tr        = transform;
-		Vector3    originPos = tr.position;
-		Quaternion originRot = tr.rotation;
+		float timer     = 0;
+		var   tr        = transform;
+		var   originPos = tr.position;
+		var   originRot = tr.rotation;
 		while (timer < Mathf.Max(moveRichTime, rotRichTime))
 		{
 			timer += Time.deltaTime;
@@ -151,10 +144,11 @@ public class IngameCard : MonoBehaviour
 	{
 		if (destroyed) return;
 		if (showTime != null)
-			cardFrame.Show(show, ()=>
+			cardFrame.Show(show, () =>
 			                     { if (destroy) DestroyCard(); }, showTime.Value);
-		else cardFrame.Show(show, ()=>
-		                     { if (destroy) DestroyCard(); });
+		else
+			cardFrame.Show(show, () =>
+			                     { if (destroy) DestroyCard(); });
 	}
 
 	public IngameCard LoadDisplay(GameStudentCard data)

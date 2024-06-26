@@ -1,24 +1,25 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Draw : MonoBehaviour
+namespace Gachabox
 {
-    public void Single()
+    public class Draw : MonoBehaviour
     {
+        public void Single()
+        {
         
-        Invoke("WaitforAni",5f);
-    }
+            Invoke("WaitforAni",5f);
+        }
 
-    public void Multiple()
-    {
+        public void Multiple()
+        {
         
-    }
+        }
 
-    void WaitforAni()
-    {
-        SceneManager.LoadScene("CardGatchaSingle");
-    }
+        private void WaitforAni()
+        {
+            SceneManager.LoadScene("CardGatchaSingle");
+        }
     
+    }
 }

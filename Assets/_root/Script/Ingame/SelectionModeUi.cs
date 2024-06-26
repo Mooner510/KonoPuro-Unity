@@ -1,100 +1,100 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using _root.Script.Ingame;
+using _root.Script.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectionModeUi : MonoBehaviour
+namespace _root.Script.Ingame
 {
-	private Button accept;
-	private Button cancel;
+    public class SelectionModeUi : MonoBehaviour
+    {
+        private Button accept;
+        private Button cancel;
+        private Animator carduseageAnim;
 
-	private int selectCount;
+        private List<IngameCard> selectableCards;
 
-	private List<IngameCard> selectableCards;
-	private List<IngameCard> selectedCards;
-	
-	[SerializeField] private TextMeshProUGUI turnhandcarduse;
-	[SerializeField] private GameObject textpannel;
-	private void Awake()
-	{
-		var buttons = GetComponentsInChildren<Button>();
-		accept = buttons[0];
-		cancel = buttons[1];
-	}
+        private int selectCount;
+        private List<IngameCard> selectedCards;
+        private GameObject textpannel;
 
-	private void Start()
-	{
-		SetActive(false);
-		textpannel.SetActive(false);
-	}
+        private TextMeshProUGUI turnhandcarduse;
 
-	private void Update()
-	{
-		var acceptable                                             = selectedCards == null || selectedCards.Count == selectCount;
-		if (acceptable != accept.interactable) accept.interactable = acceptable;
-	}
+        private void Awake()
+        {
+            textpannel = GameObject.FindGameObjectWithTag("CardUseage");
+            carduseageAnim = textpannel.GetComponent<Animator>();
+            turnhandcarduse = textpannel.GetComponentInChildren<TextMeshProUGUI>();
+            var buttons = GetComponentsInChildren<Button>();
+            accept = buttons[0];
+            cancel = buttons[1];
+        }
 
-	public void SetActive(bool active)
-	{
-		if (!active)
-		{
-			selectableCards = null;
-			selectedCards   = null;
-			accept.onClick.RemoveAllListeners();
-			cancel.onClick.RemoveAllListeners();
-		}
+        private void Start()
+        {
+            SetActive(false);
+        }
 
-		accept.interactable = active && (selectedCards == null || selectableCards.Count == selectCount);
-		cancel.interactable = active;
-		gameObject.SetActive(active);
-	}
+        private void Update()
+        {
+            var acceptable = selectedCards == null || selectedCards.Count == selectCount;
+            if (acceptable != accept.interactable) accept.interactable = acceptable;
+        }
 
-	public void SetActive(Action<bool, List<IngameCard>> callback)
-	{
-		selectableCards = null;
-		selectCount     = 0;
+        public void SetActive(bool active)
+        {
+            if (!active)
+            {
+                selectableCards = null;
+                selectedCards = null;
+                accept.onClick.RemoveAllListeners();
+                cancel.onClick.RemoveAllListeners();
+            }
 
-		accept.onClick.RemoveAllListeners();
-		cancel.onClick.RemoveAllListeners();
-		accept.onClick.AddListener(() => callback(true, null));
-		accept.onClick.AddListener(() => SetActive(false));
-		cancel.onClick.AddListener(() => callback(false, null));
-		cancel.onClick.AddListener(() => SetActive(false));
+            accept.interactable = active && (selectedCards == null || selectableCards.Count == selectCount);
+            cancel.interactable = active;
+            gameObject.SetActive(active);
+        }
 
-		SetActive(true);
-	}
+        public void SetActive(Action<bool, List<IngameCard>> callback)
+        {
+            selectableCards = null;
+            selectCount = 0;
 
-	public void SetActive(List<IngameCard> _selectableCards, int count, Action<bool, List<IngameCard>> callback)
-	{
-		selectCount     = count;
-		selectableCards = _selectableCards;
+            accept.onClick.RemoveAllListeners();
+            cancel.onClick.RemoveAllListeners();
+            accept.onClick.AddListener(() => callback(true, null));
+            accept.onClick.AddListener(() => SetActive(false));
+            cancel.onClick.AddListener(() => callback(false, null));
+            cancel.onClick.AddListener(() => SetActive(false));
 
-		accept.onClick.RemoveAllListeners();
-		cancel.onClick.RemoveAllListeners();
-		accept.onClick.AddListener(() => callback(true, selectedCards));
-		accept.onClick.AddListener(() => SetActive(false));
-		cancel.onClick.AddListener(() => callback(false, null));
-		cancel.onClick.AddListener(() => SetActive(false));
+            SetActive(true);
+        }
 
-		SetActive(true);
-	}
+        public void SetActive(List<IngameCard> _selectableCards, int count, Action<bool, List<IngameCard>> callback)
+        {
+            selectCount = count;
+            selectableCards = _selectableCards;
 
-	public void SayOutLoud()
-	{
-		turnhandcarduse.text = PlayerActivity.usingcard;
-		textpannel.SetActive(true);
-		Invoke(nameof(ShowMineCard),2f);
-		//card.GetCardData().defaultCardType
-		Debug.Log(PlayerActivity.usingcard);
-	}
+            accept.onClick.RemoveAllListeners();
+            cancel.onClick.RemoveAllListeners();
+            accept.onClick.AddListener(() => callback(true, selectedCards));
+            accept.onClick.AddListener(() => SetActive(false));
+            cancel.onClick.AddListener(() => callback(false, null));
+            cancel.onClick.AddListener(() => SetActive(false));
 
-	void ShowMineCard()
-	{
-		textpannel.SetActive(false);
-	}
+            SetActive(true);
+        }
 
-
+        public void SayOutLoud()
+        {
+            turnhandcarduse.text = PlayerActivity.usingcard;
+            carduseageAnim.Play("CardUseage");
+            if (GameStatics.isTurn)
+                textpannel.GetComponent<Image>().color = new Color(0.34f, 0.73f, 1f, 1f);
+            else
+                textpannel.GetComponent<Image>().color = new Color(1f, 0.42f, 0.34f, 1f);
+        }
+    }
 }

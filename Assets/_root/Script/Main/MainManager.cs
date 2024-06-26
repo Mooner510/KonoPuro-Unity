@@ -1,172 +1,187 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Playables;
 using UnityEngine.SceneManagement;
 
-public class MainManager : MonoBehaviour
+namespace _root.Script.Main
 {
-	private MainUi               mainUi;
-	private CinemacineController cineController;
-	private PlayableDirector     director;
+    public class MainManager : MonoBehaviour
+    {
+        [SerializeField] private PlayableAsset start;
+        private CinemacineController cineController;
+        private PlayableDirector director;
 
-	[SerializeField] private PlayableAsset start;
+        private PlaceableObject hoveredPlaceableObject;
 
-	private PlaceableObject hoveredPlaceableObject;
-	private Camera          mainCam;
+        private bool isInteracting;
+        private Camera mainCam;
+        private MainUi mainUi;
+        private ConfigButton ConfigUi;
 
-	private bool isInteracting;
+        private void Awake()
+        {
+            NetworkClient.Init();
+            mainUi = FindObjectOfType<MainUi>();
+            ConfigUi = FindObjectOfType<ConfigButton>();
+            cineController = FindObjectOfType<CinemacineController>();
+            director = FindObjectOfType<PlayableDirector>();
+            var spotLight = FindObjectsOfType<Light>();
+            spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
+        }
 
-	private void Awake()
-	{
-		NetworkClient.Init();
-		mainUi         = FindObjectOfType<MainUi>();
-		cineController = FindObjectOfType<CinemacineController>();
-		director       = FindObjectOfType<PlayableDirector>();
-		var spotLight = FindObjectsOfType<Light>();
-		spotLight.ToList().First(x => x.type == LightType.Spot).intensity = 0;
-	}
+        private void Start()
+        {
+            mainCam = Camera.main;
+            StartCoroutine(StartFlow());
+            NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameStarted, _ => GameStart());
+        }
 
-	private void Start()
-	{
-		mainCam                   =  Camera.main;
-		StartCoroutine(StartFlow());
-		NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameStarted, _=>GameStart());
-	}
+        private void Update()
+        {
+            CheckPlaceable();
+        }
 
-	private void Update()
-	{
-		CheckPlaceable();
-	}
+        private void CheckPlaceable()
+        {
+            if (isInteracting) return;
+            var ray = mainCam.ScreenPointToRay(Input.mousePosition);
 
-	private void CheckPlaceable()
-	{
-		if (isInteracting) return;
-		var ray = mainCam.ScreenPointToRay(Input.mousePosition);
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
-		if (UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()) return;
+            if (Physics.Raycast(ray, out var hit))
+            {
+                var placeable = hit.transform.GetComponent<PlaceableObject>();
+                if (!placeable)
+                {
+                    if (hoveredPlaceableObject) hoveredPlaceableObject.OnHover(false);
+                    hoveredPlaceableObject = null;
+                }
 
-		if (Physics.Raycast(ray, out var hit))
-		{
-			var placeable = hit.transform.GetComponent<PlaceableObject>();
-			if (!placeable)
-			{
-				if(hoveredPlaceableObject) hoveredPlaceableObject.OnHover(false);
-				hoveredPlaceableObject = null;
-			}
-			if (hoveredPlaceableObject)
-			{
-				if (placeable != hoveredPlaceableObject)
-				{
-					hoveredPlaceableObject.OnHover(false);
-					AudioManager.PlaySoundInstance("Audio/SELECTED");
-					placeable.OnHover(true);
-					hoveredPlaceableObject = placeable;
-				}
-			}
-			else
-			{
-				placeable.OnHover(true);
-				AudioManager.PlaySoundInstance("Audio/SELECTED");
-				hoveredPlaceableObject = placeable;
-			}
-		}
-		else
-		{
-			if (hoveredPlaceableObject)
-			{
-				hoveredPlaceableObject.OnHover(false);
-				hoveredPlaceableObject = null;
-			}
-			return;
-		}
+                if (hoveredPlaceableObject)
+                {
+                    if (placeable != hoveredPlaceableObject)
+                    {
+                        hoveredPlaceableObject.OnHover(false);
+                        AudioManager.PlaySoundInstance("Audio/SELECTED");
+                        placeable.OnHover(true);
+                        hoveredPlaceableObject = placeable;
+                    }
+                }
+                else
+                {
+                    placeable.OnHover(true);
+                    AudioManager.PlaySoundInstance("Audio/SELECTED");
+                    hoveredPlaceableObject = placeable;
+                }
+            }
+            else
+            {
+                if (hoveredPlaceableObject)
+                {
+                    hoveredPlaceableObject.OnHover(false);
+                    hoveredPlaceableObject = null;
+                }
 
-		if (!hoveredPlaceableObject || !Input.GetMouseButtonDown(0)) return;
-		var cam = hoveredPlaceableObject.Interact();
-		if (cam == CinemacineController.VCamName.None) return;
-		AudioManager.PlaySoundInstance("Audio/CLICKED");
+                return;
+            }
 
-		mainUi.SetExitButton(false);
-		mainUi.SetTitleButton(false);
-		isInteracting = true;
-		if (cam == CinemacineController.VCamName.Matching) Matching();
-		else mainUi.SetInteractQuitButton(true);
-		cineController.SetPriority(cam);
-	}
+            if (!hoveredPlaceableObject || !Input.GetMouseButtonDown(0)) return;
+            var cam = hoveredPlaceableObject.Interact();
+            if (cam == CinemacineController.VCamName.None) return;
+            AudioManager.PlaySoundInstance("Audio/CLICKED");
 
-	public void QuitInteract()
-	{
-		if (!isInteracting) return;
-		mainUi.SetExitButton(true);
-		mainUi.SetTitleButton(true);
-		isInteracting = false;
-		mainUi.SetInteractQuitButton(false);
-		hoveredPlaceableObject.Init();
-		cineController.SetPriority(CinemacineController.VCamName.Overview);
-	}
+            mainUi.SetExitButton(false);
+            mainUi.SetTitleButton(false);
+            isInteracting = true;
+            if (cam == CinemacineController.VCamName.Matching) Matching();
+            else
+            {
+                mainUi.SetInteractQuitButton(true);
+                ConfigUi.SetInteractConfigButton(false);
+            }
+            cineController.SetPriority(cam);
+        }
 
-	public void Matching()
-	{
-		mainUi.SetThrobber(true);
-		mainUi.SetMatchingCancelButton(true);
+        public void QuitInteract()
+        {
+            if (!isInteracting) return;
+            mainUi.SetExitButton(true);
+            mainUi.SetTitleButton(true);
+            isInteracting = false;
+            mainUi.SetInteractQuitButton(false);
+            ConfigUi.SetInteractConfigButton(true);
+            hoveredPlaceableObject.Init();
+            cineController.SetPriority(CinemacineController.VCamName.Overview);
+        }
 
-		API.Match().OnSuccess((() => mainUi.SetThrobber(false))).OnError((body => MatchingExit(true))).Build();
-	}
+        public void Matching()
+        {
+            mainUi.SetThrobber(true);
+            mainUi.SetMatchingCancelButton(true);
 
-	public void MatchingExit(bool onError)
-	{
-		if (onError)
-		{
-			mainUi.SetMatchingCancelButton(false);
-			mainUi.SetThrobber(false);
-			QuitInteract();
-			return;
-		}
+            API.Match().OnSuccess(() => mainUi.SetThrobber(false)).OnError(body => MatchingExit(true)).Build();
+        }
 
-		mainUi.SetThrobber(true);
+        public void MatchingExit(bool onError)
+        {
+            if (onError)
+            {
+                mainUi.SetMatchingCancelButton(false);
+                mainUi.SetThrobber(false);
+                QuitInteract();
+                return;
+            }
 
-		API.MatchCancel().OnResponse((_ =>
-		                              { mainUi.SetThrobber(false);
-		                                mainUi.SetMatchingCancelButton(false);
-		                                QuitInteract();
-		                                mainUi.SetExitButton(true);
-		                                mainUi.SetTitleButton(true); })).OnError(_ =>
-					 { mainUi.SetThrobber(false);
-					   Debug.LogError("error"); }).Build();
-	}
+            mainUi.SetThrobber(true);
 
-	public void GameStart()
-	{
-		StartCoroutine(GameStartFlow());
-	}
+            API.MatchCancel().OnResponse(_ =>
+            {
+                mainUi.SetThrobber(false);
+                mainUi.SetMatchingCancelButton(false);
+                QuitInteract();
+                mainUi.SetExitButton(true);
+                mainUi.SetTitleButton(true);
+            }).OnError(_ =>
+            {
+                mainUi.SetThrobber(false);
+                Debug.LogError("error");
+            }).Build();
+        }
 
-	private IEnumerator GameStartFlow()
-	{
-		mainUi.SetThrobber(true);
-		yield return new WaitForSeconds(1);
-		var selfStudent  = GameStatics.self?.student;
-		var otherStudent = GameStatics.other?.student;
-		if (selfStudent == null || otherStudent == null)
-		{
-			Debug.LogError("game start student cards data is null");
-			yield return new WaitUntil((() => selfStudent != null && otherStudent != null));
-		}
-		mainUi.SetThrobber(false);
-		SceneManager.LoadSceneAsync("IngameScene");
-	}
+        public void GameStart()
+        {
+            StartCoroutine(GameStartFlow());
+        }
 
-	private IEnumerator StartFlow()
-	{
-		isInteracting = true;
-		yield return new WaitForSeconds(1f);
-		director.playableAsset = start;
-		director.Play();
-		director.stopped += (_ => isInteracting = false);
-	}
+        private IEnumerator GameStartFlow()
+        {
+            mainUi.SetThrobber(true);
+            yield return new WaitForSeconds(1);
+            var selfStudent = GameStatics.self?.student;
+            var otherStudent = GameStatics.other?.student;
+            if (selfStudent == null || otherStudent == null)
+            {
+                Debug.LogError("game start student cards data is null");
+                yield return new WaitUntil(() => selfStudent != null && otherStudent != null);
+            }
+
+            mainUi.SetThrobber(false);
+            SceneManager.LoadSceneAsync("IngameScene");
+        }
+
+        private IEnumerator StartFlow()
+        {
+            isInteracting = true;
+            yield return new WaitForSeconds(1f);
+            director.playableAsset = start;
+            director.Play();
+            director.stopped += _ => isInteracting = false;
+        }
+    }
 }

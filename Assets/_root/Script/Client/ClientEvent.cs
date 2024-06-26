@@ -5,35 +5,40 @@ using UnityEngine;
 
 namespace _root.Script.Client
 {
-public partial class NetworkClient
-{
-	private static readonly Queue<Action> actions = new();
-	private static readonly Action<object>[]      delegates = new Action<object>[Enum.GetValues(typeof(ClientEvent)).Length];
+    public partial class NetworkClient
+    {
+        public enum ClientEvent
+        {
+            GameStarted,
+            GameEnd,
+            OtherCardUse,
+            OtherAbilityUse,
+            NextDay,
+            DataUpdated
+        }
 
-	private static void CallEvent(ClientEvent @event, object obj) => actions.Enqueue(()=>delegates[(int)@event](obj));
+        private static readonly Queue<Action> actions = new();
 
-	public static void DelegateEvent(ClientEvent @event, Action<object> action)
-	{
-		delegates[(int) @event] = action;
-	}
+        private static readonly Action<object>[] delegates =
+            new Action<object>[Enum.GetValues(typeof(ClientEvent)).Length];
 
-	public enum ClientEvent
-	{
-		GameStarted,
-		GameEnd,
-		OtherCardUse,
-		OtherAbilityUse,
-		NextDay,
-		DataUpdated,
-	}
+        private static void CallEvent(ClientEvent @event, object obj)
+        {
+            actions.Enqueue(() => delegates[(int)@event](obj));
+        }
 
-	private static IEnumerator ListenEvent()
-	{
-		while (true)
-		{
-			yield return new WaitUntil(() => actions.Count > 0);
-			actions.Dequeue()();
-		}
-	}
-}
+        public static void DelegateEvent(ClientEvent @event, Action<object> action)
+        {
+            delegates[(int)@event] = action;
+        }
+
+        private static IEnumerator ListenEvent()
+        {
+            while (true)
+            {
+                yield return new WaitUntil(() => actions.Count > 0);
+                actions.Dequeue()();
+            }
+        }
+    }
 }

@@ -9,8 +9,8 @@ Shader "Custom/Card"
 
     SubShader
     {
-        Tags 
-        { 
+        Tags
+        {
             "Queue" = "Transparent"
             "RenderType" = "Transparent"
         }
@@ -21,14 +21,13 @@ Shader "Custom/Card"
         Pass
         {
             CGPROGRAM
-            
             #pragma vertex vert
             #pragma fragment frag
             #pragma target 3.0
 
             #include "UnityCG.cginc"
 
-            struct v2f 
+            struct v2f
             {
                 float4 vertex : SV_POSITION;
                 float2 texcoord : TEXCOORD0;
@@ -40,7 +39,7 @@ Shader "Custom/Card"
             float4 _MainTex_ST;
             float4 _BackTex_ST;
 
-            v2f vert(appdata_base v) 
+            v2f vert(appdata_base v)
             {
                 v2f o;
 
@@ -50,16 +49,16 @@ Shader "Custom/Card"
                 return o;
             }
 
-            fixed4 frag(v2f i, fixed facing : VFACE) : SV_TARGET 
+            fixed4 frag(v2f i, fixed facing : VFACE) : SV_TARGET
             {
-                if (facing > 0) {
+                if (facing > 0)
+                {
                     return tex2D(_MainTex, i.texcoord) * _Color;
                 }
                 i.texcoord[0] = 1 - i.texcoord[0];
                 // i.texcoord[1] = 1 - i.texcoord[1];
                 return tex2D(_BackTex, i.texcoord) * _Color;
             }
-
             ENDCG
         }
     }

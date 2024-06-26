@@ -1,40 +1,40 @@
-using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-public class CamManager : MonoBehaviour
+namespace _root.Script.Manager
 {
-    private TimelineManager timelineManager;
-    private CinemachineVirtualCamera[] vcams;
-    private void Awake()
+    public class CamManager : MonoBehaviour
     {
-        timelineManager = FindObjectOfType<TimelineManager>();
-        vcams = GetComponentsInChildren<CinemachineVirtualCamera>();
-    }
+        private TimelineManager timelineManager;
+        private CinemachineVirtualCamera[] vcams;
 
-    public void SetCam(Scenestate state)
-    {
-        foreach (var vcam in vcams)
+        private void Awake()
         {
-            vcam.Priority = 0;
+            timelineManager = FindObjectOfType<TimelineManager>();
+            vcams = GetComponentsInChildren<CinemachineVirtualCamera>();
         }
-        switch (state)
+
+        public void SetCam(Scenestate state)
         {
-            case Scenestate.Title:
-                vcams[0].Priority = 10;
-                break;
-            case Scenestate.Lobby:
-                vcams[1].Priority = 10;
-                break;
-            case Scenestate.Obj1:
-                vcams[2].Priority = 10;
-                break;
-            case Scenestate.Obj2:
-                vcams[3].Priority = 10;
-                break;
-            case Scenestate.Obj3:
-                vcams[4].Priority = 10;
-                break;
+            foreach (var vcam in vcams) vcam.Priority = 0;
+            switch (state)
+            {
+                case Scenestate.Title:
+                    vcams[0].Priority = 10;
+                    break;
+                case Scenestate.Lobby:
+                    vcams[1].Priority = 10;
+                    break;
+                case Scenestate.Obj1:
+                    vcams[2].Priority = 10;
+                    break;
+                case Scenestate.Obj2:
+                    vcams[3].Priority = 10;
+                    break;
+                case Scenestate.Obj3:
+                    vcams[4].Priority = 10;
+                    break;
+            }
         }
     }
 }

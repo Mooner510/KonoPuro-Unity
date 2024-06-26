@@ -1,13 +1,12 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
-using _root.Script.Ingame;
-using _root.Script.Network;
-using Unity.VisualScripting;
+
 using UnityEngine;
 
+namespace _root.Script.Ingame
+{
 public class FieldSetter : MonoBehaviour
 {
 	[SerializeField] private GameObject cardPrefab;
@@ -15,11 +14,11 @@ public class FieldSetter : MonoBehaviour
 	[SerializeField] private List<IngameCard> fieldCards   = new();
 	[SerializeField] private List<IngameCard> studentField = new();
 
-	private List<Transform> trs = new();
-
 	[SerializeField] private float cardSize = 1;
 
 	public bool isMine = true;
+
+	private List<Transform> trs = new();
 
 	public List<IngameCard> GetStudentCards() => studentField;
 
@@ -46,7 +45,7 @@ public class FieldSetter : MonoBehaviour
 		var updatedField = fieldCards.Where(x => updatedIds.Contains(x.GetCardData().id)).ToList();
 		var removeField  = fieldCards.Except(updatedField).ToList();
 
-		var              addedCards       = cards.Where(x => addedIds.Contains(x.id)).ToList();
+		var addedCards = cards.Where(x => addedIds.Contains(x.id)).ToList();
 		foreach (var addedCard in addedCards)
 		{
 			var ingameCard = IngameCard.CreateIngameCard(addedCard);
@@ -102,25 +101,33 @@ public class FieldSetter : MonoBehaviour
 		if (fields.Count > 1) UpdateFieldCardPos();
 	}
 
-	public void AddNewCard(GameStudentCard addition) =>
-			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
-			                                       Quaternion.Euler(-90, 0, 90)));
+	public void AddNewCard(GameStudentCard addition)
+	{
+		AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+		                                       Quaternion.Euler(-90, 0, 90)));
+	}
 
-	public void AddNewCards(IEnumerable<GameStudentCard> addition) =>
-			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
-			                                                             Quaternion.Euler(-90, 0, 90))));
-
-	public void AddNewCard(GameCard addition) =>
-			AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
-			                                       Quaternion.Euler(-90, 0, 90)));
-
-	public void AddNewCards(IEnumerable<GameCard> addition) =>
-			AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
-			                                                             Quaternion.Euler(-90, 0, 90))));
+	public void AddNewCards(IEnumerable<GameStudentCard> addition)
+	{
+		AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+		                                                             Quaternion.Euler(-90, 0, 90))));
+	}
 
 	private void UpdateStudentPos()
 	{
 		SetPos(trs[0], studentField);
+	}
+
+	public void AddNewCard(GameCard addition)
+	{
+		AddNewCard(IngameCard.CreateIngameCard(addition, transform.position + new Vector3(0, 1f),
+		                                       Quaternion.Euler(-90, 0, 90)));
+	}
+
+	public void AddNewCards(IEnumerable<GameCard> addition)
+	{
+		AddNewCards(addition.Select(x => IngameCard.CreateIngameCard(x, transform.position + new Vector3(0, 1f),
+		                                                             Quaternion.Euler(-90, 0, 90))));
 	}
 
 	private void UpdateFieldCardPos()
@@ -149,4 +156,5 @@ public class FieldSetter : MonoBehaviour
 			cards[i].transform.position   =  appliedPos;
 		}
 	}
+}
 }

@@ -7,12 +7,12 @@ namespace _root.Script.Card
 {
 public class Card : MonoBehaviour
 {
+	private const            float          showFadeTime = .3f;
+	private static readonly  int            Alpha        = Shader.PropertyToID("_Alpha");
 	[HideInInspector] public SpriteRenderer frontSide;
 	[HideInInspector] public SpriteRenderer backSide;
 
-	private                 Coroutine showCoroutine;
-	private static readonly int       Alpha        = Shader.PropertyToID("_Alpha");
-	private const           float     showFadeTime = .3f;
+	private Coroutine showCoroutine;
 
 	public void Start()
 	{
@@ -32,8 +32,8 @@ public class Card : MonoBehaviour
 		var front = frontSide.material;
 		var back  = backSide.material;
 
-		var   timer     = front.GetFloat(Alpha) * showFadeTime;
-		var   different = (show ? 1 : -1);
+		var timer     = front.GetFloat(Alpha) * showFadeTime;
+		var different = show ? 1 : -1;
 		while (timer is <= showFadeTime and >= 0)
 		{
 			timer += Time.deltaTime * different;

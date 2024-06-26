@@ -15,8 +15,10 @@ namespace _root.Script.Client
         {
         }
 
-        public static RawProtocol of(int protocol, params object[] data) => new()
-                                                                            { protocol = protocol, data = data };
+        public static RawProtocol of(int protocol, params object[] data)
+        {
+            return new RawProtocol { protocol = protocol, data = data };
+        }
     }
 
     [Serializable]

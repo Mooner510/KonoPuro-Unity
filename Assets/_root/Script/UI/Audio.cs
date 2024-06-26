@@ -1,12 +1,11 @@
-using System;
 using UnityEngine;
 
 namespace _root.Script.UI
 {
     public class Audio : MonoBehaviour
     {
-        private AudioSource _audioSource;
         public AudioClip loop;
+        private AudioSource _audioSource;
 
         private void Start()
         {
