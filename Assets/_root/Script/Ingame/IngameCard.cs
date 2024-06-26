@@ -147,10 +147,13 @@ public class IngameCard : MonoBehaviour
 		moveCoroutine = null;
 	}
 
-	public void Show(bool show, bool destroy = false)
+	public void Show(bool show, bool destroy = false, float? showTime = null)
 	{
 		if (destroyed) return;
-		cardFrame.Show(show, ()=>
+		if (showTime != null)
+			cardFrame.Show(show, ()=>
+			                     { if (destroy) DestroyCard(); }, showTime.Value);
+		else cardFrame.Show(show, ()=>
 		                     { if (destroy) DestroyCard(); });
 	}
 

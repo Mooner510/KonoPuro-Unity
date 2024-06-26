@@ -21,13 +21,13 @@ public class Card : MonoBehaviour
 		backSide.sprite = Resources.Load<Sprite>("Card/card_frame");
 	}
 
-	public void Show(bool show, Action callback)
+	public void Show(bool show, Action callback, float showTime = showFadeTime)
 	{
 		if (showCoroutine != null) StopCoroutine(showCoroutine);
-		showCoroutine = StartCoroutine(ShowCoroutine(show, callback));
+		showCoroutine = StartCoroutine(ShowCoroutine(show, callback, showTime));
 	}
 
-	private IEnumerator ShowCoroutine(bool show, Action callback)
+	private IEnumerator ShowCoroutine(bool show, Action callback, float showTime)
 	{
 		var front = frontSide.material;
 		var back  = backSide.material;
