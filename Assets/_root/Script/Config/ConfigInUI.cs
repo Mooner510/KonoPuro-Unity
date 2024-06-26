@@ -91,8 +91,21 @@ public class ConfigInUI : MonoBehaviour
         FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
         isChange = true;
     }
+
+    private bool _isJoking;
     public void JokingSystem()
     {
+        _isJoking = false;
         JokeSlider.value = 0.05f;
+    }
+    public void JokingPrepare()
+    {
+        _isJoking = true;
+    }
+
+    public void JokingChange()
+    {
+        if (_isJoking) return;
+        JokingSystem();
     }
 }

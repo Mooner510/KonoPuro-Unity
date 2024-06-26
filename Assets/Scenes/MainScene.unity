@@ -6732,6 +6732,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: ConfigMenu
       objectReference: {fileID: 0}
+    - target: {fileID: 6645186007272341625, guid: dc94456511490b143b5cdb3465939ffa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339240504334815982, guid: dc94456511490b143b5cdb3465939ffa,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7649680825473422167, guid: dc94456511490b143b5cdb3465939ffa,
         type: 3}
       propertyPath: m_AnchorMax.x
