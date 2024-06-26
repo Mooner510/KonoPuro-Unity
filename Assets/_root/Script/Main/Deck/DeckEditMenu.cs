@@ -246,7 +246,7 @@ namespace _root.Script.Main.Deck
                         return x.cardGroups.Any(majorType =>
                                 selectedMajors.Contains(majorType) &&
                                 selectedTiers.Contains(x.tier)) &&
-                            (info.name.ToLower().Contains(lowerText) || info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
+                            (info.name != null && info.name.ToLower().Contains(lowerText) || info.description != null && info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
                     })
                     .ToList();
             }
@@ -257,10 +257,11 @@ namespace _root.Script.Main.Deck
                     .Where(x =>
                     {
                         var info = GameStatics.defaultCardDictionary[x.cardType];
-                        return selectedTiers.Contains(x.tier) && (info.name.ToLower().Contains(lowerText) || info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
+                        return selectedTiers.Contains(x.tier) && (info.name != null && info.name.ToLower().Contains(lowerText) || info.description != null && info.description.ToLower().Contains(lowerText) || x.cardType.ToLower().Contains(lowerText));
                     })
                     .ToList();
             }
+            Debug.Log(searchField.text.ToLower());
         }
 
         public void RefreshAll()
