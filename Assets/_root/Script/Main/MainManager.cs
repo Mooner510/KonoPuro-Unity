@@ -22,11 +22,13 @@ namespace _root.Script.Main
         private bool isInteracting;
         private Camera mainCam;
         private MainUi mainUi;
+        private ConfigButton ConfigUi;
 
         private void Awake()
         {
             NetworkClient.Init();
             mainUi = FindObjectOfType<MainUi>();
+            ConfigUi = FindObjectOfType<ConfigButton>();
             cineController = FindObjectOfType<CinemacineController>();
             director = FindObjectOfType<PlayableDirector>();
             var spotLight = FindObjectsOfType<Light>();
@@ -98,7 +100,11 @@ namespace _root.Script.Main
             mainUi.SetTitleButton(false);
             isInteracting = true;
             if (cam == CinemacineController.VCamName.Matching) Matching();
-            else mainUi.SetInteractQuitButton(true);
+            else
+            {
+                mainUi.SetInteractQuitButton(true);
+                ConfigUi.SetInteractConfigButton(false);
+            }
             cineController.SetPriority(cam);
         }
 
@@ -109,6 +115,7 @@ namespace _root.Script.Main
             mainUi.SetTitleButton(true);
             isInteracting = false;
             mainUi.SetInteractQuitButton(false);
+            ConfigUi.SetInteractConfigButton(true);
             hoveredPlaceableObject.Init();
             cineController.SetPriority(CinemacineController.VCamName.Overview);
         }
