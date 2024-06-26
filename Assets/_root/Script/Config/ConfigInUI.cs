@@ -11,9 +11,10 @@ public class ConfigInUI : MonoBehaviour
 {
     private GameObject Volume;
     private Slider VolumeSlider;
+    private bool Muted = false;
     //private SoundVolumeManager VolumeManager;
-    private GameObject Light;
-    private Slider LightSlider;
+    private GameObject Joke;
+    private Slider JokeSlider;
     private GameObject FPS_Limit;
     private Slider FPS_Slider;
     private TextMeshProUGUI FPS_Value;
@@ -23,8 +24,8 @@ public class ConfigInUI : MonoBehaviour
     {
         Volume = transform.GetChild(2).gameObject;
         VolumeSlider = Volume.GetComponent<Slider>();
-        Light = transform.GetChild(3).gameObject;
-        LightSlider = Light.GetComponent<Slider>();
+        Joke = transform.GetChild(3).gameObject;
+        JokeSlider = Joke.GetComponent<Slider>();
         FPS_Limit = transform.GetChild(4).gameObject;
         FPS_Slider = FPS_Limit.GetComponent<Slider>();
         FPS_Value = FPS_Limit.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
@@ -33,7 +34,9 @@ public class ConfigInUI : MonoBehaviour
     public void Init()
     {
         VolumeSlider.value = ConfigManager.ConfigData.SoundVolume;
-        LightSlider.value = ConfigManager.ConfigData.Light;
+        if (VolumeSlider.value == 0f)
+            Muted = true;
+        JokeSlider.value = ConfigManager.ConfigData.Light;
         FPS_Slider.value = ConfigManager.ConfigData.FPS_Limit;
         FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
         isChange = false;
@@ -41,7 +44,7 @@ public class ConfigInUI : MonoBehaviour
     public void GetOff()
     {
         ConfigManager.ConfigData.SoundVolume = VolumeSlider.value;
-        ConfigManager.ConfigData.Light = LightSlider.value;
+        ConfigManager.ConfigData.Light = JokeSlider.value;
         ConfigManager.ConfigData.FPS_Limit = (int)FPS_Slider.value;
         AudioManager.VolumeInitInstance();
         Settings.Save();
@@ -59,17 +62,30 @@ public class ConfigInUI : MonoBehaviour
     {
         Screen.brightness = ConfigManager.ConfigData.Light;
     }
-    
-    public void ChangeLight()
-    {
-        Screen.brightness = LightSlider.value;
-        isChange = true;
-    }
     public void ChangeVolume()
     {
         isChange = true;
+        if (VolumeSlider.value == 0f)
+            Muted = true;
+        else
+            Muted = false;
     }
 
+    public void Mute()
+    {
+        isChange = true;
+        if (Muted)
+        {
+            VolumeSlider.value = 0.5f;
+            Muted = false;
+        }
+        else
+        {
+            VolumeSlider.value = 0f;
+            Muted = true;
+        }
+            
+    }
     public void ChangeFPS()
     {
         FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
@@ -77,6 +93,6 @@ public class ConfigInUI : MonoBehaviour
     }
     public void JokingSystem()
     {
-        LightSlider.value = 0.05f;
+        JokeSlider.value = 0.05f;
     }
 }

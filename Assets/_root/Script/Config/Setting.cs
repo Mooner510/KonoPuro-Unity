@@ -19,7 +19,7 @@ namespace Config_Manager
         public static void Save()
         {
             Data Setting = ConfigManager.ConfigData;
-            var stream = new FileStream(Application.dataPath + "/_root/Script/Config/Config.json", FileMode.Create);
+            var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Create);
             var jsonData = JsonConvert.SerializeObject(Setting);
             var data = Encoding.UTF8.GetBytes(jsonData);
             stream.Write(data, 0, data.Length);
@@ -29,7 +29,7 @@ namespace Config_Manager
         {
             try
             {
-                var stream = new FileStream(Application.dataPath + "/_root/Script/Config/Config.json", FileMode.Open);
+                var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Open);
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, data.Length);
                 stream.Close();
@@ -41,7 +41,7 @@ namespace Config_Manager
                 Debug.LogError("Create New Save File.");
                 ConfigManager.ConfigData = new Data() { FPS_Limit = 60, Light = 1, SoundVolume = 1 };
                 Save();
-                var stream = new FileStream(Application.dataPath + "/_root/Script/Config/Config.json", FileMode.Open);
+                var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Open);
                 var data = new byte[stream.Length];
                 stream.Read(data, 0, data.Length);
                 stream.Close();

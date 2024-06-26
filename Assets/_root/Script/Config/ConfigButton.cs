@@ -10,8 +10,10 @@ public class ConfigButton : MonoBehaviour
     private GameObject UserInfoPanel;
     private UserInfoPanel InfoScript;
     private GameObject CreditPanel;
+    private Animator anim;
     private void Start()
     {
+        gameObject.GetComponent<Animator>().Play("Recorded (1)");
         configButton = transform.GetChild(0).gameObject;
         Configs = FindObjectOfType<ConfigInUI>().gameObject;
         UserInfoPanel = FindObjectOfType<UserInfoPanel>().gameObject;
