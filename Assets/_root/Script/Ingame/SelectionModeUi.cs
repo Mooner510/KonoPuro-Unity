@@ -11,21 +11,14 @@ namespace _root.Script.Ingame
     {
         private Button accept;
         private Button cancel;
-        private Animator carduseageAnim;
 
         private List<IngameCard> selectableCards;
 
         private int selectCount;
         private List<IngameCard> selectedCards;
-        private GameObject textpannel;
-
-        private TextMeshProUGUI turnhandcarduse;
 
         private void Awake()
         {
-            textpannel = GameObject.FindGameObjectWithTag("CardUseage");
-            carduseageAnim = textpannel.GetComponent<Animator>();
-            turnhandcarduse = textpannel.GetComponentInChildren<TextMeshProUGUI>();
             var buttons = GetComponentsInChildren<Button>();
             accept = buttons[0];
             cancel = buttons[1];
@@ -85,16 +78,6 @@ namespace _root.Script.Ingame
             cancel.onClick.AddListener(() => SetActive(false));
 
             SetActive(true);
-        }
-
-        public void SayOutLoud()
-        {
-            turnhandcarduse.text = PlayerActivity.usingcard;
-            carduseageAnim.Play("CardUseage");
-            if (GameStatics.isTurn)
-                textpannel.GetComponent<Image>().color = new Color(0.34f, 0.73f, 1f, 1f);
-            else
-                textpannel.GetComponent<Image>().color = new Color(1f, 0.42f, 0.34f, 1f);
         }
     }
 }

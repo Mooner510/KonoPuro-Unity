@@ -24,7 +24,6 @@ namespace _root.Script.Ingame
         [SerializeField] private bool spriteDebug;
         [SerializeField] private Light light1;
         [SerializeField] private Light light2;
-        [SerializeField] private GameObject textpannel;
 
         [FormerlySerializedAs("oponentusedcard")] [SerializeField]
         private TextMeshProUGUI usedcard;
@@ -283,7 +282,6 @@ namespace _root.Script.Ingame
             abilityUsable = false;
             ui.SetCardInfo(null);
             activity.SetActive(false);
-            PlayerActivity.usingcard = $"{GameStatics.tierDictionary[ability].name}";
             ui.SetHover(false);
             ui.SetInteract(false);
             ShowAbilities(null);
@@ -314,8 +312,9 @@ namespace _root.Script.Ingame
                 EndFlow(index);
                 yield break;
             }
-
+            
             AudioManager.PlaySoundInstance("Audio/CARD_USED");
+            ui.SayOutLoud(GameStatics.tierDictionary[ability].name, true);
 
             if (selectedCards != null)
                 NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
@@ -347,7 +346,6 @@ namespace _root.Script.Ingame
             activity.SetActive(false);
             ui.SetHover(false);
             ui.SetInteract(false);
-            PlayerActivity.usingcard = card.GetCardData().defaultCardType;
             card.Show(false);
 
             //TODO: 카드 사용 유형에 따라 선택할 카드들 지정
@@ -380,6 +378,7 @@ namespace _root.Script.Ingame
             }
 
             AudioManager.PlaySoundInstance("Audio/CARD_USED");
+            ui.SayOutLoud(GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].name, true);
 
             if (selectedCards != null)
                 NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id,
@@ -519,12 +518,10 @@ namespace _root.Script.Ingame
 
         private IEnumerator OtherAbilityUseFlow(Tiers ability, GameStudentCard activeStudent, int index)
         {
-            AudioManager.PlaySoundInstance("Audio/CARD_USED");
             yield return new WaitUntil(() => currentFlowIndex == index);
-            usedcard.text = GameStatics.tierDictionary[ability].name;
-            textpannel.SetActive(true);
 
-            Debug.LogError(ability);
+            AudioManager.PlaySoundInstance("Audio/CARD_USED");
+            ui.SayOutLoud(GameStatics.tierDictionary[ability].name, false);
 
             //TODO: 능력 사용 연출
             yield return new WaitForSeconds(1f);
@@ -534,13 +531,14 @@ namespace _root.Script.Ingame
 
         private IEnumerator OtherCardUseFlow(GameCard cardData, int index)
         {
-            AudioManager.PlaySoundInstance("Audio/CARD_USED");
             yield return new WaitUntil(() => currentFlowIndex == index);
 
             var card = activity.RemoveHandCard(cardData.id, false);
             card.LoadDisplay(cardData);
-            PlayerActivity.usingcard = card.GetCardData().defaultCardType;
             card.MoveByRichTime(new Vector3(-2, 8, 7), Quaternion.Euler(-90, 0, 90), .5f, .5f);
+
+            AudioManager.PlaySoundInstance("Audio/CARD_USED");
+            ui.SayOutLoud(GameStatics.defaultCardDictionary[cardData.defaultCardType].name, false);
 
             yield return new WaitForSeconds(1.5f);
 

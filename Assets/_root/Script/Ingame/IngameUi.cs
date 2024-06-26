@@ -40,6 +40,10 @@ namespace _root.Script.Ingame
         private Button sleepButton;
         private TurnDisplayUi turnDisplayUi;
 
+        private Animator        carduseageAnim;
+        private GameObject      textpannel;
+        private TextMeshProUGUI turnhandcarduse;
+
         private void Awake()
         {
             var textMeshProUis = GetComponentsInChildren<TextMeshProUGUI>();
@@ -74,6 +78,10 @@ namespace _root.Script.Ingame
             abilityManager = FindObjectOfType<AbilityManager>();
 
             gameEndUi = GetComponentInChildren<GameEndUi>();
+            
+            textpannel      = GameObject.FindGameObjectWithTag("CardUseage");
+            carduseageAnim  = textpannel.GetComponent<Animator>();
+            turnhandcarduse = textpannel.GetComponentInChildren<TextMeshProUGUI>();
         }
 
         public SelectionModeUi GetSelectionModeUi()
@@ -175,6 +183,13 @@ namespace _root.Script.Ingame
         public void SetGameEnd(bool active, string info)
         {
             gameEndUi.Set(active, info);
+        }
+
+        public void SayOutLoud(string text, bool isMine)
+        {
+            turnhandcarduse.text = text;
+            carduseageAnim.Play("CardUseage");
+            textpannel.GetComponent<Image>().color = isMine ? new Color(0.34f, 0.73f, 1f, 1f) : new Color(1f, 0.42f, 0.34f, 1f);
         }
     }
 }
