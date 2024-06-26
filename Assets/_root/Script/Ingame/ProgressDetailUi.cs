@@ -39,6 +39,7 @@ namespace _root.Script.Ingame
                 element.Init(info);
                 elementUis.Add(element);
             }
+            gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -59,19 +60,22 @@ namespace _root.Script.Ingame
 
         public void Show(bool show)
         {
+            if(show) gameObject.SetActive(true);
             if (coroutine != null) StopCoroutine(coroutine);
-            coroutine = StartCoroutine(ShowCoroutine(show ? 1 : -1));
+            coroutine = StartCoroutine(ShowCoroutine(show));
         }
 
-        private IEnumerator ShowCoroutine(float destination)
+        private IEnumerator ShowCoroutine(bool show)
         {
-            var timer = canvasGroup.alpha * richTime;
+            var timer       = canvasGroup.alpha * richTime;
+            var destination = show ? 1 : -1;
             while (timer <= richTime && timer >= 0)
             {
                 timer += Time.deltaTime * destination;
                 canvasGroup.alpha = Mathf.Lerp(0, 1, Mathf.Clamp01(timer / richTime));
                 yield return null;
             }
+            if(!show) gameObject.SetActive(false); 
         }
     }
 }

@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Client;
-
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace _root.Script.Ingame
 {
@@ -13,8 +14,6 @@ public class FieldSetter : MonoBehaviour
 
 	[SerializeField] private List<IngameCard> fieldCards   = new();
 	[SerializeField] private List<IngameCard> studentField = new();
-
-	[SerializeField] private float cardSize = 1;
 
 	public bool isMine = true;
 
@@ -37,35 +36,55 @@ public class FieldSetter : MonoBehaviour
 
 	public void UpdateField(List<GameCard> cards)
 	{
-		var fieldIds   = fieldCards.Select(x => x.GetCardData().id).ToList();
-		var updatedIds = cards.Select(x => x.id).ToList();
-		var placedIds  = fieldIds.Intersect(updatedIds).ToList();
-		var addedIds   = updatedIds.Except(placedIds).ToList();
+		var updated = new List<IngameCard>();
 
-		var updatedField = fieldCards.Where(x => updatedIds.Contains(x.GetCardData().id)).ToList();
-		var removeField  = fieldCards.Except(updatedField).ToList();
+		var updatedCount = cards.Count;
+		var fieldCount   = fieldCards.Count;
 
-		var addedCards = cards.Where(x => addedIds.Contains(x.id)).ToList();
-		foreach (var addedCard in addedCards)
+		if (updatedCount <= fieldCount)
 		{
-			var ingameCard = IngameCard.CreateIngameCard(addedCard);
-			ingameCard.isMine             = isMine;
-			ingameCard.type               = IngameCardType.Field;
-			ingameCard.transform.rotation = Quaternion.Euler(-90, 0, 90);
-			updatedField.Add(ingameCard);
+			for (var i = 0; i < fieldCount; i++)
+			{
+				var card = fieldCards[i];
+				if (i < updatedCount)
+				{
+					var index = i;
+					card.Show(false, callback: () => card.LoadDisplay(cards[index]));
+					updated.Add(card);
+				}
+				else card.Show(false, true);
+			}
+		}
+		else
+		{
+			for (var i = 0; i < updatedCount; i++)
+			{
+				if (i < fieldCount)
+				{
+					var card  = fieldCards[i];
+					var index = i;
+					card.Show(false, callback: () => card.LoadDisplay(cards[index]));
+					updated.Add(card);
+				}
+				else
+				{
+					var ingameCard = IngameCard.CreateIngameCard(cards[i]);
+					ingameCard.isMine             = isMine;
+					ingameCard.type               = IngameCardType.Field;
+					ingameCard.transform.rotation = Quaternion.Euler(-90, 0, 90);
+					updated.Add(ingameCard);
+				}
+			}
 		}
 
-		fieldCards = updatedField;
-
-		foreach (var ingameCard in removeField) ingameCard.Show(false, true);
-		foreach (var ingameCard in fieldCards) ingameCard.Show(false);
+		fieldCards = updated;
 
 		StartCoroutine(UpdateFlow());
 	}
 
 	private IEnumerator UpdateFlow()
 	{
-		yield return new WaitForSeconds(.7f);
+		yield return new WaitForSeconds(.5f);
 		UpdateFieldCardPos();
 		foreach (var ingameCard in fieldCards)
 		{
@@ -96,6 +115,7 @@ public class FieldSetter : MonoBehaviour
 		var fields      = ingameCards.Except(students).ToList();
 		studentField.AddRange(students);
 		fieldCards.AddRange(fields);
+		foreach (var ingameCard in fields) ingameCard.type = IngameCardType.Field;
 
 		if (students.Count > 1) UpdateStudentPos();
 		if (fields.Count > 1) UpdateFieldCardPos();
@@ -115,7 +135,7 @@ public class FieldSetter : MonoBehaviour
 
 	private void UpdateStudentPos()
 	{
-		SetPos(trs[0], studentField);
+		StudentSetPos(trs[0], studentField);
 	}
 
 	public void AddNewCard(GameCard addition)
@@ -132,17 +152,18 @@ public class FieldSetter : MonoBehaviour
 
 	private void UpdateFieldCardPos()
 	{
-		var students = fieldCards.Where(c => c.type == IngameCardType.Student).ToList();
-		var skills1  = fieldCards.Except(students).ToList();
-		var skills2  = skills1.GetRange(0, skills1.Count / 2);
+		var skills1 = fieldCards.ToList();
+		var skills2 = skills1.GetRange(0, skills1.Count / 2);
 		skills1 = skills1.Except(skills2).ToList();
 
 		SetPos(trs[1], skills1);
 		SetPos(trs[2], skills2);
 	}
 
-	private void SetPos(Transform field, IReadOnlyList<IngameCard> cards)
+	private void StudentSetPos(Transform field, IReadOnlyList<IngameCard> cards)
 	{
+		const int cardSize = 1;
+
 		var count      = cards.Count;
 		var multiplyZ  = field.localScale.y / count;
 		var defaultPos = field.position;
@@ -155,6 +176,56 @@ public class FieldSetter : MonoBehaviour
 			cards[i].transform.localScale =  Vector3.one * cardSize;
 			cards[i].transform.position   =  appliedPos;
 		}
+	}
+
+	private int currentScale = 1;
+
+	private void SetPos(Transform field, IReadOnlyList<IngameCard> cards)
+	{
+		var cardSize  = new Vector2(2.5f, 3.5f);
+		var fieldSize = field.localScale + Vector3.one * .5f;
+
+		var count = cards.Count;
+		var ratio = fieldSize.y / cardSize.x / (fieldSize.x / cardSize.y);
+
+		var preRow = Mathf.Sqrt(count / ratio);
+		var preCol = ratio * preRow;
+		var (row, col) = GetInt(preRow, preCol, count);
+		
+		var size = fieldSize.x / (row * cardSize.y);
+
+		var multiplyZ  = fieldSize.x / col;
+		var multiplyX  = fieldSize.y / row;
+		var defaultPos = field.position;
+		defaultPos.z -= (col - 1) * multiplyZ * 0.5f;
+		defaultPos.x -= (row - 1) * multiplyX * 0.5f;
+		defaultPos.y += .1f;
+		for (var i = 0; i < count; i++)
+		{
+			cards[i].transform.localScale = Vector3.one * size;
+			var appliedPos = defaultPos;
+			appliedPos.z                += i % col * multiplyZ;
+			appliedPos.x                += i / col * multiplyX;
+			cards[i].transform.position =  appliedPos;
+		}
+
+		Debug.LogError("New");
+		Debug.LogWarning(count);
+		Debug.LogWarning(row);
+		Debug.LogWarning(col);
+	}
+
+	public (int, int) GetInt(float a, float b, int min)
+	{
+		var floorA = Mathf.FloorToInt(a);
+		var floorB = Mathf.FloorToInt(b);
+		var ceilA  = Mathf.CeilToInt(a);
+		var ceilB  = Mathf.CeilToInt(b);
+
+		if (floorA * floorB >= min) return (floorA, floorB);
+		else if (ceilA * floorB >= min) return (ceilA, floorB);
+		else if (floorA * ceilB >= min) return (floorA, ceilB);
+		else return (ceilA, ceilB);
 	}
 }
 }

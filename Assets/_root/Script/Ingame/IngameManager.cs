@@ -110,6 +110,11 @@ namespace _root.Script.Ingame
                     ui.SetCardInfo(ingameCard);
                     ShowAbilities(ingameCard);
                 }
+                else if (ingameCard && ingameCard.type == IngameCardType.Field)
+                {
+                    ShowAbilities(null);
+                    ui.SetCardInfo(ingameCard);
+                }
                 else
                 {
                     ShowAbilities(null);
@@ -195,6 +200,14 @@ namespace _root.Script.Ingame
             StartCoroutine(SetStudent(false));
 
             yield return new WaitForSeconds(1f);
+            
+            //TODO: 실험용 삭제 필요
+            for (int i = 0; i < 20; i++)
+            {
+                selfField.AddNewCard(new GameCard());
+                otherField.AddNewCard(new GameCard());
+                yield return new WaitForSeconds(0.5f);
+            }
 
             selfDeck.Init();
             otherDeck.Init();
