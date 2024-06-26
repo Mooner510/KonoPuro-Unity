@@ -14,13 +14,13 @@ public class UserInfoPanel : MonoBehaviour
 
     private void Awake()
     {
-        UserID = transform.GetChild(0).gameObject;
+        UserID = transform.GetChild(1).gameObject;
         Net = FindObjectOfType<Networking>();
     }
 
     public void Init()
     {
-        UserID.GetComponent<TextMeshProUGUI>().text = $"ID fdf :  {Net.ID}";
+        UserID.GetComponent<TextMeshProUGUI>().text = $"ID fdf :  {Net.Password}";
     }
     
 }
