@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using _root.Script.Client;
 using _root.Script.Manager;
 using _root.Script.Network;
@@ -140,15 +141,16 @@ public class IngameCard : MonoBehaviour
 		moveCoroutine = null;
 	}
 
-	public void Show(bool show, bool destroy = false, float? showTime = null)
+	public void Show(bool show, bool destroy = false, float? showTime = null, Action callback = null)
 	{
 		if (destroyed) return;
 		if (showTime != null)
 			cardFrame.Show(show, () =>
-			                     { if (destroy) DestroyCard(); }, showTime.Value);
+			                     { if (destroy) DestroyCard();
+			                     callback?.Invoke(); }, showTime.Value);
 		else
 			cardFrame.Show(show, () =>
-			                     { if (destroy) DestroyCard(); });
+			                     { if (destroy) DestroyCard(); callback?.Invoke();});
 	}
 
 	public IngameCard LoadDisplay(GameStudentCard data)

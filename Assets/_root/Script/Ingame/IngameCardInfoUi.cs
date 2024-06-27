@@ -61,6 +61,15 @@ namespace _root.Script.Ingame
                     nameT.text = defaultData.cardType;
                 }
             }
+            else if (card.type == IngameCardType.Field)
+            {
+                var data = card.GetCardData();
+                timeT.enabled = false;
+                if (data == null) return;
+                var info = GameStatics.defaultCardDictionary[data.defaultCardType];
+                nameT.text        = info.name;
+                descriptionT.text = info.description;
+            }
             else
             {
                 var data = card.GetCardData();
@@ -68,7 +77,7 @@ namespace _root.Script.Ingame
                 timeT.enabled = true;
                 var info = GameStatics.defaultCardDictionary[data.defaultCardType];
                 nameT.text = info.name;
-                timeT.text = $"Usage : {info.time}";
+                timeT.text = $"사용 시간 : {info.time}";
                 descriptionT.text = info.description;
             }
         }
@@ -80,7 +89,7 @@ namespace _root.Script.Ingame
             timeT.enabled = true;
             var info = GameStatics.tierDictionary[ability];
             nameT.text = info.name;
-            timeT.text = $"Usage : {info.time}";
+            timeT.text = $"사용 시간 : {info.time}";
             descriptionT.text = info.description;
         }
     }
