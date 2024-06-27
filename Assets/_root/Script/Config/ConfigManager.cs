@@ -1,10 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using _root.Script.Manager;
 using UnityEngine;
 
-namespace Config_Manager
+namespace _root.Script.Config
 {
     public class ConfigManager : MonoBehaviour
     {
@@ -19,9 +16,9 @@ namespace Config_Manager
         private void Start()
         {
             Screen.brightness = ConfigData.Light;
-            if (ConfigData.FPS_Limit > 0)
+            if (ConfigData.FPSLimit > 0)
             {
-                Application.targetFrameRate = ConfigData.FPS_Limit;
+                Application.targetFrameRate = ConfigData.FPSLimit;
             }
             AudioManager.VolumeInitInstance();
         }

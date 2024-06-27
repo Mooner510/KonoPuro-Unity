@@ -132,12 +132,11 @@ namespace _root.Script.Ingame
         {
             var progressTemp = (self ? selfProgressSlider : otherProgressSlider).value;
             var elapsedTime = 0f;
-            float Pr_Value;
             while (elapsedTime < 2f)
             {
-                Pr_Value = Mathf.Lerp(progressTemp, progress, elapsedTime);
-                (self ? selfProgressSlider : otherProgressSlider).value = Pr_Value;
-                (self ? selfProgressText : otherProgressText).text = $"{Pr_Value:P2}";
+                var prValue = Mathf.Lerp(progressTemp, progress, elapsedTime);
+                (self ? selfProgressSlider : otherProgressSlider).value = prValue;
+                (self ? selfProgressText : otherProgressText).text = $"{prValue:P2}";
                 elapsedTime += Time.deltaTime;
                 yield return null;
             }

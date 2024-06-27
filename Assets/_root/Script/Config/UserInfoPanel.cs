@@ -1,26 +1,25 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using _root.Script.Data;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
 
-public class UserInfoPanel : MonoBehaviour
+namespace _root.Script.Config
 {
-    private GameObject UserID;
-    private GameObject UserUUID;
-    private Networking Net;
-
-    private void Awake()
+    public class UserInfoPanel : MonoBehaviour
     {
-        UserID = transform.GetChild(1).gameObject;
-        Net = FindObjectOfType<Networking>();
-    }
+        private GameObject UserID;
+        private GameObject UserUUID;
+        private Networking Net;
 
-    public void Init()
-    {
-        UserID.GetComponent<TextMeshProUGUI>().text = $"ID fdf :  {Net.Password}";
-    }
+        private void Awake()
+        {
+            UserID = transform.GetChild(1).gameObject;
+            Net = FindObjectOfType<Networking>();
+        }
+
+        public void Init()
+        {
+            UserID.GetComponent<TextMeshProUGUI>().text = $"ID fdf :  {Net.Password}";
+        }
     
+    }
 }

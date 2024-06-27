@@ -15,7 +15,7 @@ namespace _root.Script.Client
         {
         }
 
-        public static RawProtocol of(int protocol, params object[] data)
+        public static RawProtocol Of(int protocol, params object[] data)
         {
             return new RawProtocol { protocol = protocol, data = data };
         }

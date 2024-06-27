@@ -16,10 +16,12 @@ namespace _root.Script.Main
         [SerializeField] private UnityEvent initEvent;
         private Material accentMaterial;
         private TMP_Text DiscriptionText_TMP_Text;
+        private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
+        private static readonly int Scale = Shader.PropertyToID("_Scale");
 
         private void Start()
         {
-            StartCoroutine(ShowDiscription(2.5f));
+            StartCoroutine(ShowDescription(2.5f));
             accentMaterial = gameObject.GetComponent<MeshRenderer>().materials[1];
             DiscriptionText_TMP_Text = DiscriptionText.GetComponent<TMP_Text>();
             Init();
@@ -34,14 +36,14 @@ namespace _root.Script.Main
         {
             if (active)
             {
-                accentMaterial.SetColor("_OutlineColor", new Color(255, 128, 0));
-                accentMaterial.SetFloat("_Scale", 1.015f);
+                accentMaterial.SetColor(OutlineColor, new Color(255, 128, 0));
+                accentMaterial.SetFloat(Scale, 1.015f);
                 DiscriptionText_TMP_Text.color = Color.white;
             }
             else
             {
                 DiscriptionText_TMP_Text.color = Color.gray;
-                accentMaterial.SetFloat("_Scale", 1f);
+                accentMaterial.SetFloat(Scale, 1f);
             }
         }
 
@@ -53,9 +55,9 @@ namespace _root.Script.Main
             return cam;
         }
 
-        private IEnumerator ShowDiscription(float Time)
+        private IEnumerator ShowDescription(float time)
         {
-            yield return new WaitForSeconds(Time);
+            yield return new WaitForSeconds(time);
             DiscriptionText.SetActive(true);
         }
     }

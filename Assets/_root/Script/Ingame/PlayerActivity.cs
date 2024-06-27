@@ -11,7 +11,7 @@ namespace _root.Script.Ingame
         public IngameCard selectedCard;
         [SerializeField] private GameObject CardInfoPanel;
         private Animator CardAnim;
-        private DiscriptionUI cardui;
+        private DescriptionUI cardui;
         private IngameUi ingameUi;
 
         private bool interactable;
@@ -29,7 +29,7 @@ namespace _root.Script.Ingame
             selfHand = hands.First(x => x.gameObject.name == "Self Hand");
             otherHand = hands.First(x => x.gameObject.name == "Other Hand");
             CardInfoPanel = GameObject.Find("Card Info Panel");
-            cardui = CardInfoPanel.GetComponent<DiscriptionUI>();
+            cardui = CardInfoPanel.GetComponent<DescriptionUI>();
             CardAnim = CardInfoPanel.GetComponent<Animator>();
         }
 
@@ -85,7 +85,7 @@ namespace _root.Script.Ingame
                     {
                         CardInfoPanel.SetActive(true);
                         CardAnim.Play("CardInfoFadeIn");
-                        cardui.viewCard(card);
+                        cardui.ViewCard(card);
                     }
                     else
                     {
@@ -96,13 +96,13 @@ namespace _root.Script.Ingame
                 {
                     CardInfoPanel.SetActive(true);
                     CardAnim.Play("CardInfoFadeIn");
-                    cardui.viewCard(card);
+                    cardui.ViewCard(card);
                 }
                 else if (card.type == IngameCardType.Student)
                 {
                     CardInfoPanel.SetActive(true);
                     CardAnim.Play("CardInfoFadeIn");
-                    cardui.viewCard(card);
+                    cardui.ViewCard(card);
                 }
                 else
                 {

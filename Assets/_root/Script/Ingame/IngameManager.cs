@@ -330,11 +330,10 @@ namespace _root.Script.Ingame
             ui.SayOutLoud(GameStatics.tierDictionary[ability].name, true);
 
             if (selectedCards != null)
-                NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString(),
+                NetworkClient.Send(RawProtocol.Of(104, card.GetStudentData().id, ability.ToString(),
                     selectedCards.Select(x => x.GetStudentData().id)));
-
             else
-                NetworkClient.Send(RawProtocol.of(104, card.GetStudentData().id, ability.ToString()));
+                NetworkClient.Send(RawProtocol.Of(104, card.GetStudentData().id, ability.ToString()));
 
             //Dictionary<int, string>
             //dictionary[10]
@@ -394,10 +393,10 @@ namespace _root.Script.Ingame
             ui.SayOutLoud(GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].name, true);
 
             if (selectedCards != null)
-                NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id,
+                NetworkClient.Send(RawProtocol.Of(103, card.GetCardData().id,
                     selectedCards.Select(x => x.GetStudentData().id)));
             else
-                NetworkClient.Send(RawProtocol.of(103, card.GetCardData().id));
+                NetworkClient.Send(RawProtocol.Of(103, card.GetCardData().id));
 
             card.transform.position = new Vector3(-2, 8, 7);
             card.Show(true);
@@ -607,7 +606,7 @@ namespace _root.Script.Ingame
             if (!preTurn) return;
             ui.SetInteract(false);
             canUseFlow = false;
-            NetworkClient.Send(RawProtocol.of(105, null));
+            NetworkClient.Send(RawProtocol.Of(105, null));
         }
 
         private void OtherSleep()

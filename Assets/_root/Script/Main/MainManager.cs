@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Linq;
 using _root.Script.Client;
+using _root.Script.Config;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
