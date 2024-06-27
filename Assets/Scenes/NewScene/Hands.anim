@@ -1250,21 +1250,21 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: GachaBuildup2Audio
+    functionName: GachaBuildupAudio
     data: Audio/GACHA-2-WINDSTART
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 1.9833333
-    functionName: GachaBuildup2Audio
+    functionName: GachaBuildupAudio
     data: Audio/GACHA-2-HANDMOVE
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
   - time: 3.0833333
-    functionName: GachaBuildup2Audio
+    functionName: GachaBuildupAudio
     data: Audio/GACHA-2-THROW
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
