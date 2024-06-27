@@ -40,15 +40,13 @@ namespace _root.Script.Ingame
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                //CardInfoUI Interact
-                Debug.Log("um");
-                cardui.Out();
-                viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var viewcard)
-                    ? viewcard.transform.GetComponent<IngameCard>()
-                    : null);
-            }
+            if (!Input.GetMouseButtonDown(1)) return;
+            //CardInfoUI Interact
+            Debug.Log("um");
+            cardui.Out();
+            viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var selCard)
+                ? selCard.transform.GetComponent<IngameCard>()
+                : null);
         }
 
         public List<GameCard> GetHandCards(bool self)
