@@ -13,9 +13,9 @@ namespace _root.Script.Card
         
         public void GachaBuildup1Started()
         {
-            AudioManager.PlaySoundInstance("Audio/GACHA-1");
             ShakeObject(GameObject.FindGameObjectWithTag("MainCamera"), 0.1f, 0.4f);
             ShakeObject(gameObject, 0.1f, 0.4f);
+            AudioManager.PlaySoundInstance("Audio/GACHA-1-INITAL");
         }
         
         private void ShakeObject(GameObject obj, float shakeAmount, float shakeTime)
@@ -41,7 +41,7 @@ namespace _root.Script.Card
             }
         }
 
-        public void GachaBuildup2Audio(string path)
+        public void GachaBuildupAudio(string path)
         {
             AudioManager.PlaySoundInstance(path);
         }
