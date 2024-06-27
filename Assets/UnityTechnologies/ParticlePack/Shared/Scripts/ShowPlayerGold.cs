@@ -1,23 +1,18 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using _root.Script.Data;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class ShowPlayerGold : MonoBehaviour
+namespace UnityTechnologies.ParticlePack.Shared.Scripts
 {
-    [SerializeField] private TextMeshProUGUI veiwgold;
-    private bool switchbutton;
-    // Start is called before the first frame update
-    private void Start()
+    public class ShowPlayerGold : MonoBehaviour
     {
-        switchbutton = false;
+        [FormerlySerializedAs("veiwgold")] [SerializeField] private TextMeshProUGUI viewGold;
+        private bool _switchButton;
+        public void OnClick()
+        {
+            viewGold.color = Color.white;
+            viewGold.text = UserData.Instance.gold.ToString();
+        }
     }
-
-    public void OnClick()
-    {
-        veiwgold.text = UserData.Instance.gold.ToString();
-    }
-    
 }

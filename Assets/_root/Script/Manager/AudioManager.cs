@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
+using _root.Script.Config;
 using _root.Script.Utils.SingleTon;
-using Config_Manager;
 using UnityEngine;
 
 namespace _root.Script.Manager
@@ -21,7 +21,7 @@ namespace _root.Script.Manager
         private void Update()
         {
             if (_eventHandlers.Count == 0 || _audioSource.isPlaying) return;
-            foreach (var eventHandler in _eventHandlers) eventHandler.Invoke(_audioSource);
+            for (var i = 0; i < _eventHandlers.Count; i++) _eventHandlers[i](_audioSource);
         }
 
         public static void AddEventHandlerInstance(Action<AudioSource> action)
@@ -53,13 +53,14 @@ namespace _root.Script.Manager
         {
             Instance.PlaySound(path);
         }
-        public void PlaySound(string path)
+
+        private void PlaySound(string path)
         {
             var clip = GetClip(path);
             if (clip) _audioSource.PlayOneShot(clip);
         }
 
-        public void SetAsBackgroundMusic(string path, bool loop = false)
+        private void SetAsBackgroundMusic(string path, bool loop = false)
         {
             var clip = GetClip(path);
             if (!clip) return;
@@ -68,22 +69,22 @@ namespace _root.Script.Manager
             _audioSource.Play();
         }
 
-        public void AddEventHandler(Action<AudioSource> action)
+        private void AddEventHandler(Action<AudioSource> action)
         {
             _eventHandlers.Add(action);
         }
 
-        public void ClearEventHandler()
+        private void ClearEventHandler()
         {
             _eventHandlers.Clear();
         }
 
-        public void StopAllSounds()
+        private void StopAllSounds()
         {
             _audioSource.Stop();
         }
 
-        public void VolumeInit()
+        private void VolumeInit()
         {
             _audioSource.volume = ConfigManager.ConfigData.SoundVolume;
         }

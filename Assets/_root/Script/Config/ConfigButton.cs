@@ -1,60 +1,60 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ConfigButton : MonoBehaviour
+namespace _root.Script.Config
 {
-    private GameObject Configs;
-    private GameObject configButton;
-    private GameObject UserInfoPanel;
-    private UserInfoPanel InfoScript;
-    private GameObject CreditPanel;
-    private Animator anim;
-    private void Start()
+    public class ConfigButton : MonoBehaviour
     {
-        gameObject.GetComponent<Animator>().Play("Recorded (1)");
-        configButton = transform.GetChild(0).gameObject;
-        Configs = FindObjectOfType<ConfigInUI>().gameObject;
-        UserInfoPanel = FindObjectOfType<UserInfoPanel>().gameObject;
-        InfoScript = UserInfoPanel.GetComponent<UserInfoPanel>();
-        CreditPanel = GameObject.Find("CreditPanel");
-        UserInfoPanel.SetActive(false);
-        Configs.SetActive(false);
-        CreditPanel.SetActive(false);
-    }
+        private GameObject Configs;
+        private GameObject configButton;
+        private GameObject UserInfoPanel;
+        private UserInfoPanel InfoScript;
+        private GameObject CreditPanel;
+        private Animator anim;
+        private void Start()
+        {
+            gameObject.GetComponent<Animator>().Play("Recorded (1)");
+            configButton = transform.GetChild(0).gameObject;
+            Configs = FindObjectOfType<ConfigInUI>().gameObject;
+            UserInfoPanel = FindObjectOfType<UserInfoPanel>().gameObject;
+            InfoScript = UserInfoPanel.GetComponent<UserInfoPanel>();
+            CreditPanel = GameObject.Find("CreditPanel");
+            UserInfoPanel.SetActive(false);
+            Configs.SetActive(false);
+            CreditPanel.SetActive(false);
+        }
 
-    public void SetInteractConfigButton(bool active)
-    {
-        configButton.SetActive(active);
-    }
-    public void ConfigOn()
-    {
-        Configs.SetActive(true);
-        Configs.GetComponent<ConfigInUI>().Init();
-    }
+        public void SetInteractConfigButton(bool active)
+        {
+            configButton.SetActive(active);
+        }
+        public void ConfigOn()
+        {
+            Configs.SetActive(true);
+            Configs.GetComponent<ConfigInUI>().Init();
+        }
 
-    public void ConfigOff()
-    {
-        Configs.SetActive(false);
-    }
-    public void InfoOn()
-    {
-        UserInfoPanel.SetActive(true);
-        InfoScript.Init();
-    }
-    public void InfoOff()
-    {
-        UserInfoPanel.SetActive(false);
-    }
+        public void ConfigOff()
+        {
+            Configs.SetActive(false);
+        }
+        public void InfoOn()
+        {
+            UserInfoPanel.SetActive(true);
+            InfoScript.Init();
+        }
+        public void InfoOff()
+        {
+            UserInfoPanel.SetActive(false);
+        }
 
-    public void CreditOn()
-    {
-        CreditPanel.SetActive(true);
-    }
+        public void CreditOn()
+        {
+            CreditPanel.SetActive(true);
+        }
 
-    public void CreditOff()
-    {
-        CreditPanel.SetActive(false);
+        public void CreditOff()
+        {
+            CreditPanel.SetActive(false);
+        }
     }
 }

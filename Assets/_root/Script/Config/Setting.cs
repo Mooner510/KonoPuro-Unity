@@ -1,52 +1,34 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Newtonsoft.Json;
 using System.IO;
 using System.Text;
+using Newtonsoft.Json;
+using UnityEngine;
 
-namespace Config_Manager
+namespace _root.Script.Config
 {
     public static class Settings
     {
         public class Data
         {
             public float SoundVolume = 1f;
-            public float Light = 1f;
-            public int FPS_Limit = 60;
+            public float Light = 0.05f;
+            public int FPSLimit = 60;
         }
         public static void Save()
         {
-            Data Setting = ConfigManager.ConfigData;
-            var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Create);
-            var jsonData = JsonConvert.SerializeObject(Setting);
-            var data = Encoding.UTF8.GetBytes(jsonData);
-            stream.Write(data, 0, data.Length);
-            stream.Close();
+            File.WriteAllBytes(Application.dataPath + "/Config.json", Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ConfigManager.ConfigData)));
         }
         public static void Load()
         {
             try
             {
-                var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Open);
-                var data = new byte[stream.Length];
-                stream.Read(data, 0, data.Length);
-                stream.Close();
-                var jsonData = Encoding.UTF8.GetString(data);
-                ConfigManager.ConfigData = JsonConvert.DeserializeObject<Data>(jsonData);
+                ConfigManager.ConfigData = JsonConvert.DeserializeObject<Data>(Encoding.UTF8.GetString(File.ReadAllBytes(Application.dataPath + "/Config.json")));
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Debug.LogError("Create New Save File.");
-                ConfigManager.ConfigData = new Data() { FPS_Limit = 60, Light = 1, SoundVolume = 1 };
+                ConfigManager.ConfigData = new Data();
                 Save();
-                var stream = new FileStream(Application.dataPath + "/Config.json", FileMode.Open);
-                var data = new byte[stream.Length];
-                stream.Read(data, 0, data.Length);
-                stream.Close();
-                var jsonData = Encoding.UTF8.GetString(data);
-                ConfigManager.ConfigData = JsonConvert.DeserializeObject<Data>(jsonData);
             }
         }
     }

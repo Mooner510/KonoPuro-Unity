@@ -11,7 +11,7 @@ namespace _root.Script.Ingame
         public IngameCard selectedCard;
         [SerializeField] private GameObject CardInfoPanel;
         private Animator CardAnim;
-        private DiscriptionUI cardui;
+        private DescriptionUI cardui;
         private IngameUi ingameUi;
 
         private bool interactable;
@@ -29,7 +29,7 @@ namespace _root.Script.Ingame
             selfHand = hands.First(x => x.gameObject.name == "Self Hand");
             otherHand = hands.First(x => x.gameObject.name == "Other Hand");
             CardInfoPanel = GameObject.Find("Card Info Panel");
-            cardui = CardInfoPanel.GetComponent<DiscriptionUI>();
+            cardui = CardInfoPanel.GetComponent<DescriptionUI>();
             CardAnim = CardInfoPanel.GetComponent<Animator>();
         }
 
@@ -40,15 +40,13 @@ namespace _root.Script.Ingame
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(1))
-            {
-                //CardInfoUI Interact
-                Debug.Log("um");
-                cardui.Out();
-                viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var viewcard)
-                    ? viewcard.transform.GetComponent<IngameCard>()
-                    : null);
-            }
+            if (!Input.GetMouseButtonDown(1)) return;
+            //CardInfoUI Interact
+            Debug.Log("um");
+            cardui.Out();
+            viewCard(Physics.Raycast(mainCamera.ScreenPointToRay(Input.mousePosition), out var selCard)
+                ? selCard.transform.GetComponent<IngameCard>()
+                : null);
         }
 
         public List<GameCard> GetHandCards(bool self)
@@ -85,7 +83,7 @@ namespace _root.Script.Ingame
                     {
                         CardInfoPanel.SetActive(true);
                         CardAnim.Play("CardInfoFadeIn");
-                        cardui.viewCard(card);
+                        cardui.ViewCard(card);
                     }
                     else
                     {
@@ -96,13 +94,13 @@ namespace _root.Script.Ingame
                 {
                     CardInfoPanel.SetActive(true);
                     CardAnim.Play("CardInfoFadeIn");
-                    cardui.viewCard(card);
+                    cardui.ViewCard(card);
                 }
                 else if (card.type == IngameCardType.Student)
                 {
                     CardInfoPanel.SetActive(true);
                     CardAnim.Play("CardInfoFadeIn");
-                    cardui.viewCard(card);
+                    cardui.ViewCard(card);
                 }
                 else
                 {
