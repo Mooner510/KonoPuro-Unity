@@ -25,9 +25,11 @@ namespace _root.Script.Data
 
         public static readonly HashSet<Tuple<MajorType, int>> stageProjects = new()
         {
-            new Tuple<MajorType, int>(MajorType.FrontEnd, 150),
-            new Tuple<MajorType, int>(MajorType.Backend, 150),
-            new Tuple<MajorType, int>(MajorType.Design, 80)
+            new Tuple<MajorType, int>(MajorType.FrontEnd, 10),
+            new Tuple<MajorType, int>(MajorType.Backend, 10),
+            new Tuple<MajorType, int>(MajorType.Design, 10),
+            new Tuple<MajorType, int>(MajorType.Android, 10),
+            new Tuple<MajorType, int>(MajorType.iOS, 10),
         };
 
         //동적 값

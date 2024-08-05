@@ -39,7 +39,7 @@ namespace _root.Script.Ingame
                 element.Init(info);
                 elementUis.Add(element);
             }
-            gameObject.SetActive(false);
+            canvasGroup.alpha = 0;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace _root.Script.Ingame
                 canvasGroup.alpha = Mathf.Lerp(0, 1, Mathf.Clamp01(timer / richTime));
                 yield return null;
             }
-            if(!show) gameObject.SetActive(false); 
+            // if(!show) gameObject.SetActive(false); 
         }
     }
 }
