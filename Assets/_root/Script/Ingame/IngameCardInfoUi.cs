@@ -66,9 +66,16 @@ namespace _root.Script.Ingame
                 var data = card.GetCardData();
                 timeT.enabled = false;
                 if (data == null) return;
-                var info = GameStatics.defaultCardDictionary[data.defaultCardType];
-                nameT.text        = info.name;
-                descriptionT.text = info.description;
+                if(GameStatics.defaultCardDictionary.TryGetValue(data.defaultCardType, out var info))
+                {
+                    nameT.text        = info.name;
+                    descriptionT.text = info.description;
+                }
+                else
+                {
+                    nameT.text        = data.defaultCardType;
+                    descriptionT.text = data.defaultCardType;
+                }
             }
             else
             {

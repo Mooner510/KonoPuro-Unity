@@ -191,7 +191,7 @@ public class FieldSetter : MonoBehaviour
 		var preRow = Mathf.Sqrt(count / ratio);
 		var preCol = ratio * preRow;
 		var (row, col) = GetInt(preRow, preCol, count);
-		
+
 		var size = fieldSize.x / (row * cardSize.y);
 
 		var multiplyZ  = fieldSize.x / col;
@@ -223,8 +223,8 @@ public class FieldSetter : MonoBehaviour
 		var ceilB  = Mathf.CeilToInt(b);
 
 		if (floorA * floorB >= min) return (floorA, floorB);
-		else if (ceilA * floorB >= min) return (ceilA, floorB);
 		else if (floorA * ceilB >= min) return (floorA, ceilB);
+		else if (ceilA * floorB >= min) return (ceilA, floorB);
 		else return (ceilA, ceilB);
 	}
 }

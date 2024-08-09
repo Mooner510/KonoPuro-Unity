@@ -61,7 +61,9 @@ namespace _root.Script.Ingame
             selfTimeText = textMeshProUis[3];
             otherTimeText = textMeshProUis[4];
 
-            var details = GetComponentsInChildren<ProgressDetailUi>();
+            var coverCanvas = GameObject.Find("Cover Canvas");
+
+            var details = coverCanvas.GetComponentsInChildren<ProgressDetailUi>();
             selfProgressDetail = details[0];
             otherProgressDetail = details[1];
 
@@ -77,7 +79,7 @@ namespace _root.Script.Ingame
 
             abilityManager = FindObjectOfType<AbilityManager>();
 
-            gameEndUi = GetComponentInChildren<GameEndUi>();
+            gameEndUi = FindObjectOfType<GameEndUi>();
             
             textpannel      = GameObject.FindGameObjectWithTag("CardUseage");
             carduseageAnim  = textpannel.GetComponent<Animator>();
