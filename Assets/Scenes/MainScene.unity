@@ -1122,7 +1122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2996d4a45155e9643896d066ef7689fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  veiwgold: {fileID: 1852418923}
+  viewGold: {fileID: 1852418923}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -8497,6 +8497,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: -1131075865, guid: 1d6f5a7a67997ce42bb884d22197c9a2,
         type: 3}
+    - target: {fileID: 7839709073654217759, guid: 0344355c4a781db4b87a969ab8a79408,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.02
+      objectReference: {fileID: 0}
     - target: {fileID: 7917322517386167805, guid: 0344355c4a781db4b87a969ab8a79408,
         type: 3}
       propertyPath: m_AnchorMax.y
