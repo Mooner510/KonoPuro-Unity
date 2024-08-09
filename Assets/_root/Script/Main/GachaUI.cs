@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Card;
 using _root.Script.Data;
+using _root.Script.Manager;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
@@ -116,6 +117,7 @@ namespace _root.Script.Main
             UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
             GachaDirecting.gatchaCards = gatchaCards;
             GachaDirectionColor.maxTier = gatchaCards.Select(card => card.tier).Max();
+            AudioManager.StopAllSoundsInstance();
             SceneManager.LoadScene("GachaDirectingStartScene");
         }
 
@@ -137,6 +139,7 @@ namespace _root.Script.Main
 
         public void DoGacha()
         {
+            AudioManager.StopAllSoundsInstance();
             SceneManager.LoadScene("GachaScene");
         }
     }
