@@ -53,7 +53,7 @@ namespace _root.Script.Main
         {
             canvas.enabled = active;
             gameObject.SetActive(active);
-            if (active) ChangeGoldTxt(UserData.Instance.gold);
+            if (active) ChangeGoldTxt(UserData.Instance.gold.Value);
         }
 
         public void LeftBtn()
@@ -113,7 +113,7 @@ namespace _root.Script.Main
         {
             mainUi.SetThrobber(false);
             var gold = UserData.Instance.gold -= gatchaPrice;
-            ChangeGoldTxt(gold);
+            ChangeGoldTxt(gold.Value);
             UserData.Instance.InventoryCards.cards.AddRange(gatchaCards);
             GachaDirecting.gatchaCards = gatchaCards;
             GachaDirectionColor.maxTier = gatchaCards.Select(card => card.tier).Max();

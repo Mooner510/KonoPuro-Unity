@@ -219,6 +219,23 @@ namespace _root.Script.Title
                     })
                     .OnError(body => Debug.Log("Default Cards Load Failed"))
                     .Build();
+
+            if (UserData.Instance.gold == null)
+                API.GetGold()
+                    .OnResponse(responses =>
+                    {
+                        // Debug.LogError("Default Cards");
+                        //   foreach (var (key, value) in responses)
+                        //   {
+                        //    Debug.LogWarning($"Outer Key : {key}");
+                        //    Debug.Log($"Name : {value.name}");
+                        //    Debug.Log($"Description : {value.description}");
+                        //    Debug.Log($"Idea : {value.idea}");
+                        //    Debug.Log($"Motive : {value.motive}");
+                        //   }
+                        UserData.Instance.gold = responses.gold; })
+                    .OnError(body => Debug.Log("Gold Load Failed"))
+                    .Build();
         }
 
         private IEnumerator LoadCoroutine()
