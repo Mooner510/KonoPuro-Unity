@@ -9,10 +9,14 @@ namespace UnityTechnologies.ParticlePack.Shared.Scripts
     {
         [FormerlySerializedAs("veiwgold")] [SerializeField] private TextMeshProUGUI viewGold;
         private bool _switchButton;
-        public void OnClick()
+        public void OnHover()
         {
-            viewGold.color = Color.white;
             viewGold.text = UserData.Instance.gold.ToString();
+        }
+
+        public void OnUnHover()
+        {
+            viewGold.text = "Gold";
         }
     }
 }

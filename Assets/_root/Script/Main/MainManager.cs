@@ -83,12 +83,9 @@ namespace _root.Script.Main
             }
             else
             {
-                if (hoveredPlaceableObject)
-                {
-                    hoveredPlaceableObject.OnHover(false);
-                    hoveredPlaceableObject = null;
-                }
-
+                if (!hoveredPlaceableObject) return;
+                hoveredPlaceableObject.OnHover(false);
+                hoveredPlaceableObject = null;
                 return;
             }
 

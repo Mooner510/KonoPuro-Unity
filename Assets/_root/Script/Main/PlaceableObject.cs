@@ -14,6 +14,8 @@ namespace _root.Script.Main
         [SerializeField] private GameObject DiscriptionText;
         [SerializeField] private UnityEvent interactEvent;
         [SerializeField] private UnityEvent initEvent;
+        [SerializeField] private UnityEvent hoverEvent;
+        [SerializeField] private UnityEvent unHoverEvent;
         private Material accentMaterial;
         private TMP_Text DiscriptionText_TMP_Text;
         private static readonly int OutlineColor = Shader.PropertyToID("_OutlineColor");
@@ -39,11 +41,13 @@ namespace _root.Script.Main
                 accentMaterial.SetColor(OutlineColor, new Color(255, 128, 0));
                 accentMaterial.SetFloat(Scale, 1.015f);
                 DiscriptionText_TMP_Text.color = Color.white;
+                hoverEvent.Invoke();
             }
             else
             {
                 DiscriptionText_TMP_Text.color = Color.gray;
                 accentMaterial.SetFloat(Scale, 1f);
+                unHoverEvent.Invoke();
             }
         }
 
