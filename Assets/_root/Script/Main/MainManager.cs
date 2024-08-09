@@ -178,6 +178,7 @@ namespace _root.Script.Main
 
         private IEnumerator StartFlow()
         {
+            AudioManager.SetAsBackgroundMusicInstance("Audio/MAIN_BACKGROUND_SFX", true);
             isInteracting = true;
             yield return new WaitForSeconds(1f);
             director.playableAsset = start;
