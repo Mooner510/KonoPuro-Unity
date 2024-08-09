@@ -266,6 +266,12 @@ namespace _root.Script.Network
     }
 
     [Serializable]
+    public class GoldResponse
+    {
+        public int gold;
+    }
+
+    [Serializable]
     public class Version
     {
         public string version;

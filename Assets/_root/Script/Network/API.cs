@@ -114,6 +114,11 @@ namespace _root.Script.Network
             return new Networking.Get<Dictionary<string, StudentCardInfo>>("/api/resource/student-card");
         }
 
+        public static Networking.Get<GoldResponse> GetGold()
+        {
+            return new Networking.Get<GoldResponse>("/api/inventory/gold");
+        }
+        
         public static Networking.Get<Version> GetVersion()
         {
             return new Networking.Get<Version>("/api/resource/version");

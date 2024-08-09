@@ -7,7 +7,7 @@ namespace _root.Script.Data
     {
         public DeckResponse ActiveDeck;
 
-        public int gold = 1000000;
+        public int? gold = null;
         public PlayerCardResponses InventoryCards;
     }
 }
