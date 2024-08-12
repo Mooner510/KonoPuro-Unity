@@ -36,6 +36,7 @@ namespace _root.Script.Title
             Networking.AccessToken = null;
             UserData.Instance.ActiveDeck = null;
             UserData.Instance.InventoryCards = null;
+            UserData.Instance.gold = null;
         }
 
         public void SetThrobber(bool active)
