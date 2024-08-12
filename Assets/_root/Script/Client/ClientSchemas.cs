@@ -83,7 +83,6 @@ namespace _root.Script.Client
         Time,
         FieldCard,
         Project,
-        Issue,
         Sleep,
         DateData,
         ProjectAdditionData,
@@ -144,9 +143,6 @@ namespace _root.Script.Client
                             break;
                         case Modifier.Project:
                             updatedData.projects = JsonConvert.DeserializeObject<Dictionary<MajorType, int>>(s);
-                            break;
-                        case Modifier.Issue:
-                            updatedData.issues = JsonConvert.DeserializeObject<Dictionary<MajorType, List<int>>>(s);
                             break;
                         case Modifier.Sleep:
                             updatedData.sleep = bool.Parse(s);
