@@ -35,8 +35,10 @@ namespace _root.Script.Config
             if (VolumeSlider.value == 0f)
                 Muted = true;
             JokeSlider.value = ConfigManager.ConfigData.Light;
+            FPS_Slider.maxValue = (int)Screen.currentResolution.refreshRateRatio.value+1;
             FPS_Slider.value = ConfigManager.ConfigData.FPSLimit;
-            FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
+            Debug.Log(Screen.currentResolution.refreshRateRatio.value);
+            FPS_Value.text = FPS_Slider.value >= (float)Screen.currentResolution.refreshRateRatio.value ? "제한 없음" : $"FPS : {(int)FPS_Slider.value}";
             isChange = false;
         }
         public void GetOff()
@@ -71,11 +73,11 @@ namespace _root.Script.Config
         public void Mute()
         {
             isChange = true;
-            VolumeSlider.value = (Muted = !Muted) ? 0f : 0.5f;
+            VolumeSlider.value = !Muted ? 0f : 0.5f;
         }
         public void ChangeFPS()
         {
-            FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
+            FPS_Value.text = FPS_Slider.value >= (float)Screen.currentResolution.refreshRateRatio.value ? "제한 없음" : $"FPS : {(int)FPS_Slider.value}";
             isChange = true;
         }
 
