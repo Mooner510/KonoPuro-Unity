@@ -90,7 +90,7 @@ namespace _root.Script.Ingame
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
-
+            
             light1.color = Color.white;
             light2.color = Color.white;
 

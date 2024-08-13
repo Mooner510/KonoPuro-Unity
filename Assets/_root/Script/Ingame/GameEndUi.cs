@@ -28,6 +28,8 @@ namespace _root.Script.Ingame
                 "DRAW" => "Draw",
                 "WIN" => "You Win",
                 "LOSE" => "You Lose",
+                "WIN_SURRENDER" => "You Win By Surrender",
+                "LOSE_SURRENDER" => "You Lose By Surrender",
                 _ => winText.text
             };
         }
