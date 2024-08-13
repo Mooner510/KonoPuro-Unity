@@ -126,7 +126,9 @@ namespace _root.Script.Ingame
 
         public void TimeChanged(int time, bool self)
         {
-            (self ? GameStatics.self : GameStatics.other).time = time;
+            if (self) GameStatics.selfTime = time;
+            else GameStatics.otherTime     = time;
+                
             (self ? selfTimeText : otherTimeText).text         = $"{time}";
         }
 

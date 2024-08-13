@@ -411,6 +411,8 @@ namespace _root.Script.Ingame
             Debug.LogWarning(def);
             var sel = GameStatics.defaultCardDictionary[def];
             Debug.LogWarning(sel);
+            Debug.LogWarning(sel.time);
+            Debug.LogWarning(GameStatics.selfTime);
             if (sel.time > GameStatics.selfTime)
             {
                 Debug.LogWarning("시간 부족");
