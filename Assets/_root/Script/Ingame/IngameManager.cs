@@ -405,7 +405,13 @@ namespace _root.Script.Ingame
             }
 
             //TODO 시간이 모자람 공지
-            if (GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].time > GameStatics.self.time)
+            var cd = card.GetCardData();
+            Debug.LogWarning(cd);
+            var def = cd.defaultCardType;
+            Debug.LogWarning(def);
+            var sel = GameStatics.defaultCardDictionary[def];
+            Debug.LogWarning(sel);
+            if (sel.time > GameStatics.selfTime)
             {
                 Debug.LogWarning("시간 부족");
                 
