@@ -276,4 +276,11 @@ namespace _root.Script.Network
     {
         public string version;
     }
+
+    [Serializable]
+    public class PlayerInfoResponse
+    {
+        public string id;
+        public string name;
+    }
 }

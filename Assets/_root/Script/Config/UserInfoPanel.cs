@@ -6,20 +6,27 @@ namespace _root.Script.Config
 {
     public class UserInfoPanel : MonoBehaviour
     {
-        private GameObject UserID;
-        private GameObject UserUUID;
-        private Networking Net;
+        private GameObject _userID;
+        private GameObject _userName;
 
         private void Awake()
         {
-            UserID = transform.GetChild(1).gameObject;
-            Net = FindObjectOfType<Networking>();
+            _userID = transform.GetChild(0).gameObject;
+            _userName = transform.GetChild(1).gameObject;
+            Init();
         }
 
         public void Init()
         {
-            UserID.GetComponent<TextMeshProUGUI>().text = $"ID fdf :  {Net.Password}";
+            API.GetInfo().OnResponse(playerInfo =>
+            {
+                _userID.GetComponent<TextMeshProUGUI>().text = $"ID : {playerInfo.id}";
+                _userName.GetComponent<TextMeshProUGUI>().text = $"Name : {playerInfo.name}";
+            }).OnError((_) =>
+            {
+                _userID.GetComponent<TextMeshProUGUI>().text = "ID : ???";
+                _userName.GetComponent<TextMeshProUGUI>().text = "Name : ???";
+            }).Build();
         }
-    
     }
 }

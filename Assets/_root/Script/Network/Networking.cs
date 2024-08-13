@@ -99,7 +99,7 @@ namespace _root.Script.Network
                 Debugger.Log($"Sending Request to {url}");
                 using var webRequest = WebRequest(url);
                 webRequest.timeout = 15;
-                foreach ((var key, var value) in _headers)
+                foreach (var (key, value) in _headers)
                     webRequest.SetRequestHeader(key, value);
                 if (AccessToken != null) webRequest.SetRequestHeader("Authorization", AccessToken);
                 yield return webRequest.SendWebRequest();

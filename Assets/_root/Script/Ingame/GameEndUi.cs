@@ -25,11 +25,11 @@ namespace _root.Script.Ingame
 
             winText.text = info switch
             {
-                "DRAW" => "Draw",
-                "WIN" => "You Win",
-                "LOSE" => "You Lose",
-                "WIN_SURRENDER" => "You Win By Surrender",
-                "LOSE_SURRENDER" => "You Lose By Surrender",
+                "DRAW" => "무승부",
+                "WIN" => "승리!",
+                "LOSE" => "패배...",
+                "WIN_SURRENDER" => "승리! (상대의 항복)",
+                "LOSE_SURRENDER" => "항복...",
                 _ => winText.text
             };
         }
