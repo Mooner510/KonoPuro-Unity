@@ -1,52 +1,72 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
-using static _root.Script.Data.GameStatics;
 
-public class ProgressDetailElementUi : MonoBehaviour
+namespace _root.Script.Ingame
 {
-    public MajorType type;
-
-    private Image           majorIcon;
-    private Slider          progressBar;
-    private TextMeshProUGUI progressText;
-
-    public int maxProgress;
-    public int progress;
-
-    private void Awake()
+    public class ProgressDetailElementUi : MonoBehaviour
     {
-        majorIcon      = GetComponentInChildren<Image>();
-        progressBar    = GetComponentInChildren<Slider>();
-        progressText = GetComponentInChildren<TextMeshProUGUI>();
-        progress       = 0;
-    }
+        public MajorType type;
+        [SerializeField] private float ChangeTime;
 
-    public void Init(Tuple<MajorType, int> info)
-    {
-        //TODO: 전공에 맞는 아이콘 불러오기 & 적용
+        public int maxProgress;
+        public int progress;
 
-        type              = info.Item1;
-        maxProgress       = info.Item2;
-        progressBar.value = 0;
-        progressText.text = "0pt";
-    }
+        private Image majorIcon;
+        private Slider progressBar;
+        private TextMeshProUGUI progressText;
 
-    public void SetProgress(int _progress)
-    {
-        progress     = _progress;
-        progressBar.value = Mathf.Clamp01((float)progress / maxProgress);
-        progressText.text = $"{progress}pt";
-    }
+        private void Awake()
+        {
+            majorIcon = GetComponentInChildren<Image>();
+            progressBar = GetComponentInChildren<Slider>();
+            progressText = GetComponentInChildren<TextMeshProUGUI>();
+            progress = 0;
+        }
 
-    public void AddProgress(int _progress)
-    {
-        progress          += _progress;
-        SetProgress(progress);
+        public void Init(Tuple<MajorType, int> info)
+        {
+            var sprite = Resources.Load<Sprite>($"Major/Type={info.Item1.ToString()}");
+            if (sprite) majorIcon.sprite = sprite;
+
+            type = info.Item1;
+            maxProgress = info.Item2;
+            progressBar.value = 0;
+            progressText.text = "0pt";
+        }
+
+        public void SetProgress(int _progress)
+        {
+            var progressTemp = progress;
+            progress = _progress;
+            StartCoroutine(ChangeProgress(progressTemp, _progress));
+        }
+
+        public void AddProgress(int _progress)
+        {
+            progress += _progress;
+            SetProgress(progress);
+        }
+
+        private IEnumerator ChangeProgress(int TempProgress, int _progress)
+        {
+            var elapsedTime = 0f;
+            var plus = _progress - TempProgress;
+            while (elapsedTime < ChangeTime)
+            {
+                var pr = TempProgress + plus * (elapsedTime / ChangeTime);
+                progressBar.value = Mathf.Clamp01(pr / maxProgress);
+                progressText.text = $"{(int)pr}pt";
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            progress = _progress;
+            progressBar.value = Mathf.Clamp01((float)progress / maxProgress);
+            progressText.text = $"{progress}pt";
+        }
     }
 }

@@ -3,11 +3,11 @@ using _root.Script.Utils.SingleTon;
 
 namespace _root.Script.Data
 {
-    public class UserData: SingleTon<UserData>
+    public class UserData : SingleTon<UserData>
     {
-        public     DeckResponse        ActiveDeck;
-        public PlayerCardResponses InventoryCards;
+        public DeckResponse ActiveDeck;
 
-        public int gold = 1000000;
+        public int? gold = null;
+        public PlayerCardResponses InventoryCards;
     }
 }

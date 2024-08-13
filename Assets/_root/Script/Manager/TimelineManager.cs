@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using _root.Script.Manager;
+using _root.Script.UI;
 using UnityEngine;
 using UnityEngine.Playables;
 
@@ -15,11 +17,13 @@ public enum Scenestate
 
 public class TimelineManager : MonoBehaviour
 {
-    private PlayableDirector director;
+    public readonly Stack<Scenestate> stateStack = new();
     private BackButton backBtn;
     private CamManager camManager;
-    
-    public readonly Stack<Scenestate> stateStack = new();
+
+    private Coroutine coroutine;
+    private PlayableDirector director;
+
     private void Awake()
     {
         director = GetComponent<PlayableDirector>();
@@ -28,15 +32,10 @@ public class TimelineManager : MonoBehaviour
 
         PlayTimeline(Scenestate.Start, Scenestate.Title);
     }
-    
-    private Coroutine coroutine;
-    
+
     public void PlayTimeline(Scenestate state1, Scenestate state2)
     {
-        if (coroutine != null)
-        {
-            StopCoroutine(coroutine);
-        }
+        if (coroutine != null) StopCoroutine(coroutine);
         coroutine = StartCoroutine(PlayTimelineCoroutine(state1, state2));
     }
 
@@ -69,13 +68,10 @@ public class TimelineManager : MonoBehaviour
 
     public void Back()
     {
-        if (stateStack.Count == 0)
-        {
-            return;
-        }
+        if (stateStack.Count == 0) return;
         PlayTimeline(stateStack.Pop(), stateStack.Pop());
     }
-    
+
     public PlayState GetdirectorState()
     {
         return director.state;

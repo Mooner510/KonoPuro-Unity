@@ -8,7 +8,7 @@ namespace _root.Script.Card
     {
         public static PlayerCardResponse gatchaCard;
 
-        private void Start()
+        private void Awake()
         {
             GetComponentInChildren<CardinrandomRange>().cardId = gatchaCard.cardType;
             GetComponentInChildren<CardinrandomRange>().tier = gatchaCard.tier;
