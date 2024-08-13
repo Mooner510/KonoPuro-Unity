@@ -126,7 +126,8 @@ namespace _root.Script.Ingame
 
         public void TimeChanged(int time, bool self)
         {
-            (self ? selfTimeText : otherTimeText).text = $"{time}";
+            (self ? GameStatics.self : GameStatics.other).time = time;
+            (self ? selfTimeText : otherTimeText).text         = $"{time}";
         }
 
         public void SetProgress(float progress, bool self)

@@ -33,6 +33,9 @@ namespace _root.Script.Data
         };
 
         //동적 값
+        public static int selfTime = 0;
+        public static int otherTime = 0;
+        
         public static UpdatedData self;
         public static UpdatedData other;
         public static bool isTurn;
