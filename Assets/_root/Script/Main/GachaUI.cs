@@ -19,6 +19,8 @@ namespace _root.Script.Main
         [Header("# Box")] [SerializeField] private GameObject box;
         [SerializeField] private List<Mesh> boxMeshes;
         [SerializeField] private List<Material> boxMaterials;
+        [SerializeField] private List<int> boxSizes;
+        [SerializeField] private List<Vector3> boxRotation;
 
         [Header("# Gacha")] [SerializeField] private TextMeshProUGUI singlePriceTxt;
         [SerializeField] private TextMeshProUGUI multiPriceTxt;
@@ -74,6 +76,8 @@ namespace _root.Script.Main
         {
             meshFilter.mesh = boxMeshes[boxIndex];
             meshRenderer.material = boxMaterials[boxIndex];
+            box.transform.localScale = Vector3.one * boxSizes[boxIndex];
+            box.transform.rotation = Quaternion.Euler(boxRotation[boxIndex]);
         }
 
         private void GatchaInit()

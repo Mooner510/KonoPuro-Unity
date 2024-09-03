@@ -2358,8 +2358,14 @@ MonoBehaviour:
   box: {fileID: 1219612945}
   boxMeshes:
   - {fileID: 4300000, guid: 1cc6cc20abc7a464a9dec49ee02361cf, type: 3}
+  - {fileID: 4300000, guid: 71a60c64d7c47fb41ae9f34f15bf3ccf, type: 3}
   boxMaterials:
   - {fileID: 2100000, guid: 0e771690fad43914fb256fd021ff1796, type: 2}
+  - {fileID: 2100000, guid: e68aed1fa8bdcc74983ea0d5edbdd2cb, type: 2}
+  boxSizes: 0200000009000000
+  boxRotation:
+  - {x: 0, y: 50.569, z: 0}
+  - {x: 0, y: 230.569, z: 0}
   singlePriceTxt: {fileID: 1573927702}
   multiPriceTxt: {fileID: 1865007223}
 --- !u!114 &922243802
@@ -3433,7 +3439,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219612945}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.42711136, z: -0, w: 0.90419906}
+  m_LocalRotation: {x: 0, y: 0.42711323, z: 0, w: 0.9041982}
   m_LocalPosition: {x: -12.371386, y: 9.52, z: -14.198355}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
