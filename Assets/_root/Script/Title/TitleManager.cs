@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using System.Text.RegularExpressions;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
@@ -48,9 +49,7 @@ namespace _root.Script.Title
             API.GetVersion()
                 .OnResponse(s =>
                 {
-                    if (s.version != Application.version)
-                        //TODO: 버전 안 맞음 표시
-                        Application.Quit();
+                    if (!new Regex(@"^(\d+)\.(\d+)\.\d+,\1\.\2\.\d+$").IsMatch(s.version + "," + Application.version)) SceneManager.LoadScene("VersionCheckFailed");
                     else loaded = true;
                 })
                 .OnError(body => Debug.LogError("Version Load Failed"))
