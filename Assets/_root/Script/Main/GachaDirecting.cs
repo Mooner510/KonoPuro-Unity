@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using _root.Script.Card;
 using _root.Script.Network;
 using UnityEngine;
@@ -12,30 +13,31 @@ namespace _root.Script.Main
         public Transform singleCard, singleCardEndPos;
         public Transform multiCard, multiCardEndPos;
         private bool multi;
+        private Transform[] _mc;
+        private Transform[] _ec;
+        private Light _light;
 
         private void Start()
         {
+            _light = GetComponent<Light>();
             multi = gatchaCards.Count > 1;
+            if (!multi) return;
+            _mc = multiCard.GetComponentsInChildren<MultiComponent>().Select(mc => mc.transform).ToArray();
+            _ec = multiCardEndPos.GetComponentsInChildren<MultiComponent>().Select(mc => mc.transform).ToArray();
         }
 
         private void Update()
         {
             if (multi)
             {
-                var mc = multiCard.GetComponentsInChildren<MultiComponent>();
-                var ec = multiCardEndPos.GetComponentsInChildren<MultiComponent>();
-                for (var i = 0; i < mc.Length; i++)
+                for (var i = 0; i < _mc.Length; i++)
                 {
-                    mc[i].GetComponent<Transform>().position = Vector3.Lerp(mc[i].GetComponent<Transform>().position,
-                        ec[i].GetComponent<Transform>().position, 0.1f);
-                    mc[i].GetComponent<Transform>().rotation = Quaternion.Lerp(mc[i].GetComponent<Transform>().rotation,
-                        ec[i].GetComponent<Transform>().rotation, 0.1f);
+                    _mc[i].position = Vector3.Lerp(_mc[i].position, _ec[i].position, 0.1f);
+                    _mc[i].rotation = Quaternion.Lerp(_mc[i].rotation, _ec[i].rotation, 0.1f);
                 }
 
-                if (mc[0].GetComponent<Transform>().rotation.ToString()
-                    .Equals(ec[0].GetComponent<Transform>().rotation.ToString()))
-                    GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
-                if (!(GetComponent<Light>().intensity > 20000f)) return;
+                if (_mc[0].rotation.ToString().Equals(_ec[0].rotation.ToString())) _light.intensity = Mathf.Lerp(_light.intensity, 21000, 0.05f);
+                if (!(_light.intensity > 20000f)) return;
                 GachaMultiCardSetter.gatchaCards = gatchaCards;
                 SceneManager.LoadScene("CardGatchaMulti");
             }
@@ -44,8 +46,8 @@ namespace _root.Script.Main
                 singleCard.position = Vector3.Lerp(singleCard.position, singleCardEndPos.position, 0.1f);
                 singleCard.rotation = Quaternion.Lerp(singleCard.rotation, singleCardEndPos.rotation, 0.1f);
                 if (singleCard.rotation.ToString().Equals(singleCardEndPos.rotation.ToString()))
-                    GetComponent<Light>().intensity = Mathf.Lerp(GetComponent<Light>().intensity, 21000, 0.05f);
-                if (!(GetComponent<Light>().intensity > 20000f)) return;
+                    _light.intensity = Mathf.Lerp(_light.intensity, 21000, 0.05f);
+                if (!(_light.intensity > 20000f)) return;
                 GachaSingleCardSetter.gatchaCard = gatchaCards[0];
                 SceneManager.LoadScene("CardGatchaSingle");
             }
