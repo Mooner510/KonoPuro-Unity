@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Card;
@@ -6,6 +7,7 @@ using _root.Script.Manager;
 using _root.Script.Network;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace _root.Script.Main
@@ -91,9 +93,11 @@ namespace _root.Script.Main
             GatchaInit();
             gatchaPrice = multi ? GameStatics.gatchaMultiPrice : GameStatics.gatchaOncePrice;
             if (UserData.Instance.gold < gatchaPrice)
-                //TODO: 골드 부족 표시
+            {
+                ModalManager.ShowModal("골드가 부족합니다.", Color.black, Color.white, Tuple.Create("확인", new UnityAction(ModalManager.ResetModal)));
                 return;
-
+            }
+                //TODO: 골드 부족 표시
             if (multi)
                 API.GatchaMulti(GameStatics.gatchaList[boxIndex].id).OnResponse(response =>
                     {
