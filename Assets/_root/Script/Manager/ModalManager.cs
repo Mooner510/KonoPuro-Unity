@@ -12,7 +12,7 @@ namespace _root.Script.Manager
         private TextMeshProUGUI _modalText;
         private Button _modalButtonInstance;
         private Image _modalBanner;
-        private Transform _modalButtonParent;
+        private Transform _modalButtonParent;    
 
         protected override void Awake()
         {
