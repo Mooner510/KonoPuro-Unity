@@ -5,10 +5,13 @@ using _root.Script.Card;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
+using GLTF.Schema;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Material = UnityEngine.Material;
+using Mesh = UnityEngine.Mesh;
 
 namespace _root.Script.Main
 {
@@ -35,6 +38,8 @@ namespace _root.Script.Main
         private MainUi mainUi;
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
+        
+        [SerializeField]private GameObject _changeBanner;
 
         private void Awake()
         {
@@ -44,6 +49,7 @@ namespace _root.Script.Main
 
         private void Start()
         {
+            
             meshFilter = box.GetComponent<MeshFilter>();
             meshRenderer = box.GetComponent<MeshRenderer>();
             singlePriceTxt.text = string.Format($"{GameStatics.gatchaOncePrice:N0}");
@@ -65,6 +71,7 @@ namespace _root.Script.Main
             if (boxIndex <= 0) return;
             boxIndex--;
             ChangeBox();
+            _changeBanner.GetComponent<BannerChanger>().ChageToFront();
         }
 
         public void RightBtn()
@@ -72,6 +79,7 @@ namespace _root.Script.Main
             if (boxIndex >= boxMeshes.Count - 1) return;
             boxIndex++;
             ChangeBox();
+            _changeBanner.GetComponent<BannerChanger>().ChangeToBack();
         }
 
         private void ChangeBox()
