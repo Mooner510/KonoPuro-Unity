@@ -1,3 +1,4 @@
+using System;
 using _root.Script.Manager;
 using UnityEngine;
 
@@ -13,12 +14,13 @@ namespace _root.Script.Config
             Settings.Load();
         }
 
+        [Obsolete("Obsolete")]
         private void Start()
         {
             Screen.brightness = ConfigData.Light;
             if (ConfigData.FPSLimit > 0)
             {
-                Application.targetFrameRate = ConfigData.FPSLimit;
+                Application.targetFrameRate = ConfigData.FPSLimit >= 61 ? Screen.currentResolution.refreshRate : ConfigData.FPSLimit;
             }
             AudioManager.VolumeInitInstance();
         }

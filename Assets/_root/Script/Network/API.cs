@@ -118,6 +118,11 @@ namespace _root.Script.Network
         {
             return new Networking.Get<GoldResponse>("/api/inventory/gold");
         }
+
+        public static Networking.Get<PlayerInfoResponse> GetInfo()
+        {
+            return new Networking.Get<PlayerInfoResponse>("/api/auth/user-info");
+        }
         
         public static Networking.Get<Version> GetVersion()
         {

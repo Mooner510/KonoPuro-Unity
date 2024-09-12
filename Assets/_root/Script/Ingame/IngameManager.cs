@@ -54,6 +54,8 @@ namespace _root.Script.Ingame
 
         private IngameUi ui;
 
+        private bool updated = true;
+
         private void Awake()
         {
             var decks = FindObjectsOfType<DrawDeck>();
@@ -94,7 +96,7 @@ namespace _root.Script.Ingame
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.NextDay, _ => NextDay());
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.DataUpdated, UpdateData);
             NetworkClient.DelegateEvent(NetworkClient.ClientEvent.GameEnd, GameEnd);
-
+            
             light1.color = Color.white;
             light2.color = Color.white;
 
@@ -292,6 +294,8 @@ namespace _root.Script.Ingame
 
         private IEnumerator UseAbilityFlow(Tiers ability, IngameCard card, int index)
         {
+            if(!updated) yield break;
+            
             yield return new WaitUntil(() => currentFlowIndex == index);
 
             abilityUsable = false;
@@ -328,6 +332,24 @@ namespace _root.Script.Ingame
                 yield break;
             }
             
+            //TODO 시간이 모자람 공지
+            if (GameStatics.tierDictionary[ability].time > GameStatics.self.time)
+            {
+                Debug.LogWarning("시간 부족");
+                
+                abilityUsable = true;
+                ui.SetHover(true);
+                ui.SetInteract(preTurn);
+                activity.SetActive(true);
+                activity.AddHandCard(card, true);
+                card.Show(true);
+                canUseFlow = true;
+                EndFlow(index);
+                yield break;
+            }
+
+            updated = false;
+            
             AudioManager.PlaySoundInstance("Audio/CARD_USED");
             ui.SayOutLoud(GameStatics.tierDictionary[ability].name, true);
 
@@ -352,6 +374,7 @@ namespace _root.Script.Ingame
 
         private IEnumerator UseCardFlow(IngameCard card, int index)
         {
+            if(!updated) yield break;
             yield return new WaitUntil(() => currentFlowIndex == index);
 
             abilityUsable = false;
@@ -390,6 +413,32 @@ namespace _root.Script.Ingame
                 EndFlow(index);
                 yield break;
             }
+
+            //TODO 시간이 모자람 공지
+            var cd = card.GetCardData();
+            Debug.LogWarning(cd);
+            var def = cd.defaultCardType;
+            Debug.LogWarning(def);
+            var sel = GameStatics.defaultCardDictionary[def];
+            Debug.LogWarning(sel);
+            Debug.LogWarning(sel.time);
+            Debug.LogWarning(GameStatics.selfTime);
+            if (sel.time > GameStatics.selfTime)
+            {
+                Debug.LogWarning("시간 부족");
+                
+                abilityUsable = true;
+                ui.SetHover(true);
+                ui.SetInteract(preTurn);
+                activity.SetActive(true);
+                activity.AddHandCard(card, true);
+                card.Show(true);
+                canUseFlow = true;
+                EndFlow(index);
+                yield break;
+            }
+
+            updated = false;
 
             AudioManager.PlaySoundInstance("Audio/CARD_USED");
             ui.SayOutLoud(GameStatics.defaultCardDictionary[card.GetCardData().defaultCardType].name, true);
@@ -526,6 +575,8 @@ namespace _root.Script.Ingame
             ui.SetInteract(turn);
             canUseFlow = true;
             abilityUsable = true;
+
+            updated = true;
 
             EndFlow(index);
         }

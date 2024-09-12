@@ -1,12 +1,17 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _root.Script.Card;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
+using GLTF.Schema;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Material = UnityEngine.Material;
+using Mesh = UnityEngine.Mesh;
 
 namespace _root.Script.Main
 {
@@ -19,6 +24,8 @@ namespace _root.Script.Main
         [Header("# Box")] [SerializeField] private GameObject box;
         [SerializeField] private List<Mesh> boxMeshes;
         [SerializeField] private List<Material> boxMaterials;
+        [SerializeField] private List<int> boxSizes;
+        [SerializeField] private List<Vector3> boxRotation;
 
         [Header("# Gacha")] [SerializeField] private TextMeshProUGUI singlePriceTxt;
         [SerializeField] private TextMeshProUGUI multiPriceTxt;
@@ -31,6 +38,8 @@ namespace _root.Script.Main
         private MainUi mainUi;
         private MeshFilter meshFilter;
         private MeshRenderer meshRenderer;
+        
+        [SerializeField]private GameObject _changeBanner;
 
         private void Awake()
         {
@@ -40,6 +49,7 @@ namespace _root.Script.Main
 
         private void Start()
         {
+            
             meshFilter = box.GetComponent<MeshFilter>();
             meshRenderer = box.GetComponent<MeshRenderer>();
             singlePriceTxt.text = string.Format($"{GameStatics.gatchaOncePrice:N0}");
@@ -61,6 +71,7 @@ namespace _root.Script.Main
             if (boxIndex <= 0) return;
             boxIndex--;
             ChangeBox();
+            _changeBanner.GetComponent<BannerChanger>().ChageToFront();
         }
 
         public void RightBtn()
@@ -68,12 +79,15 @@ namespace _root.Script.Main
             if (boxIndex >= boxMeshes.Count - 1) return;
             boxIndex++;
             ChangeBox();
+            _changeBanner.GetComponent<BannerChanger>().ChangeToBack();
         }
 
         private void ChangeBox()
         {
             meshFilter.mesh = boxMeshes[boxIndex];
             meshRenderer.material = boxMaterials[boxIndex];
+            box.transform.localScale = Vector3.one * boxSizes[boxIndex];
+            box.transform.rotation = Quaternion.Euler(boxRotation[boxIndex]);
         }
 
         private void GatchaInit()
@@ -87,9 +101,11 @@ namespace _root.Script.Main
             GatchaInit();
             gatchaPrice = multi ? GameStatics.gatchaMultiPrice : GameStatics.gatchaOncePrice;
             if (UserData.Instance.gold < gatchaPrice)
-                //TODO: 골드 부족 표시
+            {
+                ModalManager.ShowModal("골드가 부족합니다.", Color.black, Color.white, Tuple.Create("확인", new UnityAction(ModalManager.ResetModal)));
                 return;
-
+            }
+                //TODO: 골드 부족 표시
             if (multi)
                 API.GatchaMulti(GameStatics.gatchaList[boxIndex].id).OnResponse(response =>
                     {

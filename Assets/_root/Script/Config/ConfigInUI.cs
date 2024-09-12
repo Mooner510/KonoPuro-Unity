@@ -1,3 +1,4 @@
+using System;
 using _root.Script.Manager;
 using TMPro;
 using UnityEngine;
@@ -9,14 +10,14 @@ namespace _root.Script.Config
     {
         private GameObject Volume;
         private Slider VolumeSlider;
-        private bool Muted = false;
+        private bool Muted;
         //private SoundVolumeManager VolumeManager;
         private GameObject Joke;
         private Slider JokeSlider;
         private GameObject FPS_Limit;
         private Slider FPS_Slider;
         private TextMeshProUGUI FPS_Value;
-        public bool isChange = false;
+        public bool isChange;
 
         private void Awake()
         {
@@ -29,21 +30,24 @@ namespace _root.Script.Config
             FPS_Value = FPS_Limit.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
         }
 
+        [Obsolete("Obsolete")]
         public void Init()
         {
             VolumeSlider.value = ConfigManager.ConfigData.SoundVolume;
             if (VolumeSlider.value == 0f)
                 Muted = true;
             JokeSlider.value = ConfigManager.ConfigData.Light;
-            FPS_Slider.value = ConfigManager.ConfigData.FPSLimit;
-            FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
+            // ReSharper disable once PossibleLossOfFraction
+            FPS_Slider.value = ConfigManager.ConfigData.FPSLimit / 15;
+            Debug.Log(Screen.currentResolution.refreshRateRatio.value);
+            FPS_Value.text = FPS_Slider.value >= 5 ? "제한 없음" : $"FPS : {(int)FPS_Slider.value * 15}";
             isChange = false;
         }
         public void GetOff()
         {
             ConfigManager.ConfigData.SoundVolume = VolumeSlider.value;
             ConfigManager.ConfigData.Light = JokeSlider.value;
-            ConfigManager.ConfigData.FPSLimit = (int)FPS_Slider.value;
+            ConfigManager.ConfigData.FPSLimit = (int) FPS_Slider.value * 15;
             AudioManager.VolumeInitInstance();
             Settings.Save();
             if (isChange)
@@ -71,11 +75,12 @@ namespace _root.Script.Config
         public void Mute()
         {
             isChange = true;
-            VolumeSlider.value = (Muted = !Muted) ? 0f : 0.5f;
+            VolumeSlider.value = !Muted ? 0f : 0.5f;
         }
+        [Obsolete("Obsolete")]
         public void ChangeFPS()
         {
-            FPS_Value.text = $"FPS : {(int)FPS_Slider.value}";
+            FPS_Value.text = FPS_Slider.value >= 5 ? "제한 없음" : $"FPS : {(int)FPS_Slider.value * 15}";
             isChange = true;
         }
 

@@ -5,6 +5,7 @@ using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Ingame.Ability;
 using _root.Script.Network;
+using InGameSettings;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -39,6 +40,7 @@ namespace _root.Script.Ingame
 
         private Button sleepButton;
         private TurnDisplayUi turnDisplayUi;
+        private InGameSettingsManager ingameSettingsManager;
 
         private Animator        carduseageAnim;
         private GameObject      textpannel;
@@ -78,6 +80,8 @@ namespace _root.Script.Ingame
             selectionModeUi = FindObjectOfType<SelectionModeUi>();
 
             abilityManager = FindObjectOfType<AbilityManager>();
+
+            ingameSettingsManager = FindObjectOfType<InGameSettingsManager>();
 
             gameEndUi = FindObjectOfType<GameEndUi>();
             
@@ -122,7 +126,10 @@ namespace _root.Script.Ingame
 
         public void TimeChanged(int time, bool self)
         {
-            (self ? selfTimeText : otherTimeText).text = $"{time}";
+            if (self) GameStatics.selfTime = time;
+            else GameStatics.otherTime     = time;
+                
+            (self ? selfTimeText : otherTimeText).text         = $"{time}";
         }
 
         public void SetProgress(float progress, bool self)

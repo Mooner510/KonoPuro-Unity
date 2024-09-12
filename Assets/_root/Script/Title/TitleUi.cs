@@ -1,3 +1,4 @@
+using _root.Script.Client;
 using _root.Script.Data;
 using _root.Script.Network;
 using _root.Script.UI;
@@ -36,6 +37,9 @@ namespace _root.Script.Title
             Networking.AccessToken = null;
             UserData.Instance.ActiveDeck = null;
             UserData.Instance.InventoryCards = null;
+            UserData.Instance.gold = null;
+            var client = FindObjectOfType<NetworkClient>();
+            if(client) Destroy(client.gameObject);
         }
 
         public void SetThrobber(bool active)
