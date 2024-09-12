@@ -199,5 +199,9 @@ namespace _root.Script.Ingame
             carduseageAnim.Play("CardUseage");
             textpannel.GetComponent<Image>().color = isMine ? new Color(0.34f, 0.73f, 1f, 1f) : new Color(1f, 0.42f, 0.34f, 1f);
         }
+        public void effectCard(bool isMine)
+        {
+            carduseageAnim.Play("UseCard");
+        }
     }
 }

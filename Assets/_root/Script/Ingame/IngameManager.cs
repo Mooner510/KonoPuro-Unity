@@ -6,6 +6,7 @@ using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Playables;
@@ -13,6 +14,7 @@ using UnityEngine.Serialization;
 
 namespace _root.Script.Ingame
 {
+    
     public class IngameManager : MonoBehaviour
     {
         [SerializeField] private PlayableAsset start;
@@ -29,6 +31,8 @@ namespace _root.Script.Ingame
         private TextMeshProUGUI usedcard;
 
         private readonly List<int> flowIndexes = new();
+
+        
 
         private bool abilityUsable;
         private PlayerActivity activity;
@@ -130,6 +134,12 @@ namespace _root.Script.Ingame
 
             ShowAbilities(null);
             activity.SelectCard(null);
+        }
+
+        void OnEnable()
+        {
+            Debug.Log("OnEnable");
+            
         }
 
         private int GetFlowIndex()
@@ -580,7 +590,7 @@ namespace _root.Script.Ingame
 
             //TODO: 능력 사용 연출
             yield return new WaitForSeconds(1f);
-
+            EffectForCard();
             EndFlow(index);
         }
 
@@ -656,5 +666,13 @@ namespace _root.Script.Ingame
         {
             ui.TimeChanged(0, false);
         }
+        
+
+         public void EffectForCard()
+         {
+             Debug.Log("Effect!!");
+             
+             
+         } 
     }
 }
