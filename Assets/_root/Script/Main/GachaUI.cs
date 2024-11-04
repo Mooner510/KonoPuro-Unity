@@ -5,7 +5,6 @@ using _root.Script.Card;
 using _root.Script.Data;
 using _root.Script.Manager;
 using _root.Script.Network;
-using GLTF.Schema;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
