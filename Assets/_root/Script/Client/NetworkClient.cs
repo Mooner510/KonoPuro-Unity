@@ -46,7 +46,7 @@ namespace _root.Script.Client
 
             if (host is not
                 { Length: > 0 })
-                host = "socket.dsm-dongpo.com";
+                host = "qss-konopuro.mooner510.kr";
 
             Listen();
 
