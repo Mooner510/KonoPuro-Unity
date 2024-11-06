@@ -188,11 +188,12 @@ public class IngameCard : MonoBehaviour
 		return CreateIngameCard(cardData, Vector3.zero, Quaternion.identity);
 	}
 
-	public static IngameCard CreateIngameCard(Vector3 spawnPos, Quaternion spawnRot)
+	public static IngameCard CreateIngameCard(Vector3 spawnPos, Quaternion spawnRot, float size = 1)
 	{
 		if (!ingameCardPrefab) ingameCardPrefab = Resources.Load<GameObject>("Prefab/Ingame Card");
 		var ingameCardGO                        = Instantiate(ingameCardPrefab, spawnPos, spawnRot);
 		var ingameCard                          = ingameCardGO.GetComponent<IngameCard>();
+		ingameCardGO.transform.localScale = Vector3.one * size;
 		ingameCard.cardFrame = ingameCardGO.GetComponent<Card.Card>();
 		return ingameCard;
 	}

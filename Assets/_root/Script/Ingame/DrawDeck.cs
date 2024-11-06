@@ -18,7 +18,7 @@ namespace _root.Script.Ingame
 
         public void Init()
         {
-            currentCard = IngameCard.CreateIngameCard(transform.position + new Vector3(0, 0.1f), Quaternion.identity);
+            currentCard = IngameCard.CreateIngameCard(transform.position + new Vector3(0, 0.1f), Quaternion.identity, 2);
             currentCard.Init(isMine, IngameCardType.Deck);
             currentCard.transform.rotation = Quaternion.Euler(90f, isMine ? 90f : -90f, 90f);
         }
